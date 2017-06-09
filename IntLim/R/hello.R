@@ -71,7 +71,7 @@ createIntlim<-function(path,log2=FALSE){
     ##ColData
    
     colData<-unique(pData)
-    rownames(colData)<-colData$sampannot.cell_line
+    rownames(colData)<-colData$cell_line
     
     
     
