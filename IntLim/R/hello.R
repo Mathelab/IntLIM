@@ -55,8 +55,8 @@ createIntlim<-function(path,log2=FALSE){
     }
     
     ## ExperimentList
-    MData<-t(meanmetab)
-    GData <- genedat
+    MData<-MData
+    GData <- GData
     objlist <- list("Gene" = GData, "Metab" = MData)
     
     
@@ -70,7 +70,7 @@ createIntlim<-function(path,log2=FALSE){
     
     ##ColData
    
-    colData<-unique(sampannot)
+    colData<-unique(pData)
     rownames(colData)<-colData$sampannot.cell_line
     
     
