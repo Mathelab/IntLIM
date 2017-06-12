@@ -17,16 +17,15 @@ library(MultiAssayExperiment)
 #'
 #' @export
 createIntlim<-function(path,log2=FALSE){
-    
-    stopifnot(is.character(path))
-    
+   stopifnot(is.character(path))
+
     if (!file.exists(path)) {
         stop("CSV input file does not exist")
     }
-    
+
     csvfile <- as.data.frame(t(read.table(path, header=TRUE,
                                           sep=",", row.names="type")))
-    
+
     if(toString(csvfile$geneData)==''){
         stop("GeneData is required")
     }
@@ -38,8 +37,8 @@ createIntlim<-function(path,log2=FALSE){
     if(toString(csvfile$pData)==''){
         stop("pData is required")
     }
-    pData<-as.data.frame(read.csv(file=toString(csvfile$pData)))
-    
+    pData<-as.data.frame(read.csv(file=toString(csvfile$pData),row.names = 1))
+
     Mmetadata<-NULL
     Gmetadata<-NULL
     if(!(toString(csvfile$metabMetadata)=='')){
@@ -48,36 +47,37 @@ createIntlim<-function(path,log2=FALSE){
     if(!toString(csvfile$geneMetadata) ==''){
         Gmetadata<-as.data.frame(read.csv(file=toString(csvfile$geneMetadata)))
     }
-    
+
     ## ExperimentList
     MData<-MData
     GData <- GData
     objlist <- list("Gene" = GData, "Metab" = MData)
-    
-    
+
+
     ## sampleMap
     Mmap <- data.frame(primary = colnames(MData), assay =colnames(MData))
     Gmap <- data.frame(primary = colnames(GData), assay = colnames(GData))
     listmap <- list(Gmap, Mmap)
     names(listmap) <- c("Gene", "Metab")
     dfmap <- listToMap(listmap)
-    
-    
+
+
     ##ColData
-   
+
     colData<-unique(pData)
-    rownames(colData)<-colData$cell_line
-    
-    
-    
+    rownames(colData)<-row.names(pData)
+
+
+
     ##MetaData
     listMetaData<-list(Gmetadata,Mmetadata)
     names(listMetaData)<-c("Gene", "Metab")
-    
-    
+
+
     ## Create MultiAssayExperiment Object
     MultiAssay1 <- MultiAssayExperiment(objlist, colData, dfmap,listMetaData)
     return(MultiAssay1)
+}
 }
 
 
