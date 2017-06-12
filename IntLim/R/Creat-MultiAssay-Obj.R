@@ -1,26 +1,21 @@
-# Hello, world!
-#
-# This is an example function named 'hello'
-# which prints 'Hello, world!'.
-#
-# You can learn more about package authoring with RStudio at:
-#
-#   http://r-pkgs.had.co.nz/
-#
-# Some useful keyboard shortcuts for package authoring:
-#
-#   Build and Reload Package:  'Cmd + Shift + B'
-#   Check Package:             'Cmd + Shift + E'
-#   Test Package:              'Cmd + Shift + T'
-
 library(MultiAssayExperiment)
-library(GenomicRanges)
 
-
-path<-"/Users/liumingrui/Desktop/NCI60.sample.csv"
-setwd("/Users/liumingrui/Documents/BIM/Files_for_understanding_Data_and_Package")
-
-
+#' Read in CSV file
+#'
+#' The metadata associated with data files to be analyzed in IntLim is supplied
+#' as a CSV file. The software will automatically retrieve the file path of
+#' input CSV so it is important that all analysis files are in the same folder
+#' as CSV file. The input file need have standard format and the path for all the needed CSV file.
+#'
+#' @param csvPath csvPath
+#' @param log2 boolean
+#' @return MultiAssayObject of CSV file
+#'
+#' @examples
+#' \dontrun{
+#'  MyMultiAssay1<-creatIntlim("breast.sample.csv",log2=FALSE)
+#'
+#' @export
 createIntlim<-function(path,log2=FALSE){
     
     stopifnot(is.character(path))
