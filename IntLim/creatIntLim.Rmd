@@ -94,7 +94,7 @@ pData should contains the identifier as column
  ##ColData
 ```{r}
     colData<-pData
-    rownames(colData)<-colData$LHC
+    rownames(colData)<-row.names(colData)
     
     head(colData)
 ```
