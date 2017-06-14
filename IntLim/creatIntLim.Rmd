@@ -37,8 +37,8 @@ csvfile
 ```
 
 Input all the files we need.
-metabData and geneData should use the same level of identifier as their column name.
-pData should contains the identifier as column
+metabData and geneData should have same column name as identifier.
+pData should contains the identifier as its' first column
 ```{r}
     if(toString(csvfile$geneData)==''){
         stop("GeneData is required")
@@ -75,8 +75,8 @@ pData should contains the identifier as column
 
 ```{r}
 
-    MData<-t(MData)
-    GData <- t(GData)
+    MData<-MData
+    GData <- GData
     objlist <- list("Gene" = GData, "Metab" = MData)
     
 ```
@@ -94,7 +94,7 @@ pData should contains the identifier as column
  ##ColData
 ```{r}
     colData<-pData
-    rownames(colData)<-row.names(colData)
+    rownames(colData)<-row.names(pData)
     
     head(colData)
 ```

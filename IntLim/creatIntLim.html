@@ -153,7 +153,7 @@ csvfile</code></pre>
 ## filenames /Users/liumingrui/Documents/BIM/Files_for_understanding_Data_and_Package/BIM/breast/fData.gene.csv
 ##                                                                                                   pData
 ## filenames /Users/liumingrui/Documents/BIM/Files_for_understanding_Data_and_Package/BIM/breast/pData.csv</code></pre>
-<p>Input all the files we need. metabData and geneData should use the same level of identifier as their column name. pData should contains the identifier as column</p>
+<p>Input all the files we need. metabData and geneData should have same column name as identifier. pData should contains the identifier as its’ first column</p>
 <pre class="r"><code>    if(toString(csvfile$geneData)==''){
         stop(&quot;GeneData is required&quot;)
     }
@@ -176,48 +176,36 @@ csvfile</code></pre>
         Gmetadata&lt;-as.data.frame(read.csv(file=toString(csvfile$geneMetadata)))
     }</code></pre>
 <pre class="r"><code>    MData[1:5,1:5]</code></pre>
-<pre><code>##         X1.arachidonoylglycerophosphoethanolamine.
-## LHC3265                                   20467.85
-## LHC3630                                   32164.29
-## LHC3660                                   41892.36
-## LHC4662                                         NA
-## LHC5838                                   72287.38
-##         X1.arachidonoylglycerophosphoinositol.
-## LHC3265                                     NA
-## LHC3630                                     NA
-## LHC3660                               19757.96
-## LHC4662                                     NA
-## LHC5838                               37584.38
-##         X1.linoleoylglycerophosphocholine X1.methylimidazoleacetate
-## LHC3265                                NA                        NA
-## LHC3630                                NA                        NA
-## LHC3660                          85428.74                        NA
-## LHC4662                                NA                        NA
-## LHC5838                                NA                        NA
-##         X1.methylnicotinamide
-## LHC3265              29587.86
-## LHC3630              16319.61
-## LHC3660              59244.19
-## LHC4662                    NA
-## LHC5838             119439.33</code></pre>
+<pre><code>##                                              LHC3265    LHC3630    LHC3660
+## 1-arachidonoylglycerophosphoethanolamine* -1.4956180 -0.8435177 -0.4622906
+## 1-arachidonoylglycerophosphoinositol*     -1.2812450 -1.2812450 -0.7579968
+## 1-linoleoylglycerophosphocholine          -2.7585151 -2.7585151 -0.1363934
+## 1-methylimidazoleacetate                  -0.8875926 -0.8875926 -0.8875926
+## 1-methylnicotinamide                      -1.2717270 -2.1301254 -0.2700587
+##                                              LHC4662    LHC5838
+## 1-arachidonoylglycerophosphoethanolamine* -1.7410296  0.3247660
+## 1-arachidonoylglycerophosphoinositol*     -1.2812450  0.1697024
+## 1-linoleoylglycerophosphocholine          -2.7585151 -2.7585151
+## 1-methylimidazoleacetate                  -0.8875926 -0.8875926
+## 1-methylnicotinamide                      -2.5847129  0.7414737</code></pre>
 <pre class="r"><code>    GData[1:5,1:5]</code></pre>
-<pre><code>##         X7892501 X7892502 X7892503  X7892504 X7892505
-## LHC3265 2.767003 5.119759 3.748858 10.197843 5.236688
-## LHC3630 4.525951 4.803624 2.853378  9.751022 3.822290
-## LHC5838 3.016683 5.266967 3.759554  9.176572 4.723080
-## LHC4662 2.564846 5.275511 3.796720  9.374879 4.156137
-## LHC6065 2.968549 5.265573 3.086913  9.455744 4.624164</code></pre>
+<pre><code>##           LHC3265  LHC3630  LHC5838  LHC4662  LHC6065
+## X7892501 1.468324 2.178221 1.592963 1.358872 1.569758
+## X7892502 2.356076 2.264123 2.396972 2.399311 2.396590
+## X7892503 1.906451 1.512671 1.910561 1.924753 1.626165
+## X7892504 3.350192 3.285553 3.197955 3.228800 3.241191
+## X7892505 2.388655 1.934437 2.239728 2.055243 2.209192</code></pre>
 <pre class="r"><code>    head(pData)</code></pre>
-<pre><code>##     SAMPLE_NAME SAMPLE_ID     LHC COMMENT   DIAG
-## 1 NCIA-00491-02    499527 LHC3265         NORMAL
-## 2 NCIA-00492-02    499529 LHC3630         NORMAL
-## 3 NCIA-00493-02    499531 LHC3660         NORMAL
-## 4 NCIA-00494-02    499533 LHC4662         NORMAL
-## 5 NCIA-00495-02    499535 LHC5838         NORMAL
-## 6 NCIA-00496-02    499537 LHC6065   fatty NORMAL</code></pre>
+<pre><code>##       LHC   SAMPLE_NAME SAMPLE_ID COMMENT   DIAG
+## 1 LHC3265 NCIA-00491-02    499527         NORMAL
+## 2 LHC3630 NCIA-00492-02    499529         NORMAL
+## 3 LHC3660 NCIA-00493-02    499531         NORMAL
+## 4 LHC4662 NCIA-00494-02    499533         NORMAL
+## 5 LHC5838 NCIA-00495-02    499535         NORMAL
+## 6 LHC6065 NCIA-00496-02    499537   fatty NORMAL</code></pre>
 <p>## ExperimentList</p>
-<pre class="r"><code>    MData&lt;-t(MData)
-    GData &lt;- t(GData)
+<pre class="r"><code>    MData&lt;-MData
+    GData &lt;- GData
     objlist &lt;- list(&quot;Gene&quot; = GData, &quot;Metab&quot; = MData)</code></pre>
 </div>
 <div id="samplemap" class="section level2">
@@ -239,16 +227,16 @@ csvfile</code></pre>
 ## 6     Gene  LHC6075  LHC6075</code></pre>
 <p>##ColData</p>
 <pre class="r"><code>    colData&lt;-pData
-    rownames(colData)&lt;-colData$LHC
+    rownames(colData)&lt;-row.names(pData)
     
     head(colData)</code></pre>
-<pre><code>##           SAMPLE_NAME SAMPLE_ID     LHC COMMENT   DIAG
-## LHC3265 NCIA-00491-02    499527 LHC3265         NORMAL
-## LHC3630 NCIA-00492-02    499529 LHC3630         NORMAL
-## LHC3660 NCIA-00493-02    499531 LHC3660         NORMAL
-## LHC4662 NCIA-00494-02    499533 LHC4662         NORMAL
-## LHC5838 NCIA-00495-02    499535 LHC5838         NORMAL
-## LHC6065 NCIA-00496-02    499537 LHC6065   fatty NORMAL</code></pre>
+<pre><code>##       LHC   SAMPLE_NAME SAMPLE_ID COMMENT   DIAG
+## 1 LHC3265 NCIA-00491-02    499527         NORMAL
+## 2 LHC3630 NCIA-00492-02    499529         NORMAL
+## 3 LHC3660 NCIA-00493-02    499531         NORMAL
+## 4 LHC4662 NCIA-00494-02    499533         NORMAL
+## 5 LHC5838 NCIA-00495-02    499535         NORMAL
+## 6 LHC6065 NCIA-00496-02    499537   fatty NORMAL</code></pre>
 </div>
 <div id="metadata" class="section level2">
 <h2>MetaData</h2>
@@ -260,12 +248,15 @@ csvfile</code></pre>
 ## sampleMap[['primary']] coerced to character()</code></pre>
 <pre><code>## Warning in MultiAssayExperiment(objlist, colData, dfmap, listMetaData):
 ## sampleMap[['colname']] coerced to character()</code></pre>
+<pre><code>## harmonizing input:
+##   removing 644 sampleMap rows with 'primary' not in pData
+##   removing 132 pData rownames not in sampleMap 'primary'</code></pre>
 <pre class="r"><code>MultiAssay1</code></pre>
 <pre><code>## A MultiAssayExperiment object of 2 listed
 ##  experiments with user-defined names and respective classes. 
 ##  Containing an ExperimentList class object of length 2: 
-##  [1] Gene: matrix with 33297 rows and 108 columns 
-##  [2] Metab: matrix with 536 rows and 132 columns 
+##  [1] Gene: data.frame with 33297 rows and 0 columns 
+##  [2] Metab: data.frame with 536 rows and 0 columns 
 ## To access: 
 ##  experiments() - to obtain the ExperimentList instance 
 ##  pData() - for the primary/phenotype DataFrame 
