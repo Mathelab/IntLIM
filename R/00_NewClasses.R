@@ -12,8 +12,8 @@
 methods::setClass (
 	Class = "MetaboliteSet",
 	contains = "eSet",
-	prototype = methods::prototype(methods::new("VersionedBiobase",
-		versions = c(Biobase::classVersion("eSet"),
-		MetaboliteSet = "1.0.0")))
+	#prototype = methods::prototype(methods::new("VersionedBiobase",
+#		versions = c(Biobase::classVersion("eSet"),
+#		MetaboliteSet = "1.0.0")))
            # where=topenv(parent.frame())
 )

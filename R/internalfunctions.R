@@ -12,7 +12,7 @@
 #' @param logmetab T/F 
 #' @param loggene T/F
 
-CreateMultiDataSet <- function(genefdata, metabfdata, pdata, geneid, metabid, 
+CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid, 
 	metabdata, genedata, logmetab=FALSE,loggene=FALSE) {
 
 	# Check that feature data and abundance data metabolites corresponds
