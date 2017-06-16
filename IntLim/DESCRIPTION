@@ -1,11 +1,22 @@
 Package: IntLim
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Integration of Omics Data Using Linear Modeling
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: c(
+ person("Jalal", "Siddiqui", email = "Jalal.Siddiqui@osumc.edu", role="aut"),
+ person("Mingrui", "Liu", email="liu.4800@buckeyemail.osu.edu", role="aut"),
+ person("Ewy", "Mathe", email="ewy.mathe@osumc.edu", role=c("aut","cre")))
+Maintainer: The package maintainer <ewy.mathe@osumc.edu>
+Description: This workflow takes normalized gene expression and metabolite levels, 
+  meta-information on genes, metabolites, and samples to identify gene:metabolite pairs 
+  that are significantly associated with an outcome (e.g. tumors).
+License: GPL-2
+Depends: R (>= 3.3.0)
+Imports:
+    MultiDataSet,
+    Biobase,
+    methods
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 6.0.1
+NeedsCompilation: no
