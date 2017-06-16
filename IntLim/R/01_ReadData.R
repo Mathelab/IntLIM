@@ -32,11 +32,9 @@
 #' @return MultiDataSet object with input data
 #'
 #' @examples
-#' \dontrun{
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 #' csvfile <- file.path(dir, "test.csv")
 #' mydata <- ReadData(csvfile,metabid='BIOCHEMICAL',geneid='X')
-#' }
 #' @export
 ReadData <- function(inputFile,metabid,geneid, logmetab=FALSE,loggene=FALSE){
     # Check that file exists

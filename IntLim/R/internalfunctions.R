@@ -44,14 +44,6 @@ CreateMultiDataSet <- function(genefdata, metabfdata, pdata, geneid, metabid,
 		metabdata <- log2(metabdata)
 	}
 
-       methods::setClass (
-            Class = "MetaboliteSet",
-            contains = "eSet",
-            prototype = methods::prototype(methods::new("VersionedBiobase",
-                                      versions = c(Biobase::classVersion("eSet"),
-                                        MetaboliteSet = "1.0.0")))
-        )
-
 	metab.set <- methods::new("MetaboliteSet",metabData = metabdata, 
 		phenoData = metabphenoData, featureData = metabfeatureData)
 
@@ -98,21 +90,20 @@ CreateMultiDataSet <- function(genefdata, metabfdata, pdata, geneid, metabid,
 	multi <- MultiDataSet::createMultiDataSet()
 	multi1 <- MultiDataSet::add_genexp(multi, gene.set)
 
-    methods::setGeneric("add_metabolite", function(object, metabSet, warnings = TRUE, ...)
-    base::standardGeneric("add_metabolite")
-    )
+#    methods::setGeneric("add_metabolite", function(object, metabSet, warnings = TRUE, ...)
+#    base::standardGeneric("add_metabolite")
+#    )
 
-    methods::setMethod(
-        f = "add_metabolite",
-        signature = c("MultiDataSet", "MetaboliteSet"),
-        definition = function(object, metabSet, warnings = TRUE, ...) {
-            ## Add given MetaboliteSet as 'metabolite'
-            object <- MultiDataSet::add_eset(object, metabSet, dataset.type = "metabolite", GRanges = NA, ...)
-            return(object)
-        })
+ #   methods::setMethod(
+ #       f = "add_metabolite",
+ #       signature = c("MultiDataSet", "MetaboliteSet"),
+ #       definition = function(object, metabSet, warnings = TRUE, ...) {
+ #           ## Add given MetaboliteSet as 'metabolite'
+ #           object <- MultiDataSet::add_eset(object, metabSet, dataset.type = "metabolite", GRanges = NA, ...)
+ #           return(object)
+ #       })
 
 	multi2 <- add_metabolite(multi1, metab.set)
-
 	return(multi2)
 }
 

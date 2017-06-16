@@ -1,0 +1,6 @@
+type,filenames
+metabData,/Users/ewymathe/Downloads/breast/metabData.csv
+geneData,/Users/ewymathe/Downloads/breast/geneData.csv
+metabMetaData,/Users/ewymathe/Downloads/breast/fData.metab.csv
+geneMetaData,/Users/ewymathe/Downloads/breast/fData.gene.csv
+sampleMetaData,/Users/ewymathe/Downloads/breast/pData.csv

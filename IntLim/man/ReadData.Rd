@@ -4,7 +4,7 @@
 \alias{ReadData}
 \title{Read in CSV file}
 \usage{
-ReadData(inputFile, metabid, geneid, log2 = FALSE)
+ReadData(inputFile, metabid, geneid, logmetab = FALSE, loggene = FALSE)
 }
 \arguments{
 \item{inputFile}{input file in CSV format (see Despcription)}
@@ -15,7 +15,9 @@ ReadData(inputFile, metabid, geneid, log2 = FALSE)
 \item{geneid}{name of column from gene meta data to be used as id
 (required, must match gene expression data)}
 
-\item{log2}{boolean}
+\item{logmetab}{whether or not to log metabolite values (T/F)}
+
+\item{loggene}{whether or not to log gene values (T/F)}
 }
 \value{
 MultiDataSet object with input data
@@ -44,9 +46,7 @@ and those sample ids should match the columns of metabData and geneData (e.g. it
 that all sample ids in the metabData and geneData are also in the sampleMetaDatafile).
 }
 \examples{
-\dontrun{
 dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 csvfile <- file.path(dir, "test.csv")
-mydata <- ReadData(csvfile,metabid='BIOCHEMICAL',geneid='X',log2=FALSE)
-}
+mydata <- ReadData(csvfile,metabid='BIOCHEMICAL',geneid='X')
 }
