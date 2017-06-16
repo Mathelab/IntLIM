@@ -83,7 +83,7 @@ ReadData <- function(inputFile,metabid,geneid, logmetab=FALSE,loggene=FALSE){
     pData<-utils::read.csv(as.character(csvfile['sampleMetaData',]),row.names = 1)}
 
     #Create Multi
-    Mdata <- CreateIntLimObject(genefdata=GmetaData, metabfdata=MmetaData,
+    GMdata <- CreateIntLimObject(genefdata=GmetaData, metabfdata=MmetaData,
 	metabid=metabid, geneid=geneid,pdata=pData,metabdata=MData,
 	genedata=GData,logmetab=logmetab,loggene=loggene)
 	
@@ -91,7 +91,7 @@ ReadData <- function(inputFile,metabid,geneid, logmetab=FALSE,loggene=FALSE){
 	#pdata=pData;metabdata=MData;genedata=GData;logmetab=F;loggene=F
 
     print("CreateMultiDataSet created")
-    return(MData)
+    return(GMdata)
 }
 
 
