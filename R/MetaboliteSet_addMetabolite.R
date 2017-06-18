@@ -4,6 +4,7 @@ methods::setGeneric(
     	base::standardGeneric("add_metabolite")
 )
 
+
 methods::setMethod(
        f = "add_metabolite",
        signature = c("MultiDataSet", "MetaboliteSet"),

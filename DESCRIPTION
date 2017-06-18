@@ -11,11 +11,17 @@ Description: This workflow takes normalized gene expression and metabolite level
   meta-information on genes, metabolites, and samples to identify gene:metabolite pairs 
   that are significantly associated with an outcome (e.g. tumors).
 License: GPL-2
-Depends: R (>= 3.3.0),Biobase
+Depends: R (>= 3.3.0)
 Imports:
+    Biobase,
     MultiDataSet,
     methods
 Encoding: UTF-8
 LazyData: TRUE
 RoxygenNote: 6.0.1
 NeedsCompilation: no
+Collate: 
+    'AllClasses.R'
+    'MetaboliteSet_addMetabolite.R'
+    'internalfunctions.R'
+    '01_ReadData.R'

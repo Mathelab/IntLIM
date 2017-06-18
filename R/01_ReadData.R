@@ -21,7 +21,9 @@
 #' and those sample ids should match the columns of metabData and geneData (e.g. it is required
 #' that all sample ids in the metabData and geneData are also in the sampleMetaDatafile).
 #'
-#'	
+#' @include MetaboliteSet_addMetabolite.R
+#' @include internalfunctions.R
+#'
 #' @param inputFile input file in CSV format (see Despcription)
 #' @param metabid name of column from metabolite meta data to be used as id
 #'      (required, must match metabolite abundances data)

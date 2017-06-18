@@ -9,6 +9,8 @@
 #' @exportClass MetaboliteSet
 #' @slot eSet List of eSet elements
 
+if(!require("Biobase")) install.packages("Biobase") 
+
 methods::setClass (
 	Class = "MetaboliteSet",
 	contains = "eSet",

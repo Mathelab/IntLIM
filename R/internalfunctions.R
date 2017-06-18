@@ -1,5 +1,8 @@
 #' Generic function to create constructor of MultiDataSet gene object
 #'
+#' @include MetaboliteSet_addMetabolite.R
+#' @include AllClasses.R 
+#'
 #' @param genefdata gene meta data
 #' @param metabfdata metabolite meta data
 #' @param pdata sample meta data
