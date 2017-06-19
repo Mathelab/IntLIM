@@ -2,8 +2,10 @@
 library(shiny)
 library(MultiAssayExperiment)
 setwd("/Users/liumingrui/Documents/BIM/IntLiMpackage")
-source('/Users/liumingrui/Documents/BIM/IntLiMpackage/IntLiMModelcode.R')
-source('/Users/liumingrui/Documents/BIM/IntLiMpackage/Creat-MultiAssay-Obj.R')
+source('~/Documents/BIM/IntLim-master/R/MetaboliteSet_addMetabolite.R')
+source('~/Documents/BIM/IntLim-master/R/internalfunctions.R')
+source('~/Documents/BIM/IntLim-master/R/01_ReadData.R')
+source('~/Documents/BIM/IntLim-master/R/00_NewClasses.R')
 
 shinyUI(fluidPage(
     titlePanel("Uploading Files"),
