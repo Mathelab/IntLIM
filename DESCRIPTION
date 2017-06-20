@@ -25,3 +25,4 @@ Collate:
     'MetaboliteSet_addMetabolite.R'
     'internalfunctions.R'
     '01_ReadData.R'
+    '02_FilterData.R'
