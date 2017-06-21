@@ -17,11 +17,14 @@ Imports:
     MultiDataSet,
     methods,
     shiny
+Suggests:
+    knitr,
+    rmarkdown
 Encoding: UTF-8
 LazyData: TRUE
 RoxygenNote: 6.0.1
 NeedsCompilation: no
-Collate: 
+Collate:
     'AllClasses.R'
     'MetaboliteSet_addMetabolite.R'
     'internalfunctions.R'
@@ -30,3 +33,4 @@ Collate:
     'MultiDataSet_extendedfunctions.R'
     'runShiny.R'
     'statsfunctions.R'
+VignetteBuilder: knitr
