@@ -1,38 +1,156 @@
-shinyUI(fluidPage(
-    
-    titlePanel("IntLim (Integrate Metabolomics with other Omics data using linear modeling"),
-    sidebarLayout(
-        sidebarPanel(
-            
-            
-                
-            fileInput('file1', 'Choose CSV File',
-                      accept=c('text/csv', 
-                               'text/comma-separated-values,text/plain', 
-                               '.csv')),
-            textInput("metabid", "Metab ID", "BIOCHEMICAL"),
-            textInput("geneid", "Gene ID", "X"),
-            
-            checkboxGroupInput(inputId="groupA",
-                                   label="Pick Types for Group A", 
-                                   choices=c("Normal"="N","Tumor"="T"), selected = "Tumor"),
-                
-           checkboxGroupInput(inputId="groupB",
-                                   label="Pick Types for Group B", 
-                                   choices=c("Normal"="N","Tumor"="T"), selected = "Tumor")
-            
-        ), # end sidebarPanel
-            
-        mainPanel(
-            tabsetPanel(
-                tabPanel('Data summary',
-                       pre(textOutput('contents'))
+headerbar <- dashboardHeader(
+    title = "IntLim",
+    titleWidth = 270,
+    dropdownMenu(
+        type = "notifications",
+        notificationItem(
+            text = "Plots might take some time to display",
+            icon("truck"),
+            status = "warning"
+        )
+    )
+)
+
+sidebar <- dashboardSidebar(
+    width = 270,
+    sidebarMenu(
+        menuItem("About",
+                 tabName = "about",
+                 icon = icon("info")),
+        menuItem(
+            "Load Data",
+            tabName = "loaddata",
+            icon = icon("folder-open"),
+            badgeLabel = "step 1"
+        ),
+        menuItem(
+            "Stats and Plots",
+            tabName = "stats",
+            icon = icon("bullseye"),
+            badgeLabel = "step 2"
+        ),
+        
+        menuItem(
+            actionButton("buttonstop", strong("Click to Exit Shiny App")),
+            icon = icon("sign-out")
+        )
+    )
+)
+
+body <- dashboardBody(
+    tags$head(
+        tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
+    ),
+    tabItems(
+        tabItem(tabName = "about",
+                tabPanel("About",
+                         box(
+                             width = 12,
+                             #includeMarkdown("include.md")
+                             tags$b("Here is some introduction of the InLim")
+                         )
                 )
-             ) # end tabsetPanel
-               # tabPanel('Analyze By Group',pre(textOutput('group')))
-                
-            ) # end mainPanel
-        ) # end sidebarLayout
-    ) # end fluidPage
+        ),
+        tabItem(tabName = "loaddata",
+                fluidRow(
+                    HTML("<div class='col-sm-4' style='min-width:
+                         650px !important;'>"),
+                    box(
+                        title = strong("Input menu file"),
+                        width = NULL,
+                        solidHeader = TRUE,
+                        tags$b("Please be sure that all files noted in the CSV file,
+                               including the CSV file, are in the same folder."),
+                        h5("This step does the following: "),
+                        tags$ul(
+                            tags$li("Loads a metadata spreadsheet with a CSV file extention."),
+                            tags$li("The metadata associated with data files to be analyzed in IntLim is supplied
+                                    as a CSV file with two columns and 6 rows: 
+                                         type,filenames
+                                         metabData,myfilename
+                                         geneData,myfilename
+                                         metabMetaData,myfilename (optional)
+                                         geneMetaData,myfilename (optional)
+                                         sampleMetaData,myfilename"),
+                            tags$li("Prints out the summary of the multidata object.")
+                            ),
+                        
+                        hr(),
+                        h5("Please input the MetabID and the GeneID for your data "),
+                        textInput("metabid", "Metab ID", "BIOCHEMICAL"),
+                        textInput("geneid", "Gene ID", "X"),
+                        hr(),
+                        fileInput('file1', 'Choose CSV File',
+                                  accept=c('text/csv', 
+                                           'text/comma-separated-values,text/plain', 
+                                           '.csv')),
+                        hr(),
+                        checkboxInput('filter', 'FILTER', FALSE),
+                        numericInput("geneperc", "percentile cutoff for filtering genes:", 15, min = 0, max = 100),
+                        numericInput("metabperc", "percentile cutoff for filtering metabolites:", 15, min = 0, max = 100),
+                        hr(),
+                        pre(textOutput('contents'))
+                        ),
+                    HTML("</div>"),
+                    HTML("<div class='col-sm-6' style='min-width:
+                         600px !important;'>"),
+                    infoBoxOutput("statusbox1", width = NULL),
+                    HTML("</div>")
+                    )
+                ),
+       
+        
+    tabItem(tabName = "stats",
+            fluidRow(
+                box(
+                    title = strong("Stats and Plots") ,
+                    width = NULL,
+                    solidHeader = TRUE,
+                    h5("This step does the following: "),
+                    tags$ul(
+                        tags$li("Get some stats after reading in data."),
+                        tags$li("Verify the distribution of the input data."),
+                        tags$p(" Note: You can save the plots by clicking on the right mouse button
+                               and selecting 'save image as', or by clicking on the menu at the top right
+                               of the plot"),
+                        
+                        hr(),
+                        pre(tableOutput('stats'),
+                            hr(),
+                            plotOutput('plot'),
+                            hr()
+                            
+                        ),
+                        HTML("</div>"),
+                        HTML("<div class='col-sm-7' style='min-width:
+                             550px !important;'>"),
+                        hr(),
+                        box(
+                            #title = "Barplot",
+                            width = NULL,
+                            solidHeader = TRUE,
+                            highcharter::highchartOutput("barplot")
+                        ),
+                        hr(),
+                        HTML("<div class='col-sm-3' style='min-width:
+                             350px !important;'>")
+                        )
+                        )
+                    )
+            )
+    )
+)
+
+
+            
+
+
+shinyUI(fluidPage(
+    dashboardPage(
+        headerbar,
+        sidebar,
+        body
+    )
+)
 ) # end shinUI
 
