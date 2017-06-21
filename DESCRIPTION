@@ -17,11 +17,11 @@ Imports:
     MultiDataSet,
     methods,
     shiny,
+    reshape2,
     magrittr,
     highcharter,
-    RColorBrewer,
     htmltools,
-    reshape2
+    RColorBrewer
 Suggests:
     knitr,
     rmarkdown

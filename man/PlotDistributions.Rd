@@ -7,13 +7,13 @@
 PlotDistributions(inputData, viewer = T, palette = c("#C71585", "#00E5EE"))
 }
 \arguments{
+\item{inputData}{IntLimObject output of ReadData()}
+
 \item{viewer}{whether the plot should be displayed in the RStudio viewer (T) or
 in Shiny/Knittr (F)}
 
 \item{palette}{choose an RColorBrewer palette ("Set1", "Set2", "Set3",
 "Pastel1", "Pastel2", "Paired", etc.) or submit a vector of colors}
-
-\item{IntLimObject}{output of ReadData()}
 }
 \value{
 a highcharter object

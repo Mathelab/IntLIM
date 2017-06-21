@@ -1,8 +1,10 @@
 #' Get some stats after reading in data
 #'
+#' @import magrittr
+#'
 #' @include MultiDataSet_extendedfunctions.R
 #'
-#' @param IntLimObject output of ReadData()
+#' @param inputData IntLimObject output of ReadData()
 #' @param palette choose an RColorBrewer palette ("Set1", "Set2", "Set3",
 #' "Pastel1", "Pastel2", "Paired", etc.) or submit a vector of colors
 #' @param viewer whether the plot should be displayed in the RStudio viewer (T) or
@@ -90,10 +92,10 @@ PlotDistributions <- function(inputData,viewer=T,
 
   if (viewer == TRUE) {
     p <-
-      htmltools::browsable(hw_grid(g, m, ncol = 2, rowheight = 550))
+      htmltools::browsable(highcharter::hw_grid(g, m, ncol = 2, rowheight = 550))
   }
   else {
-    p <- hw_grid(g, pm)
+    p <- highcharter::hw_grid(g, m)
   }
   return(p)
 

@@ -52,5 +52,6 @@ Verify the distribution of the input data:
 ```{r}
 IntLim::PlotDistributions(inputData)
 ```
-
+```{r}
 sessionInfo()
+```
