@@ -72,6 +72,15 @@ body <- dashboardBody(
                                          metabMetaData,myfilename (optional)
                                          geneMetaData,myfilename (optional)
                                          sampleMetaData,myfilename"),
+                             tags$li(" Note also that the input data files should be in a specific format:
+                                	metabData: rows are metabolites, columns are samples
+                                	geneData: rows are genes, columns are samples
+                                	metabMetaData: rows are metabolites, features are columns
+                                	geneMetaData: rows are genes, features are columns
+                                	sampleMetaData: rows are samples, features are columns
+                                 In addition, the first column of the sampleMetaData file is assumed to be the sample id, 
+                               and those sample ids should match the columns of metabData and geneData (e.g. it is required
+                                 that all sample ids in the metabData and geneData are also in the sampleMetaDatafile).")，
                             tags$li("Prints out the summary of the multidata object.")
                             ),
                         
