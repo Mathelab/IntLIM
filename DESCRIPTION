@@ -27,3 +27,6 @@ Collate:
     'internalfunctions.R'
     '01_ReadData.R'
     '02_FilterData.R'
+    'MultiDataSet_extendedfunctions.R'
+    'runShiny.R'
+    'statsfunctions.R'

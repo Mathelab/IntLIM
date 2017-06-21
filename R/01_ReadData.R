@@ -96,5 +96,3 @@ ReadData <- function(inputFile,metabid,geneid, logmetab=FALSE,loggene=FALSE){
     return(GMdata)
 }
 
-
-
