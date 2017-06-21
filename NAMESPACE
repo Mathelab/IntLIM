@@ -2,6 +2,7 @@
 
 export(FilterData)
 export(OutputStats)
+export(PlotDistributions)
 export(ReadData)
 export(runIntLimApp)
 exportClasses(MetaboliteSet)

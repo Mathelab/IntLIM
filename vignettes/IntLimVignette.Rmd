@@ -22,6 +22,12 @@ The software assumes will automatically retrieve the file path of the input file
 
 In addition, the first column of the sampleMetaData file is assumed to be the sample id, and those sample ids should match the columns of metabData and geneData (e.g. it is required that all sample ids in the metabData and geneData are also in the sampleMetaDatafile).
 
+## Running the user-friendly shiny web application
+To start up the app, simply type:
+```{r eval=FALSE}
+	runIntLimApp()
+```
+
 ## Example Workflow
 A small data set is embedded in a package.  To access it:
 ```{r}
@@ -42,3 +48,9 @@ inputDatafilt <- IntLim::FilterData(inputData,geneperc=15)
 IntLim::OutputStats(inputDatafilt)
 ```
 
+Verify the distribution of the input data:
+```{r}
+IntLim::PlotDistributions(inputData)
+```
+
+sessionInfo()
