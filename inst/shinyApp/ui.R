@@ -88,6 +88,7 @@ body <- dashboardBody(
                                     and those sample ids should match the columns of metabData and geneData (e.g. it is required
                                     that all sample ids in the metabData and geneData are also in the sampleMetaDatafile)."),
                             tags$li("Prints out the statistic summary of the data.")
+                            
                             ),
                         
                         hr(),
