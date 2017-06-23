@@ -53,9 +53,10 @@ Verify the distribution of the input data:
 IntLim::PlotDistributions(inputData)
 ```
 
-Run the linear models:
+Run the linear models and plot distribution of p-values:
 ```{r}
 myres <- IntLim::RunIntLim(inputData,stype="DIAG")
+IntLim::DistPvalues(myres)
 ```
 
 
