@@ -97,5 +97,108 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
 }
 
 
+#' Function that runs linear models and returns interaction p-values.
+#'
+#' @include MetaboliteSet_addMetabolite.R
+#' @include AllClasses.R
+#'
+#' @param inputData MultiDataSet object (output of ReadData()) with gene
+#' @param outcome 'metabolite' or 'gene' must be set as outcome/independent variable 
+#' (default is 'metabolite')
+#' @param type vector of sample type (by default, it will be used in the interaction term).
+#' Only 2 categories are currently supported.
+RunLM <- function(inputData, outcome="metabolite", type=NULL) { 
+    #call <- match.call()			# how did i get here?
 
+    gene <- Biobase::assayDataElement(inputData[["expression"]], 'exprs')
+    metab <- Biobase::assayDataElement(inputData[["metabolite"]], 'metabData')
+    if (outcome == "metabolite") {
+    	arraydata <- data.frame(m)
+	clindata <- data.frame(t(g), type)
+	form <- formula(m ~ g + type + g:type)
+    } else if (outcome == "gene") {
+	arraydata <- gene
+	clindata <- data.frame(metab,type)
+	form <- formula(g ~ m + type + m:type)
+    } else {
+	stop("outcome must be either 'metabolite' or 'gene'")
+    }
 
+    if (outcome == "metabolite") {
+        arraydata <- data.frame(metab)
+        form <- formula(m ~ g + type + g:type)
+    } else if (outcome == "gene") {
+        arraydata <- data.frame(gene)
+        form <- formula(g ~ m + type + m:type)
+    } else {
+        stop("outcome must be either 'metabolite' or 'gene'")
+    }
+
+	# Retrieve pvalues by iterating through each gene 
+	numgenes <- nrow(gene)
+        list.pvals <- lapply(1:numgenes, function(x) {
+                g <- gene[x,]
+                clindata <- data.frame(g, type)
+                mlin <- getstatsOneLM(Y ~ g + type + g:type, clindata = clindata,
+                        arraydata = arraydata)
+                #p.val.vector <- as.vector(mlin@p.value.coeff[4,])
+		p.val.vector <- as.vector(mlin$p.value.coeff[4,])
+		# Print out progress every 1000 genes
+                if (x %% 1000 == 0){
+                    progX <- round(x/numgenes*100)
+                    print(paste(progX,"% complete"))
+                }
+                return(p.val.vector)
+	})
+    return(list.pvals)
+}
+
+#' Function that runs linear models for one gene vs all metabolites
+#'
+#' @include AllClasses.R
+#'
+#' @param form LM formulat (typically m~g+t+g:t)
+#' @param clindatta data frame with 1st column: expression of one analyte; 2nd column
+#' sample type (e.g. cancer/non-cancer)
+#' @param arraydata matrix of metabolite values
+    getstatsOneLM <- function(form, clindata, arraydata) {
+        YY <- t(arraydata)                      # the data matrix
+        EY <- apply(YY, 2, mean)                # its mean vector
+        SYY <- apply(YY, 2, function(y) {sum(y^2)}) - nrow(YY)*EY^2     # sum of squares after centering
+        clindata <- data.frame(y=YY[,1], clindata)
+        dimnames(clindata)[[2]][1] <- 'Y'
+        X <- model.matrix(form, clindata)       # contrasts matrix
+        N = dim(X)[1]
+        p <- dim(X)[2]
+        XtX <- t(X) %*% X
+        ixtx <- solve(XtX)
+        bhat <- ixtx %*% t(X) %*% YY            # Use the pseudo-inverse to estimate the parameters
+        yhat <- X %*% bhat                      # Figure out what is predicted by the model
+        # Now we partition the sum-of-square errors
+        rdf <- ncol(X)-1                        # number of parameters in the model
+        edf <- nrow(YY)-rdf-1                   # additional degrees of freedom
+        errors <- YY - yhat                     # difference between observed and model predictions
+        sse <- apply(errors^2, 2, sum)  # sum of squared errors over the samples
+        mse <- sse/edf                  # mean squared error
+        ssr <- SYY - sse                        # regression error
+        msr <- ssr/rdf                  # mean regression error
+        fval <- msr/mse                 # f-test for the overall regression
+        pfval <- 1-pf(fval, rdf, edf)           # f-test p-values
+
+        stderror.coeff <- sapply(mse,function(x){sqrt(diag(ixtx)*x)})
+        t.coeff <- bhat/stderror.coeff
+        p.val.coeff <- 2*pt(-abs(t.coeff),df = (N-p))
+        #new('IntLimModel', call=call,
+         list(       model=form,
+                coefficients=bhat,
+                predictions=yhat,
+                df=c(rdf, edf),
+                sse=sse,
+                ssr=ssr,
+                F.statistics=fval,
+                p.values=pfval,
+                std.error.coeff = stderror.coeff,
+                t.value.coeff = t.coeff,
+                p.value.coeff = p.val.coeff)
+        }
+	

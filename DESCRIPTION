@@ -21,7 +21,9 @@ Imports:
     magrittr,
     highcharter,
     htmltools,
-    RColorBrewer
+    RColorBrewer,
+    parallel,
+    BiocGenerics
 Suggests:
     knitr,
     rmarkdown
@@ -35,6 +37,7 @@ Collate:
     'internalfunctions.R'
     '01_ReadData.R'
     '02_FilterData.R'
+    '03_RunIntLim.R'
     'MultiDataSet_extendedfunctions.R'
     'plottingfunctions.R'
     'runShiny.R'

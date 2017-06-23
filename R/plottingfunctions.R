@@ -60,8 +60,7 @@ PlotDistributions <- function(inputData,viewer=T,
       highcharter::hc_plotOptions(
         boxplot = boxplotOptions
         ) %>%
-      highcharter::hc_add_series_boxplot(toplot$value,by=toplot$variable,
-		col=cols[1], showInLegend = FALSE,outliers=FALSE) %>%
+       highcharter::hc_add_series_boxplot(toplot$value,by=toplot$variable,col=cols[1]) %>%
       highcharter::hc_yAxis(title = list(text = "log(expression)",
                             style = list(fontSize = "13px")),
                labels = list(format = "{value}")) %>%
@@ -80,8 +79,7 @@ PlotDistributions <- function(inputData,viewer=T,
       highcharter::hc_plotOptions(
         boxplot = boxplotOptions
         ) %>%
-      highcharter::hc_add_series_boxplot(toplot$value,by=toplot$variable,
-		showInLegend = FALSE,outliers=FALSE) %>%
+       highcharter::hc_add_series_boxplot(toplot$value,by=toplot$variable,col=cols[2]) %>%
       highcharter::hc_yAxis(title = list(text = "log(levels)",
                             style = list(fontSize = "13px")),
                labels = list(format = "{value}")) %>%

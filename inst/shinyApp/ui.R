@@ -80,7 +80,7 @@ body <- dashboardBody(
                                 	sampleMetaData: rows are samples, features are columns
                                  In addition, the first column of the sampleMetaData file is assumed to be the sample id, 
                                and those sample ids should match the columns of metabData and geneData (e.g. it is required
-                                 that all sample ids in the metabData and geneData are also in the sampleMetaDatafile).")，
+                                 that all sample ids in the metabData and geneData are also in the sampleMetaDatafile)."),
                             tags$li("Prints out the summary of the multidata object.")
                             ),
                         
