@@ -52,6 +52,13 @@ Verify the distribution of the input data:
 ```{r}
 IntLim::PlotDistributions(inputData)
 ```
+
+Run the linear models:
+```{r}
+myres <- IntLim::RunIntLim(mydata,stype="DIAG")
+```
+
+
 ```{r}
 sessionInfo()
 ```
