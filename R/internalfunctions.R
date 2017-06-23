@@ -130,8 +130,8 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
                 clindata <- data.frame(g, type)
                 mlin <- getstatsOneLM(Y ~ g + type + g:type, clindata = clindata,
                         arraydata = arraydata)
-                #p.val.vector <- as.vector(mlin@p.value.coeff[4,])
-		p.val.vector <- as.vector(mlin$p.value.coeff[4,])
+                p.val.vector <- as.vector(mlin@p.value.coeff[4,])
+		#p.val.vector <- as.vector(mlin$p.value.coeff[4,])
 		# Print out progress every 1000 genes
                 if (x %% 1000 == 0){
                     progX <- round(x/numgenes*100)
@@ -151,6 +151,7 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
 #' sample type (e.g. cancer/non-cancer)
 #' @param arraydata matrix of metabolite values
     getstatsOneLM <- function(form, clindata, arraydata) {
+	call=match.call()
         YY <- t(arraydata)                      # the data matrix
         EY <- apply(YY, 2, mean)                # its mean vector
         SYY <- apply(YY, 2, function(y) {sum(y^2)}) - nrow(YY)*EY^2     # sum of squares after centering
@@ -177,8 +178,8 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
         stderror.coeff <- sapply(mse,function(x){sqrt(diag(ixtx)*x)})
         t.coeff <- bhat/stderror.coeff
         p.val.coeff <- 2*stats::pt(-abs(t.coeff),df = (N-p))
-        #new('IntLimModel', call=call,
-         list(       model=form,
+        methods::new('IntLimModel', call=call, model=form,
+        # list(       model=form,
                 coefficients=bhat,
                 predictions=yhat,
                 df=c(rdf, edf),

@@ -55,7 +55,7 @@ IntLim::PlotDistributions(inputData)
 
 Run the linear models:
 ```{r}
-myres <- IntLim::RunIntLim(mydata,stype="DIAG")
+myres <- IntLim::RunIntLim(inputData,stype="DIAG")
 ```
 
 
