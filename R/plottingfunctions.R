@@ -100,3 +100,24 @@ PlotDistributions <- function(inputData,viewer=T,
 
 return(p)
 }
+
+#' Visualize the distribution of unadjusted p-values from linear models
+#'
+#' @include IntLimResults_extendedfunctions.R
+#'
+#' @param IntLimResults output of RunIntLim()
+#'
+#' @examples
+#' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+#' csvfile <- file.path(dir, "test.csv")
+#' mydata <- ReadData(csvfile,metabid='BIOCHEMICAL',geneid='X')
+#' myres <- RunIntLim(mydata,stype="DIAG")
+#' DistPvalues(myres)
+#' @export
+DistPvalues<- function(IntLimResults) {
+        return(hist(IntLimResults))
+}
+
+
+
+

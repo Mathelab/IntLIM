@@ -113,6 +113,23 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
     gene <- Biobase::assayDataElement(inputData[["expression"]], 'exprs')
     metab <- Biobase::assayDataElement(inputData[["metabolite"]], 'metabData')
 
+    genesd <- as.numeric(apply(gene,1,function(x) stats::sd(x,na.rm=T)))
+    metabsd <- as.numeric(apply(metab,1,function(x) stats::sd(x,na.rm=T)))
+
+    mymessage=""
+    if(length(which(genesd==0))>0) {
+	toremove <- which(genesd==0)   
+	gene <- gene[-toremove,]
+	mymessage <- c(mymessage,paste("Removed",length(toremove),"genes that had a standard deviation of 0:"))
+	mymessage <- c(mymessage,rownames(gene)[toremove])
+    }
+    if(length(which(metabsd==0))>0) {
+        toremove <- which(metabsd==0)
+        gene <- metab[-toremove,]
+        mymessage <- c(mymessage,paste("Removed",length(toremove),"metabolites that had a standard deviation of 0:"))
+        mymessage <- c(mymessage,rownames(metab)[toremove])
+    }
+
     if (outcome == "metabolite") {
         arraydata <- data.frame(metab)
         form <- stats::formula(m ~ g + type + g:type)
@@ -130,8 +147,8 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
                 clindata <- data.frame(g, type)
                 mlin <- getstatsOneLM(Y ~ g + type + g:type, clindata = clindata,
                         arraydata = arraydata)
-                p.val.vector <- as.vector(mlin@p.value.coeff[4,])
-		#p.val.vector <- as.vector(mlin$p.value.coeff[4,])
+                p.val.vector <- as.vector(mlin$p.value.coeff[4,])
+		#p.val.vector <- as.vector(mlin@p.value.coeff[4,])
 		# Print out progress every 1000 genes
                 if (x %% 1000 == 0){
                     progX <- round(x/numgenes*100)
@@ -139,7 +156,22 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
                 }
                 return(p.val.vector)
 	})
-    return(list.pvals)
+
+    mat.pvals <- do.call(rbind, list.pvals)
+    # adjust p-values
+    row.pvt <- dim(mat.pvals)[1]
+    col.pvt <- dim(mat.pvals)[2]
+    myps <- as.vector(mat.pvals)	
+    mypsadj <- stats::p.adjust(myps, method = 'fdr')
+    mat.pvalsadj <- matrix(mypsadj, row.pvt, col.pvt) 
+
+    rownames(mat.pvals) <- rownames(gene)
+    colnames(mat.pvals) <- rownames(metab)
+ 
+    myres <- methods::new('IntLimResults', interaction.pvalues=mat.pvals,
+		interaction.adj.pvalues = mat.pvalsadj,
+		warnings=mymessage)
+    return(myres)
 }
 
 #' Function that runs linear models for one gene vs all metabolites
@@ -178,17 +210,18 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
         stderror.coeff <- sapply(mse,function(x){sqrt(diag(ixtx)*x)})
         t.coeff <- bhat/stderror.coeff
         p.val.coeff <- 2*stats::pt(-abs(t.coeff),df = (N-p))
-        methods::new('IntLimModel', call=call, model=form,
-        # list(       model=form,
-                coefficients=bhat,
-                predictions=yhat,
-                df=c(rdf, edf),
-                sse=sse,
-                ssr=ssr,
-                F.statistics=fval,
-                p.values=pfval,
-                std.error.coeff = stderror.coeff,
-                t.value.coeff = t.coeff,
-                p.value.coeff = p.val.coeff)
+        #methods::new('IntLimModel', call=call, model=form,
+         list(# call=call, model=form,
+                #coefficients=bhat,
+                # predictions=yhat,
+                #df=c(rdf, edf),
+                #sse=sse,
+                #ssr=ssr,
+                #F.statistics=fval,
+                #F.p.values=pfval
+                #std.error.coeff = stderror.coeff,
+                #t.value.coeff = t.coeff,
+                p.value.coeff = p.val.coeff # interaction p-value
+         )
         }
 	

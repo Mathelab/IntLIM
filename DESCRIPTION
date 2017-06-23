@@ -38,6 +38,7 @@ Collate:
     '01_ReadData.R'
     '02_FilterData.R'
     '03_RunIntLim.R'
+    'IntLimResults_extendedfunctions.R'
     'MultiDataSet_extendedfunctions.R'
     'plottingfunctions.R'
     'runShiny.R'
