@@ -24,10 +24,16 @@ sidebar <- dashboardSidebar(
             badgeLabel = "step 1"
         ),
         menuItem(
-            "Stats and Plots",
-            tabName = "stats",
+            "Filter Data (optional)",
+            tabName = "Filterdata",
             icon = icon("bullseye"),
             badgeLabel = "step 2"
+        ),
+        menuItem(
+            "Correlation",
+            tabName = "correlation",
+            icon = icon("bolt"),
+            badgeLabel = "step 3"
         ),
         
         menuItem(
@@ -66,26 +72,26 @@ body <- dashboardBody(
                             tags$li("Loads a metadata spreadsheet with a CSV file extention."),
                             tags$li("The metadata associated with data files to be analyzed in IntLim is supplied
                                     as a CSV file with two columns and 6 rows: 
-                                         type,filenames
-                                         metabData,myfilename
-                                         geneData,myfilename
-                                         metabMetaData,myfilename (optional)
-                                         geneMetaData,myfilename (optional)
-                                         sampleMetaData,myfilename"),
-                             tags$li(" Note also that the input data files should be in a specific format:
-                                	metabData: rows are metabolites, columns are samples
-                                	geneData: rows are genes, columns are samples
-                                	metabMetaData: rows are metabolites, features are columns
-                                	geneMetaData: rows are genes, features are columns
-                                	sampleMetaData: rows are samples, features are columns
-                                 In addition, the first column of the sampleMetaData file is assumed to be the sample id, 
-                               and those sample ids should match the columns of metabData and geneData (e.g. it is required
-                                 that all sample ids in the metabData and geneData are also in the sampleMetaDatafile)."),
-                            tags$li("Prints out the summary of the multidata object.")
+                                    type,filenames
+                                    metabData,myfilename
+                                    geneData,myfilename
+                                    metabMetaData,myfilename (optional)
+                                    geneMetaData,myfilename (optional)
+                                    sampleMetaData,myfilename"),
+                            tags$li(" Note also that the input data files should be in a specific format:
+                                    metabData: rows are metabolites, columns are samples
+                                    geneData: rows are genes, columns are samples
+                                    metabMetaData: rows are metabolites, features are columns
+                                    geneMetaData: rows are genes, features are columns
+                                    sampleMetaData: rows are samples, features are columns
+                                    In addition, the first column of the sampleMetaData file is assumed to be the sample id, 
+                                    and those sample ids should match the columns of metabData and geneData (e.g. it is required
+                                    that all sample ids in the metabData and geneData are also in the sampleMetaDatafile)."),
+                            tags$li("Prints out the statistic summary of the data.")
                             ),
                         
                         hr(),
-                        h5("Please input the MetabID and the GeneID for your data "),
+                        tags$b("Please input the MetabID and the GeneID for your data "),
                         textInput("metabid", "Metab ID", "BIOCHEMICAL"),
                         textInput("geneid", "Gene ID", "X"),
                         hr(),
@@ -93,65 +99,69 @@ body <- dashboardBody(
                                   accept=c('text/csv', 
                                            'text/comma-separated-values,text/plain', 
                                            '.csv')),
+                        actionButton("run", "Run"),
                         hr(),
-                        checkboxInput('filter', 'FILTER', FALSE),
-                        numericInput("geneperc", "percentile cutoff for filtering genes:", 15, min = 0, max = 100),
-                        numericInput("metabperc", "percentile cutoff for filtering metabolites:", 15, min = 0, max = 100),
+                        tags$b("The statistic summary of the data"),
+                        pre(tableOutput('stats')),
                         hr(),
-                        pre(textOutput('contents'))
-                        ),
+                        tags$b("Verify the distribution of the input data."),
+                        plotOutput('plot')
+                       
+                        
+                       
+                            ),
+                    
                     HTML("</div>"),
                     HTML("<div class='col-sm-6' style='min-width:
                          600px !important;'>"),
                     infoBoxOutput("statusbox1", width = NULL),
                     HTML("</div>")
                     )
-                ),
-       
+                        ),
         
-    tabItem(tabName = "stats",
-            fluidRow(
-                box(
-                    title = strong("Stats and Plots") ,
-                    width = NULL,
-                    solidHeader = TRUE,
-                    h5("This step does the following: "),
-                    tags$ul(
-                        tags$li("Get some stats after reading in data."),
-                        tags$li("Verify the distribution of the input data."),
-                        tags$p(" Note: You can save the plots by clicking on the right mouse button
-                               and selecting 'save image as', or by clicking on the menu at the top right
-                               of the plot"),
-                        
-                        hr(),
-                        pre(tableOutput('stats'),
+        
+        tabItem(tabName = "Filterdata",
+                fluidRow(
+                    box(
+                        title = strong("Filter Data (optional)") ,
+                        width = NULL,
+                        solidHeader = TRUE,
+                        h5("This step help you filter the data"),
+                          
                             hr(),
-                            plotOutput('plot'),
-                            hr()
-                            
-                        ),
-                        HTML("</div>"),
-                        HTML("<div class='col-sm-7' style='min-width:
-                             550px !important;'>"),
-                        hr(),
-                        box(
-                            #title = "Barplot",
-                            width = NULL,
-                            solidHeader = TRUE,
-                            highcharter::highchartOutput("barplot")
-                        ),
-                        hr(),
-                        HTML("<div class='col-sm-3' style='min-width:
+                            checkboxInput('filter', 'FILTER', FALSE),
+                            numericInput("geneperc", "percentile cutoff for filtering genes:", 15, min = 0, max = 100),
+                            numericInput("metabperc", "percentile cutoff for filtering metabolites:", 15, min = 0, max = 100),
+                            actionButton("run2", "Run"),
+                            hr(),
+                            pre(
+                                tableOutput('Fstats'),
+                                
+                                #hr(),
+                                #plotOutput('plot'),
+                                hr()
+                                
+                            ),
+                            HTML("</div>"),
+                            HTML("<div class='col-sm-7' style='min-width:
+                                 550px !important;'>"),
+                            hr(),
+                           
+                            HTML("<div class='col-sm-3' style='min-width:
                              350px !important;'>")
+                            )
                         )
-                        )
+                ),
+        tabItem(tabName = "correlation",
+                title = strong("correlation")
                     )
-            )
-    )
-)
+        
+        )
+                )
 
 
-            
+
+
 
 
 shinyUI(fluidPage(
@@ -162,4 +172,3 @@ shinyUI(fluidPage(
     )
 )
 ) # end shinUI
-
