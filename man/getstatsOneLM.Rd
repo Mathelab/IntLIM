@@ -9,10 +9,10 @@ getstatsOneLM(form, clindata, arraydata)
 \arguments{
 \item{form}{LM formulat (typically m~g+t+g:t)}
 
-\item{arraydata}{matrix of metabolite values}
-
-\item{clindatta}{data frame with 1st column: expression of one analyte; 2nd column
+\item{clindata}{data frame with 1st column: expression of one analyte; 2nd column
 sample type (e.g. cancer/non-cancer)}
+
+\item{arraydata}{matrix of metabolite values}
 }
 \description{
 Function that runs linear models for one gene vs all metabolites

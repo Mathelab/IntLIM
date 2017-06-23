@@ -16,7 +16,7 @@
 #' mydata <- ReadData(csvfile,metabid='BIOCHEMICAL',geneid='X')
 #' myres <- RunIntLim(mydata,stype="DIAG")
 #' @export
-ReadData <- function(inputFile,stype=NULL,outcome="metabolite"){
+RunIntLim <- function(inputData,stype=NULL,outcome="metabolite"){
 
     if (class(inputData) != "MultiDataSet") {
         stop("input data is not a MultiDataSet class")
@@ -26,14 +26,15 @@ ReadData <- function(inputFile,stype=NULL,outcome="metabolite"){
         stop("input data must contain assayData of type 'metabolite' and 'expression.
         Try reading in the data with the ReadData function")
     }
-    if (is.null(type)) {stop("Please set the variable type (e.g. sample group)")}
+    if (is.null(stype)) {stop("Please set the variable type (e.g. sample group)")}
 
     incommon<-MultiDataSet::commonSamples(inputData)
-    mp <- pData(incommon[["metabolite"]])[,stype]
-    gp <- pData(incommon[["expression"]])[,stype]
+    mp <- Biobase::pData(incommon[["metabolite"]])[,stype]
+    gp <- Biobase::pData(incommon[["expression"]])[,stype]
     if(all.equal(mp,gp)[1] != TRUE) {
 	stop(paste("The column", stype,"for the samples in common between the metabolite and gene datasets are not equal.  Please check your input."))
     }
 
     myres <- RunLM(incommon,outcome=outcome,type=mp)
+    return(myres)
 }

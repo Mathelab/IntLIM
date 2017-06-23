@@ -112,24 +112,13 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
 
     gene <- Biobase::assayDataElement(inputData[["expression"]], 'exprs')
     metab <- Biobase::assayDataElement(inputData[["metabolite"]], 'metabData')
-    if (outcome == "metabolite") {
-    	arraydata <- data.frame(m)
-	clindata <- data.frame(t(g), type)
-	form <- formula(m ~ g + type + g:type)
-    } else if (outcome == "gene") {
-	arraydata <- gene
-	clindata <- data.frame(metab,type)
-	form <- formula(g ~ m + type + m:type)
-    } else {
-	stop("outcome must be either 'metabolite' or 'gene'")
-    }
 
     if (outcome == "metabolite") {
         arraydata <- data.frame(metab)
-        form <- formula(m ~ g + type + g:type)
+        form <- stats::formula(m ~ g + type + g:type)
     } else if (outcome == "gene") {
         arraydata <- data.frame(gene)
-        form <- formula(g ~ m + type + m:type)
+        form <- stats::formula(g ~ m + type + m:type)
     } else {
         stop("outcome must be either 'metabolite' or 'gene'")
     }
@@ -158,7 +147,7 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
 #' @include AllClasses.R
 #'
 #' @param form LM formulat (typically m~g+t+g:t)
-#' @param clindatta data frame with 1st column: expression of one analyte; 2nd column
+#' @param clindata data frame with 1st column: expression of one analyte; 2nd column
 #' sample type (e.g. cancer/non-cancer)
 #' @param arraydata matrix of metabolite values
     getstatsOneLM <- function(form, clindata, arraydata) {
@@ -167,7 +156,7 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
         SYY <- apply(YY, 2, function(y) {sum(y^2)}) - nrow(YY)*EY^2     # sum of squares after centering
         clindata <- data.frame(y=YY[,1], clindata)
         dimnames(clindata)[[2]][1] <- 'Y'
-        X <- model.matrix(form, clindata)       # contrasts matrix
+        X <- stats::model.matrix(form, clindata)       # contrasts matrix
         N = dim(X)[1]
         p <- dim(X)[2]
         XtX <- t(X) %*% X
@@ -183,11 +172,11 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
         ssr <- SYY - sse                        # regression error
         msr <- ssr/rdf                  # mean regression error
         fval <- msr/mse                 # f-test for the overall regression
-        pfval <- 1-pf(fval, rdf, edf)           # f-test p-values
+        pfval <- 1-stats::pf(fval, rdf, edf)           # f-test p-values
 
         stderror.coeff <- sapply(mse,function(x){sqrt(diag(ixtx)*x)})
         t.coeff <- bhat/stderror.coeff
-        p.val.coeff <- 2*pt(-abs(t.coeff),df = (N-p))
+        p.val.coeff <- 2*stats::pt(-abs(t.coeff),df = (N-p))
         #new('IntLimModel', call=call,
          list(       model=form,
                 coefficients=bhat,
