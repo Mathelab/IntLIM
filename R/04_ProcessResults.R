@@ -59,7 +59,7 @@ ProcessResults <- function(inputResults,
 	inputResults@corr <- data.frame(metab=as.character(mydat[keepers[keepers2],2]), 
 		gene=as.character(mydat[keepers[keepers2],1]))
 	inputResults@corr <- cbind(inputResults@corr,cor1,cor2)
-	colnames(inputResults@corr)[3:4]=unique(mp)
+	colnames(inputResults@corr)[3:4]=as.character(unlist(unique(mp)))
 
 return(inputResults)
 }

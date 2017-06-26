@@ -119,5 +119,100 @@ DistPvalues<- function(IntLimResults) {
 }
 
 
+#' Plot correlation heatmap
+#'
+#' @import magrittr
+#' @import highcharter
+#'
+#' @param inputResults IntLimResults object (output of ProcessResults())
+#' @param viewer whether the plot should be displayed in the RStudio viewer (T) or
+#' in Shiny/Knittr (F)
+#' @return a highcharter object
+#'
+#' @examples
+#' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+#' csvfile <- file.path(dir, "test.csv")
+#' mydata <- ReadData(csvfile,metabid='BIOCHEMICAL',geneid='X')
+#' myres <- RunIntLim(mydata,stype="DIAG")
+#' myres <- ProcessResults(myres,mydata)
+#' CorrHeatmap(myres)
+#' @export
+CorrHeatmap <- function(inputResults,viewer=T) {
+type <- cor <- c()
+
+	if(nrow(inputResults@corr)==0) {
+		stop("Make sure you run ProcessResults before making the heatmap")
+	}
+		temp <- inputResults@corr
+		toplot <- data.frame(name=paste(temp[,1],temp[,2],sep=" vs "),
+			temp[,3:4])
+		suppressMessages(
+			meltedtoplot <- tidyr::gather(
+				toplot,
+				type,cor,colnames(toplot)[2],colnames(toplot)[3]))
+
+		#all possible values of X (type) and Y (name)
+  		theXAxis <- as.character(meltedtoplot[, "type"])
+		theYAxis <- as.character(meltedtoplot[, "name"])
+
+		  #unique values of X and Y
+		  theUniqueY <- as.character(unique(theYAxis))
+		  theUniqueX <- as.character(unique(theXAxis))
+
+		  # Substitute words with position on the meatrix
+		  for (i in 1:length(theUniqueY)){
+		    num <- which(theYAxis == theUniqueY[i])
+		    theYAxis[num] <- i
+		  }
+		  for (i in 1:length(theUniqueX)) {
+		    num <- which(theXAxis == theUniqueX[i])
+		    theXAxis[num] <- i
+		  }
+
+		  #create final formatting
+		  dataforHeatmap <- as.data.frame(cbind(
+		    as.numeric(theXAxis),
+		    as.numeric(theYAxis),
+		    as.numeric(meltedtoplot$cor)
+		#as.numeric(format(meltedtoplot$cor,scientific=T,digits=2))
+		  ))
+
+		  formattedHeatmapData <- list_parse2(dataforHeatmap)
+
+		  fntltp <- JS(
+		    "function(){
+		    return 'cor='+this.point.value;
+		    }")
+
+		p <- highchart(width = 800, height = 700) %>%
+		    hc_chart(type = "heatmap", spacingRight = 160) %>%
+		    hc_title(text = "Correlation Heatmap",
+		             style = list(color = '#2E1717',fontSize = '20px',
+		                          fontWeight = 'bold')) %>%
+		    hc_xAxis(categories = c("",unique(as.character(meltedtoplot[, "type"]))),
+		             labels = list(style = list(fontSize = '10px'))) %>%
+		    hc_yAxis(categories = c("",unique(as.character(meltedtoplot[, "name"]))), 
+				labels = list(style = list(fontSize = '10px'))) %>%
+		    hc_add_series(data = formattedHeatmapData) %>% 
+		    hc_tooltip(formatter = fntltp, valueDecimals = 2) %>%
+		    hc_colorAxis(stops = color_stops(2, colors = c("#5097D1", "#DEEFF5")),
+		                 min = min(as.numeric(dataforHeatmap[ , 3]), na.rm = T),
+		                 max = max(as.numeric(dataforHeatmap[ , 3]), na.rm = T)) %>%
+		    hc_legend(
+		      enabled = TRUE,
+		      layout = "vertical",
+		      align = "right",
+		      verticalAlign = "top",
+		      floating = FALSE,
+		      maxWidth = 200,
+		      x = -10, # 90
+		      y = 100, # 70
+		      padding = 2
+		      #title = list(text="p-value")
+		    ) %>%
+	 	      hc_exporting(enabled = TRUE)
+	return(p)	
+}
 
 
+	
