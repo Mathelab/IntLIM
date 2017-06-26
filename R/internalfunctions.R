@@ -165,8 +165,8 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
     mypsadj <- stats::p.adjust(myps, method = 'fdr')
     mat.pvalsadj <- matrix(mypsadj, row.pvt, col.pvt) 
 
-    rownames(mat.pvals) <- rownames(gene)
-    colnames(mat.pvals) <- rownames(metab)
+    rownames(mat.pvals) <- rownames(mat.pvalsadj) <- rownames(gene)
+    colnames(mat.pvals) <- colnames(mat.pvalsadj) <- rownames(metab)
  
     myres <- methods::new('IntLimResults', interaction.pvalues=mat.pvals,
 		interaction.adj.pvalues = mat.pvalsadj,
@@ -224,4 +224,4 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
                 p.value.coeff = p.val.coeff # interaction p-value
          )
         }
-	
+

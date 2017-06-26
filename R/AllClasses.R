@@ -27,11 +27,16 @@ methods::setClass (
 #' @exportClass IntLimResults
 #' @slot interaction.pvalues matrix of interaction p-values
 #' @slot interaction.adj.pvalues matrix of adjusted interaction pvalues
+#' @slot corr matrix of correlations in group 1 and 2
 #' @slot warnings a message of whether genes and metabolites have 0 standard deviation
+#' @slot stype column name that represents sample type (by default, it will be used
+#' in the interaction term). Only 2 categories are currently supported.
 methods::setClass(
 	Class="IntLimResults",
 	representation(interaction.pvalues="matrix", 
 		interaction.adj.pvalues="matrix",
-		warnings="character"))
+		corr="data.frame",
+		warnings="character",
+		stype="character"))
 
 

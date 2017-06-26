@@ -1,4 +1,4 @@
-headerbar <- dashboardHeader(
+headerbar <- shinydashboard::dashboardHeader(
     title = "IntLim",
     titleWidth = 270,
     dropdownMenu(
@@ -11,7 +11,7 @@ headerbar <- dashboardHeader(
     )
 )
 
-sidebar <- dashboardSidebar(
+sidebar <- shinydashboard::dashboardSidebar(
     width = 270,
     sidebarMenu(
         menuItem("About",
@@ -43,7 +43,7 @@ sidebar <- dashboardSidebar(
     )
 )
 
-body <- dashboardBody(
+body <- shinydashboard::dashboardBody(
     tags$head(
         tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
     ),

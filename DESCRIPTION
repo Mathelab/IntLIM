@@ -17,6 +17,7 @@ Imports:
     MultiDataSet,
     methods,
     shiny,
+    shinydashboard,
     reshape2,
     magrittr,
     highcharter,
@@ -38,6 +39,7 @@ Collate:
     '01_ReadData.R'
     '02_FilterData.R'
     '03_RunIntLim.R'
+    '04_ProcessResults.R'
     'IntLimResults_extendedfunctions.R'
     'MultiDataSet_extendedfunctions.R'
     'plottingfunctions.R'

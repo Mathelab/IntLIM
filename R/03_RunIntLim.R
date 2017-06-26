@@ -36,5 +36,6 @@ RunIntLim <- function(inputData,stype=NULL,outcome="metabolite"){
     }
 
     myres <- RunLM(incommon,outcome=outcome,type=mp)
+    myres@stype=stype
     return(myres)
 }
