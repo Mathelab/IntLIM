@@ -11,7 +11,7 @@ shinyServer(function(input, output) {
         multiData<-ReadData(inFile$datapath,input$metabid,input$geneid)
         multiData
     })
-        
+    
     
     FmultiData<-eventReactive(input$run2,{
         FmultiData<-multiData()
@@ -19,18 +19,18 @@ shinyServer(function(input, output) {
             FmultiData<-FilterData(multiData(),geneperc=input$geneperc,metabperc=input$metabperc)
         }
         FmultiData
-    })
+    },ignoreNULL=FALSE)
     
-   
+    
     output$stats<-renderTable(
         as.matrix(OutputStats(multiData()))
     )
     
     output$plot<-renderHighchart(
         PlotDistributions(multiData())
-       )
+    )
     
-
+    
     
     
     output$Fstats<-renderTable(
@@ -41,15 +41,18 @@ shinyServer(function(input, output) {
         
     )
     
-    output$Pdist<-renderPlot({
-        myres <- RunIntLim(FmultiData(),stype="DIAG")
-        DistPvalues(myres)
+    myres <- reactive({
+        RunIntLim(FmultiData(),stype="DIAG")
     })
     
-    output$heatmap<-renderPrint({
-        myres2 <- ProcessResults(myres,inputData)
-        CorrHeatmap(myres)
-        }
+    output$Pdist<-renderPlot({
+        DistPvalues(myres())
+    })
+    
+    output$heatmap<-renderHighchart({
+        myres2 <- ProcessResults(myres(),FmultiData())
+        CorrHeatmap(myres2)
+    }
     )
     
     

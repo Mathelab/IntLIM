@@ -35,6 +35,12 @@ sidebar <- dashboardSidebar(
             icon = icon("bolt"),
             badgeLabel = "step 3"
         ),
+        menuItem(
+            "Process result",
+            tabName = "processresult",
+            icon = icon("pie-chart"),
+            badgeLabel = "step 4"
+        ),
         
         menuItem(
             actionButton("buttonstop", strong("Click to Exit Shiny App")),
@@ -105,7 +111,7 @@ body <- dashboardBody(
                         pre(tableOutput('stats')),
                         hr(),
                         tags$b("Verify the distribution of the input data."),
-                        plotOutput("plot")
+                        highchartOutput("plot")
                         
                         
                        
@@ -154,7 +160,25 @@ body <- dashboardBody(
                         
                         )
                         )
+                    ),
+        tabItem(tabName = "processresult",
+                fluidRow(
+                    box(
+                        title = strong("Process the result") ,
+                        width = NULL,
+                        solidHeader = TRUE,
+                        h5("Process the results and filter pairs of genes-metabolites based on 
+                            adjusted p-values and differences in correlation coefficients between groups 1 and 2.
+                            Then plot heatmap of significant gene-metabolite pairs
+
+                           "),
+                        hr(),
+                        highchartOutput("heatmap"),
+                        hr()
+                        
                     )
+                )
+        )
         
         
         
