@@ -1,4 +1,4 @@
-headerbar <- shinydashboard::dashboardHeader(
+headerbar <- dashboardHeader(
     title = "IntLim",
     titleWidth = 270,
     dropdownMenu(
@@ -11,7 +11,7 @@ headerbar <- shinydashboard::dashboardHeader(
     )
 )
 
-sidebar <- shinydashboard::dashboardSidebar(
+sidebar <- dashboardSidebar(
     width = 270,
     sidebarMenu(
         menuItem("About",
@@ -43,7 +43,7 @@ sidebar <- shinydashboard::dashboardSidebar(
     )
 )
 
-body <- shinydashboard::dashboardBody(
+body <- dashboardBody(
     tags$head(
         tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
     ),
@@ -60,7 +60,7 @@ body <- shinydashboard::dashboardBody(
         tabItem(tabName = "loaddata",
                 fluidRow(
                     HTML("<div class='col-sm-4' style='min-width:
-                         650px !important;'>"),
+                         1000px !important;'>"),
                     box(
                         title = strong("Input menu file"),
                         width = NULL,
@@ -82,13 +82,12 @@ body <- shinydashboard::dashboardBody(
                                     metabData: rows are metabolites, columns are samples
                                     geneData: rows are genes, columns are samples
                                     metabMetaData: rows are metabolites, features are columns
-                                    geneMetaData: rows are genes, features are columns
+                                    geneMetaData: rows are genes, features https://stackoverflow.com/documentationare columns
                                     sampleMetaData: rows are samples, features are columns
                                     In addition, the first column of the sampleMetaData file is assumed to be the sample id, 
                                     and those sample ids should match the columns of metabData and geneData (e.g. it is required
                                     that all sample ids in the metabData and geneData are also in the sampleMetaDatafile)."),
                             tags$li("Prints out the statistic summary of the data.")
-                            
                             ),
                         
                         hr(),
@@ -106,19 +105,15 @@ body <- shinydashboard::dashboardBody(
                         pre(tableOutput('stats')),
                         hr(),
                         tags$b("Verify the distribution of the input data."),
-                        plotOutput('plot')
-                       
+                        plotOutput("plot")
+                        
                         
                        
                             ),
                     
-                    HTML("</div>"),
-                    HTML("<div class='col-sm-6' style='min-width:
-                         600px !important;'>"),
-                    infoBoxOutput("statusbox1", width = NULL),
                     HTML("</div>")
                     )
-                        ),
+        ),
         
         
         tabItem(tabName = "Filterdata",
@@ -135,27 +130,33 @@ body <- shinydashboard::dashboardBody(
                             numericInput("metabperc", "percentile cutoff for filtering metabolites:", 15, min = 0, max = 100),
                             actionButton("run2", "Run"),
                             hr(),
-                            pre(
-                                tableOutput('Fstats'),
+                            pre(tableOutput('Fstats')),
                                 
-                                #hr(),
-                                #plotOutput('plot'),
-                                hr()
-                                
-                            ),
-                            HTML("</div>"),
-                            HTML("<div class='col-sm-7' style='min-width:
-                                 550px !important;'>"),
                             hr(),
-                           
-                            HTML("<div class='col-sm-3' style='min-width:
-                             350px !important;'>")
+                            #showOutput("Fplot","Highcharts"),
+                            hr()
+                                
+                            
                             )
                         )
-                ),
+        ),
+    
         tabItem(tabName = "correlation",
-                title = strong("correlation")
+                fluidRow(
+                    box(
+                        title = strong("correlation") ,
+                        width = NULL,
+                        solidHeader = TRUE,
+                        h5("Run the linear models and plot distribution of p-values:"),
+                        hr(),
+                        pre(plotOutput("Pdist")),
+                        hr()
+                        
+                        )
+                        )
                     )
+        
+        
         
         )
                 )

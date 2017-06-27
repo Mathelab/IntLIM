@@ -1,6 +1,8 @@
 library(shiny)
-library(shinydashboard)
+require(shinydashboard)
+require(magrittr)
 
+require(rCharts)
 shinyServer(function(input, output) {
     
     multiData <- eventReactive(input$run,{
@@ -21,13 +23,33 @@ shinyServer(function(input, output) {
     
    
     output$stats<-renderTable(
-        OutputStats(multiData())
+        as.matrix(OutputStats(multiData()))
     )
-    output$plot<-renderPlot(
+    
+    output$plot<-renderHighchart(
         PlotDistributions(multiData())
-    )
+       )
+    
+
+    
+    
     output$Fstats<-renderTable(
         OutputStats(FmultiData())
+    )
+    output$Fplot<-renderPrint(
+        PlotDistributions(FmultiData())
+        
+    )
+    
+    output$Pdist<-renderPlot({
+        myres <- RunIntLim(FmultiData(),stype="DIAG")
+        DistPvalues(myres)
+    })
+    
+    output$heatmap<-renderPrint({
+        myres2 <- ProcessResults(myres,inputData)
+        CorrHeatmap(myres)
+        }
     )
     
     
