@@ -96,9 +96,6 @@ PlotDistributions <- function(inputData,viewer=T,
     p <- highcharter::hw_grid(g, m)
   }
   return(p)
-
-
-return(p)
 }
 
 #' Visualize the distribution of unadjusted p-values from linear models
