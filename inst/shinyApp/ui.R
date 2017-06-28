@@ -1,3 +1,4 @@
+require(shinydashboard)
 headerbar <- shinydashboard::dashboardHeader(
     title = "IntLim",
     titleWidth = 270,
@@ -55,8 +56,8 @@ body <- shinydashboard::dashboardBody(
     ),
     shinydashboard::tabItems(
         shinydashboard::tabItem(tabName = "about",
-                shiny::tabPanel("About",
-                         box(
+                                shiny::tabPanel("About",
+                                shinydashboard::box(
                              width = 12,
                              #includeMarkdown("include.md")
                              tags$b("Here is some introduction of the InLim")
@@ -67,7 +68,7 @@ body <- shinydashboard::dashboardBody(
                 fluidRow(
                     HTML("<div class='col-sm-4' style='min-width:
                          1000px !important;'>"),
-                    box(
+                    shinydashboard::box(
                         title = strong("Input menu file"),
                         width = NULL,
                         solidHeader = TRUE,
@@ -111,45 +112,45 @@ body <- shinydashboard::dashboardBody(
                         pre(tableOutput('stats')),
                         hr(),
                         tags$b("Verify the distribution of the input data."),
-                        highchartOutput2("plot")
+                        highcharter::highchartOutput("plot")
                         
                         
-                       
+                        
                             ),
                     
                     HTML("</div>")
-                    )
-        ),
+                        )
+                        ),
         
         
         shinydashboard::tabItem(tabName = "Filterdata",
                 fluidRow(
-                    box(
+                    shinydashboard::box(
                         title = strong("Filter Data (optional)") ,
                         width = NULL,
                         solidHeader = TRUE,
                         h5("This step help you filter the data"),
-                          
-                            hr(),
-                            checkboxInput('filter', 'FILTER', FALSE),
-                            numericInput("geneperc", "percentile cutoff for filtering genes:", 15, min = 0, max = 100),
-                            numericInput("metabperc", "percentile cutoff for filtering metabolites:", 15, min = 0, max = 100),
-                            actionButton("run2", "Run"),
-                            hr(),
-                            pre(tableOutput('Fstats')),
-                                
-                            hr(),
-                            #showOutput("Fplot","Highcharts"),
-                            hr()
-                                
-                            
-                            )
-                        )
+                        
+                        hr(),
+                        checkboxInput('filter', 'FILTER', FALSE),
+                        numericInput("geneperc", "percentile cutoff for filtering genes:", 15, min = 0, max = 100),
+                        numericInput("metabperc", "percentile cutoff for filtering metabolites:", 15, min = 0, max = 100),
+                        actionButton("run2", "Run"),
+                        hr(),
+                        pre(tableOutput('Fstats')),
+                        
+                        hr(),
+                        #showOutput("Fplot","Highcharts"),
+                        hr()
+                        
+                        
+                    )
+                )
         ),
-    
+        
         shinydashboard::tabItem(tabName = "correlation",
                 fluidRow(
-                    box(
+                    shinydashboard::box(
                         title = strong("correlation") ,
                         width = NULL,
                         solidHeader = TRUE,
@@ -162,27 +163,27 @@ body <- shinydashboard::dashboardBody(
                         pre(plotOutput("Pdist")),
                         hr()
                         
-                        )
-                        )
-                    ),
+                    )
+                )
+        ),
         shinydashboard::tabItem(tabName = "processresult",
                 fluidRow(
-                    box(
+                    shinydashboard::box(
                         title = strong("Process the result") ,
                         width = NULL,
                         solidHeader = TRUE,
                         h5("Process the results and filter pairs of genes-metabolites based on 
-                            adjusted p-values and differences in correlation coefficients between groups 1 and 2.
-                            Then plot heatmap of significant gene-metabolite pairs
-
+                           adjusted p-values and differences in correlation coefficients between groups 1 and 2.
+                           Then plot heatmap of significant gene-metabolite pairs
+                           
                            "),
                         hr(),
-                        highchartOutput("heatmap"),
+                        highcharter::highchartOutput("heatmap"),
                         hr()
                         
+                        )
                     )
                 )
-        )
         
         
         

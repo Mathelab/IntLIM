@@ -1,14 +1,15 @@
 library(shiny)
-require(shinydashboard)
-require(magrittr)
 
+require(highcharter)
+require(magrittr)
 require(rCharts)
+require(IntLim)
 shinyServer(function(input, output) {
     
     multiData <- eventReactive(input$run,{
         
         inFile<-input$file1
-        multiData<-ReadData(inFile$datapath,input$metabid,input$geneid)
+        multiData<-IntLim::ReadData(inFile$datapath,input$metabid,input$geneid)
         multiData
     })
     
@@ -16,28 +17,28 @@ shinyServer(function(input, output) {
     FmultiData<-eventReactive(input$run2,{
         FmultiData<-multiData()
         if(input$filter){
-            FmultiData<-FilterData(multiData(),geneperc=input$geneperc,metabperc=input$metabperc)
+            FmultiData<-IntLim::FilterData(multiData(),geneperc=input$geneperc,metabperc=input$metabperc)
         }
         FmultiData
     },ignoreNULL=FALSE)
     
     
     output$stats<-renderTable(
-        as.matrix(OutputStats(multiData()))
+        as.matrix(IntLim::OutputStats(multiData()))
     )
     
     output$plot<-renderHighchart2(
-        PlotDistributions(multiData())
+        IntLim::PlotDistributions(multiData())
     )
     
     
     
     
     output$Fstats<-renderTable(
-        OutputStats(FmultiData())
+        IntLim::OutputStats(FmultiData())
     )
-    output$Fplot<-renderPrint(
-        PlotDistributions(FmultiData())
+    output$Fplot<-renderHighchart(
+        IntLim::PlotDistributions(FmultiData())
         
     )
     
@@ -45,7 +46,7 @@ shinyServer(function(input, output) {
     
     output$choosestype <- renderUI({
         choice<-reactive({
-            varLabels(FmultiData()[[input$dataset]])
+            Biobase::varLabels(FmultiData()[[input$dataset]])
         })
         selectInput("stype", "Sample Type:", 
                     choices=choice())
@@ -53,16 +54,16 @@ shinyServer(function(input, output) {
     
 
     myres <- reactive({
-            RunIntLim(FmultiData(),stype=input$stype,outcome=input$dataset)
+        IntLim::RunIntLim(FmultiData(),stype=input$stype,outcome=input$dataset)
     })
     
     output$Pdist<-renderPlot({
-        DistPvalues(myres())
+        IntLim::DistPvalues(myres())
     })
     
     output$heatmap<-renderHighchart({
-        myres2 <- ProcessResults(myres(),FmultiData())
-        CorrHeatmap(myres2)
+        myres2 <- IntLim::ProcessResults(myres(),FmultiData())
+        IntLim::CorrHeatmap(myres2)
     }
     )
     
