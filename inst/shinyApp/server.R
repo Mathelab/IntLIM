@@ -26,7 +26,7 @@ shinyServer(function(input, output) {
         as.matrix(OutputStats(multiData()))
     )
     
-    output$plot<-renderHighchart(
+    output$plot<-renderHighchart2(
         PlotDistributions(multiData())
     )
     
@@ -41,8 +41,19 @@ shinyServer(function(input, output) {
         
     )
     
+    
+    
+    output$choosestype <- renderUI({
+        choice<-reactive({
+            varLabels(FmultiData()[[input$dataset]])
+        })
+        selectInput("stype", "Sample Type:", 
+                    choices=choice())
+    })
+    
+
     myres <- reactive({
-        RunIntLim(FmultiData(),stype="DIAG")
+            RunIntLim(FmultiData(),stype=input$stype,outcome=input$dataset)
     })
     
     output$Pdist<-renderPlot({

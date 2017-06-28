@@ -111,7 +111,7 @@ body <- dashboardBody(
                         pre(tableOutput('stats')),
                         hr(),
                         tags$b("Verify the distribution of the input data."),
-                        highchartOutput("plot")
+                        highchartOutput2("plot")
                         
                         
                        
@@ -154,7 +154,11 @@ body <- dashboardBody(
                         width = NULL,
                         solidHeader = TRUE,
                         h5("Run the linear models and plot distribution of p-values:"),
+                        radioButtons("dataset", label = h3("Data set"),
+                                     choices = list("metabolite" = "metabolite", "gene" = "gene"), 
+                                     selected = "metabolite"),
                         hr(),
+                        uiOutput('choosestype'),
                         pre(plotOutput("Pdist")),
                         hr()
                         
