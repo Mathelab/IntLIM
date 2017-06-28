@@ -13,15 +13,15 @@ Description: This workflow takes normalized gene expression and metabolite level
 License: GPL-2
 Depends: R (>= 3.3.0)
 Imports:
+    shiny,
+    shinydashboard,
     Biobase,
     MultiDataSet,
     methods,
-    shiny,
-    shinydashboard,
     reshape2,
     magrittr,
-    highcharter,
     htmltools,
+    highcharter,
     RColorBrewer,
     parallel,
     BiocGenerics,
