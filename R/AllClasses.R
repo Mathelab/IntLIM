@@ -31,12 +31,14 @@ methods::setClass (
 #' @slot warnings a message of whether genes and metabolites have 0 standard deviation
 #' @slot stype column name that represents sample type (by default, it will be used
 #' in the interaction term). Only 2 categories are currently supported.
+#' @slot outcome outcome is either 'metabolite' or 'gene'
 methods::setClass(
 	Class="IntLimResults",
 	representation(interaction.pvalues="matrix", 
 		interaction.adj.pvalues="matrix",
 		corr="data.frame",
 		warnings="character",
-		stype="character"))
+		stype="character",
+		outcome="character"))
 
 

@@ -21,5 +21,7 @@ in this case.
 
 \item{\code{stype}}{column name that represents sample type (by default, it will be used
 in the interaction term). Only 2 categories are currently supported.}
+
+\item{\code{outcome}}{outcome is either 'metabolite' or 'gene'}
 }}
 

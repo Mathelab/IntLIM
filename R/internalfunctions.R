@@ -135,42 +135,72 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
     if (outcome == "metabolite") {
         arraydata <- data.frame(metab)
         form <- stats::formula(m ~ g + type + g:type)
-    } else if (outcome == "gene") {
-        arraydata <- data.frame(gene)
-        form <- stats::formula(g ~ m + type + m:type)
-    } else {
-        stop("outcome must be either 'metabolite' or 'gene'")
-    }
-
-	# Retrieve pvalues by iterating through each gene 
-	numgenes <- nrow(gene)
+        # Retrieve pvalues by iterating through each gene
+        numgenes <- nrow(gene)
+	numprog <- round(numgenes*0.1)
         list.pvals <- lapply(1:numgenes, function(x) {
                 #print(x)
-		g <- as.numeric(gene[x,])
+                g <- as.numeric(gene[x,])
                 clindata <- data.frame(g, type)
                 mlin <- getstatsOneLM(Y ~ g + type + g:type, clindata = clindata,
                         arraydata = arraydata)
                 p.val.vector <- as.vector(mlin$p.value.coeff[4,])
-		#p.val.vector <- as.vector(mlin@p.value.coeff[4,])
-		# Print out progress every 1000 genes
-                if (x %% 1000 == 0){
+                #p.val.vector <- as.vector(mlin@p.value.coeff[4,])
+                # Print out progress every 1000 genes
+                if (x %% numprog == 0){
                     progX <- round(x/numgenes*100)
                     print(paste(progX,"% complete"))
                 }
                 return(p.val.vector)
-	})
-
+        })
     mat.pvals <- do.call(rbind, list.pvals)
     # adjust p-values
     row.pvt <- dim(mat.pvals)[1]
     col.pvt <- dim(mat.pvals)[2]
-    myps <- as.vector(mat.pvals)	
+    myps <- as.vector(mat.pvals)
     mypsadj <- stats::p.adjust(myps, method = 'fdr')
-    mat.pvalsadj <- matrix(mypsadj, row.pvt, col.pvt) 
+    mat.pvalsadj <- matrix(mypsadj, row.pvt, col.pvt)
 
     rownames(mat.pvals) <- rownames(mat.pvalsadj) <- rownames(gene)
     colnames(mat.pvals) <- colnames(mat.pvalsadj) <- rownames(metab)
- 
+    } else if (outcome == "gene") {
+        arraydata <- data.frame(gene)
+        form <- stats::formula(g ~ m + type + m:type)
+
+        # Retrieve pvalues by iterating through each gene
+        nummetab <- nrow(metab)
+	numprog <- round(nummetab*0.1)
+        list.pvals <- lapply(1:nummetab, function(x) {
+                #print(x)
+                m <- as.numeric(gene[x,])
+                clindata <- data.frame(m, type)
+                mlin <- getstatsOneLM(Y ~ m + type + m:type, clindata = clindata,
+                        arraydata = arraydata)
+                p.val.vector <- as.vector(mlin$p.value.coeff[4,])
+                #p.val.vector <- as.vector(mlin@p.value.coeff[4,])
+                # Print out progress every 1000 genes
+                if (x %% numprog == 0){
+                    progX <- round(x/nummetab*100)
+                    print(paste(progX,"% complete"))
+                }
+                return(p.val.vector)
+        })
+    mat.pvals <- do.call(rbind, list.pvals)
+    # adjust p-values
+    row.pvt <- dim(mat.pvals)[1]
+    col.pvt <- dim(mat.pvals)[2]
+    myps <- as.vector(mat.pvals)
+    mypsadj <- stats::p.adjust(myps, method = 'fdr')
+    mat.pvalsadj <- matrix(mypsadj, row.pvt, col.pvt)
+
+    rownames(mat.pvals) <- rownames(mat.pvalsadj) <- rownames(metab)
+    colnames(mat.pvals) <- colnames(mat.pvalsadj) <- rownames(gene)
+
+    mat.pvals <- t(mat.pvals)
+    } else {
+        stop("outcome must be either 'metabolite' or 'gene'")
+    }
+
     myres <- methods::new('IntLimResults', interaction.pvalues=mat.pvals,
 		interaction.adj.pvalues = mat.pvalsadj,
 		warnings=mymessage)

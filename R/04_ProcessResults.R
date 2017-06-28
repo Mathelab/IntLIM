@@ -28,7 +28,11 @@ ProcessResults <- function(inputResults,
 				diffcorr=0.5,
 				corrtype="spearman"){
 
-	mydat <- reshape2::melt(inputResults@interaction.adj.pvalues)
+	if(inputResults@outcome == "metabolite") {
+		mydat <- reshape2::melt(inputResults@interaction.adj.pvalues)}
+	else if (inputResults@outcome == "gene") {
+                mydat <- reshape2::melt(t(inputResults@interaction.adj.pvalues))}
+
 	keepers <- which(mydat$value <= pvalcutoff)
 
 	# Calculate correlations for significant pairs
