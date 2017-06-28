@@ -23,7 +23,7 @@ Filter data by abundance and/or CV
 }
 \examples{
 dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
-csvfile <- file.path(dir, "test.csv")
+csvfile <- file.path(dir, "NCIinput.csv")
 inputData <- ReadData(csvfile,metabid='id',geneid='id')
 inputDatafilt <- FilterData(inputData,geneperc=15)
 }
