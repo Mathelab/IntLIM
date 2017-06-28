@@ -1,6 +1,8 @@
 library(shiny)
-library(shinydashboard)
+require(shinydashboard)
+require(magrittr)
 
+require(rCharts)
 shinyServer(function(input, output) {
     
     multiData <- eventReactive(input$run,{
@@ -9,7 +11,7 @@ shinyServer(function(input, output) {
         multiData<-ReadData(inFile$datapath,input$metabid,input$geneid)
         multiData
     })
-        
+    
     
     FmultiData<-eventReactive(input$run2,{
         FmultiData<-multiData()
@@ -17,17 +19,51 @@ shinyServer(function(input, output) {
             FmultiData<-FilterData(multiData(),geneperc=input$geneperc,metabperc=input$metabperc)
         }
         FmultiData
-    })
+    },ignoreNULL=FALSE)
     
-   
+    
     output$stats<-renderTable(
-        OutputStats(multiData())
+        as.matrix(OutputStats(multiData()))
     )
-    output$plot<-renderPlot(
+    
+    output$plot<-renderHighchart2(
         PlotDistributions(multiData())
     )
+    
+    
+    
+    
     output$Fstats<-renderTable(
         OutputStats(FmultiData())
+    )
+    output$Fplot<-renderPrint(
+        PlotDistributions(FmultiData())
+        
+    )
+    
+    
+    
+    output$choosestype <- renderUI({
+        choice<-reactive({
+            varLabels(FmultiData()[[input$dataset]])
+        })
+        selectInput("stype", "Sample Type:", 
+                    choices=choice())
+    })
+    
+
+    myres <- reactive({
+            RunIntLim(FmultiData(),stype=input$stype,outcome=input$dataset)
+    })
+    
+    output$Pdist<-renderPlot({
+        DistPvalues(myres())
+    })
+    
+    output$heatmap<-renderHighchart({
+        myres2 <- ProcessResults(myres(),FmultiData())
+        CorrHeatmap(myres2)
+    }
     )
     
     
