@@ -1,10 +1,10 @@
 require(shinydashboard)
-headerbar <- shinydashboard::dashboardHeader(
+headerbar <- dashboardHeader(
     title = "IntLim",
     titleWidth = 270,
-    shinydashboard::dropdownMenu(
+    dropdownMenu(
         type = "notifications",
-        shinydashboard::notificationItem(
+        notificationItem(
             text = "Plots might take some time to display",
             icon("truck"),
             status = "warning"
@@ -12,63 +12,62 @@ headerbar <- shinydashboard::dashboardHeader(
     )
 )
 
-sidebar <- shinydashboard::dashboardSidebar(
+sidebar <- dashboardSidebar(
     width = 270,
-    shinydashboard::sidebarMenu(
-        shinydashboard::menuItem("About",
+    sidebarMenu(
+        menuItem("About",
                  tabName = "about",
                  icon = icon("info")),
-        shinydashboard::menuItem(
+        menuItem(
             "Load Data",
             tabName = "loaddata",
             icon = icon("folder-open"),
             badgeLabel = "step 1"
         ),
-        shinydashboard::menuItem(
+        menuItem(
             "Filter Data (optional)",
             tabName = "Filterdata",
             icon = icon("bullseye"),
             badgeLabel = "step 2"
         ),
-        shinydashboard::menuItem(
+        menuItem(
             "Correlation",
             tabName = "correlation",
             icon = icon("bolt"),
             badgeLabel = "step 3"
         ),
-        shinydashboard::menuItem(
+        menuItem(
             "Process result",
             tabName = "processresult",
             icon = icon("pie-chart"),
             badgeLabel = "step 4"
         ),
         
-        shinydashboard::menuItem(
+        menuItem(
             actionButton("buttonstop", strong("Click to Exit Shiny App")),
             icon = icon("sign-out")
         )
     )
 )
 
-body <- shinydashboard::dashboardBody(
+body <- dashboardBody(
     tags$head(
         tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
     ),
-    shinydashboard::tabItems(
-        shinydashboard::tabItem(tabName = "about",
+    tabItems(
+        tabItem(tabName = "about",
                                 shiny::tabPanel("About",
-                                shinydashboard::box(
+                                box(
                              width = 12,
                              #includeMarkdown("include.md")
                              tags$b("Here is some introduction of the InLim")
                          )
                 )
         ),
-        shinydashboard::tabItem(tabName = "loaddata",
+        tabItem(tabName = "loaddata",
                 fluidRow(
-                    HTML("<div class='col-sm-4' style='min-width:
-                         1000px !important;'>"),
-                    shinydashboard::box(
+                    
+                    box(
                         title = strong("Input menu file"),
                         width = NULL,
                         solidHeader = TRUE,
@@ -99,8 +98,8 @@ body <- shinydashboard::dashboardBody(
                         
                         hr(),
                         tags$b("Please input the MetabID and the GeneID for your data "),
-                        textInput("metabid", "Metab ID", "BIOCHEMICAL"),
-                        textInput("geneid", "Gene ID", "X"),
+                        textInput("metabid", "Metab ID", "id"),
+                        textInput("geneid", "Gene ID", "id"),
                         hr(),
                         fileInput('file1', 'Choose CSV File',
                                   accept=c('text/csv', 
@@ -112,20 +111,20 @@ body <- shinydashboard::dashboardBody(
                         pre(tableOutput('stats')),
                         hr(),
                         tags$b("Verify the distribution of the input data."),
-                        highcharter::highchartOutput("plot")
+                        htmlOutput("plot")
                         
                         
                         
-                            ),
+                            )
                     
-                    HTML("</div>")
+                    
                         )
                         ),
         
         
-        shinydashboard::tabItem(tabName = "Filterdata",
+        tabItem(tabName = "Filterdata",
                 fluidRow(
-                    shinydashboard::box(
+                    box(
                         title = strong("Filter Data (optional)") ,
                         width = NULL,
                         solidHeader = TRUE,
@@ -140,7 +139,7 @@ body <- shinydashboard::dashboardBody(
                         pre(tableOutput('Fstats')),
                         
                         hr(),
-                        #showOutput("Fplot","Highcharts"),
+                        htmlOutput('Fplot'),
                         hr()
                         
                         
@@ -148,9 +147,9 @@ body <- shinydashboard::dashboardBody(
                 )
         ),
         
-        shinydashboard::tabItem(tabName = "correlation",
+        tabItem(tabName = "correlation",
                 fluidRow(
-                    shinydashboard::box(
+                    box(
                         title = strong("correlation") ,
                         width = NULL,
                         solidHeader = TRUE,
@@ -166,9 +165,9 @@ body <- shinydashboard::dashboardBody(
                     )
                 )
         ),
-        shinydashboard::tabItem(tabName = "processresult",
+        tabItem(tabName = "processresult",
                 fluidRow(
-                    shinydashboard::box(
+                    box(
                         title = strong("Process the result") ,
                         width = NULL,
                         solidHeader = TRUE,
