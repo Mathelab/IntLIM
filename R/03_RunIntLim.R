@@ -13,8 +13,8 @@
 #' @examples
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 #' csvfile <- file.path(dir, "test.csv")
-#' mydata <- ReadData(csvfile,metabid='BIOCHEMICAL',geneid='X')
-#' myres <- RunIntLim(mydata,stype="DIAG")
+#' mydata <- ReadData(csvfile,metabid='id',geneid='id')
+#' myres <- RunIntLim(mydata,stype="cancertype")
 #' @export
 RunIntLim <- function(inputData,stype=NULL,outcome="metabolite"){
 
@@ -34,8 +34,12 @@ RunIntLim <- function(inputData,stype=NULL,outcome="metabolite"){
     if(all.equal(mp,gp)[1] != TRUE) {
 	stop(paste("The column", stype,"for the samples in common between the metabolite and gene datasets are not equal.  Please check your input."))
     }
-
+    if(length(unique(mp)) > 2) {
+	stop(paste("IntLim currently requires only two categories.  Make sure the column",stype,"only has two unique values"))
+    }
+    ptm <- proc.time()
     myres <- RunLM(incommon,outcome=outcome,type=mp)
+    print(proc.time() - ptm)
     myres@stype=stype
     return(myres)
 }

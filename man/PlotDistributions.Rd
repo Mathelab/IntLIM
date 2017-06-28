@@ -24,6 +24,6 @@ Get some stats after reading in data
 \examples{
 dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 csvfile <- file.path(dir, "test.csv")
-mydata <- ReadData(csvfile,metabid='BIOCHEMICAL',geneid='X')
+mydata <- ReadData(csvfile,metabid='id',geneid='id')
 PlotDistributions(mydata)
 }

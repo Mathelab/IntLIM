@@ -36,7 +36,7 @@
 #' @examples
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 #' csvfile <- file.path(dir, "test.csv")
-#' mydata <- ReadData(csvfile,metabid='BIOCHEMICAL',geneid='X')
+#' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' @export
 ReadData <- function(inputFile,metabid,geneid, logmetab=FALSE,loggene=FALSE){
     # Check that file exists
@@ -62,11 +62,11 @@ ReadData <- function(inputFile,metabid,geneid, logmetab=FALSE,loggene=FALSE){
     # Check that files exist then read them in one by one
     if(!file.exists(as.character(csvfile['metabData',]))) {
 	stop(paste("File", csvfile['metabData',], "does not exist"))} else {
-    MData<-utils::read.csv(as.character(csvfile['metabData',]),row.names = 1)}
+    MData<-utils::read.csv(as.character(csvfile['metabData',]),row.names = 1,check.names=F)}
 
     if(!file.exists(as.character(csvfile['geneData',]))) {
         stop(paste("File", csvfile['geneData',], "does not exist"))} else {
-    GData<-utils::read.csv(as.character(csvfile['geneData',]),row.names = 1)}
+    GData<-utils::read.csv(as.character(csvfile['geneData',]),row.names = 1,check.names=F)}
 
     if(as.character(csvfile['metabMetaData',])=="") {
 	warning("No metadata provided for metabolites");MmetaData<-NULL; } else if

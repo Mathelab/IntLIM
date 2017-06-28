@@ -18,8 +18,8 @@
 #' @examples
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 #' csvfile <- file.path(dir, "test.csv")
-#' mydata <- ReadData(csvfile,metabid='BIOCHEMICAL',geneid='X')
-#' myres <- RunIntLim(mydata,stype="DIAG")
+#' mydata <- ReadData(csvfile,metabid='id',geneid='id')
+#' myres <- RunIntLim(mydata,stype="cancertype")
 #' myres <- ProcessResults(myres,mydata)
 #' @export
 ProcessResults <- function(inputResults,
@@ -49,7 +49,7 @@ ProcessResults <- function(inputResults,
 
 	gp2 <- which(mp == unique(mp)[2])
         cor2 <- as.numeric(apply(mydat[keepers,],1,function(x) {
-                stats::cor(as.numeric(gene[as.character(unlist(x[1])),gp2]),
+	         stats::cor(as.numeric(gene[as.character(unlist(x[1])),gp2]),
                         as.numeric(metab[as.character(unlist(x[2])),gp2]),method=corrtype)}))
 
         mydiffcor = abs(cor1-cor2)
@@ -58,7 +58,7 @@ ProcessResults <- function(inputResults,
 
 	inputResults@corr <- data.frame(metab=as.character(mydat[keepers[keepers2],2]), 
 		gene=as.character(mydat[keepers[keepers2],1]))
-	inputResults@corr <- cbind(inputResults@corr,cor1,cor2)
+	inputResults@corr <- cbind(inputResults@corr,cor1[keepers2],cor2[keepers2])
 	colnames(inputResults@corr)[3:4]=as.character(unlist(unique(mp)))
 
 return(inputResults)

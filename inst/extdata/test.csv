@@ -1,6 +1,6 @@
 type,filenames
-metabData,/Users/ewymathe/Downloads/breast/metabData.csv
-geneData,/Users/ewymathe/Downloads/breast/geneData.csv
-metabMetaData,/Users/ewymathe/Downloads/breast/fData.metab.csv
-geneMetaData,/Users/ewymathe/Downloads/breast/fData.gene.csv
-sampleMetaData,/Users/ewymathe/Downloads/breast/pData.csv
+metabData,/Library/Frameworks/R.framework/Versions/3.3/Resources/library/IntLim/extdata/metabData.csv
+geneData,/Library/Frameworks/R.framework/Versions/3.3/Resources/library/IntLim/extdata/geneData.csv
+metabMetaData,/Library/Frameworks/R.framework/Versions/3.3/Resources/library/IntLim/extdata/fData.metab.csv
+geneMetaData,/Library/Frameworks/R.framework/Versions/3.3/Resources/library/IntLim/extdata/fData.gene.csv
+sampleMetaData,/Library/Frameworks/R.framework/Versions/3.3/Resources/library/IntLim/extdata/pData.csv

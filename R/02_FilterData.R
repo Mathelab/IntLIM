@@ -10,7 +10,7 @@
 #' @examples
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 #' csvfile <- file.path(dir, "test.csv")
-#' inputData <- ReadData(csvfile,metabid='BIOCHEMICAL',geneid='X')
+#' inputData <- ReadData(csvfile,metabid='id',geneid='id')
 #' inputDatafilt <- FilterData(inputData,geneperc=15)
 #' @export
 FilterData <- function(inputData,geneperc=NULL,metabperc=NULL) {

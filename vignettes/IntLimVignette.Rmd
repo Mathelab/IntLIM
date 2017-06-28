@@ -38,7 +38,7 @@ A small data set is embedded in a package.  To access it:
 
 Read in the data and organize into a MultiDataset object, and print out some statistics:
 ```{r}
-inputData <- IntLim::ReadData(csvfile,metabid='BIOCHEMICAL',geneid='X')
+inputData <- IntLim::ReadData(csvfile,metabid='id',geneid='id')
 IntLim::OutputStats(inputData)
 ```
 
@@ -55,7 +55,7 @@ IntLim::PlotDistributions(inputData)
 
 Run the linear models and plot distribution of p-values:
 ```{r}
-myres <- IntLim::RunIntLim(inputData,stype="DIAG")
+myres <- IntLim::RunIntLim(inputData,stype="cancertype")
 IntLim::DistPvalues(myres)
 ```
 

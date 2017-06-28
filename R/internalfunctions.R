@@ -31,7 +31,7 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
 
         # Check that samples data and abundance data samples correspond
         if(length(intersect(colnames(metabdata),rownames(pdata)))<ncol(metabdata)){
-                stop("Samples in metabolite abundance data file and sample meta data file are not equal")
+                stop("All samples in abundance data file must be in metabolite meta data file")
         } else {
                 myind <- as.numeric(lapply(colnames(metabdata),function(x) {
                         which(rownames(pdata)==x)[1]}))
@@ -113,19 +113,21 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
     gene <- Biobase::assayDataElement(inputData[["expression"]], 'exprs')
     metab <- Biobase::assayDataElement(inputData[["metabolite"]], 'metabData')
 
-    genesd <- as.numeric(apply(gene,1,function(x) stats::sd(x,na.rm=T)))
-    metabsd <- as.numeric(apply(metab,1,function(x) stats::sd(x,na.rm=T)))
+    genesd1 <- as.numeric(apply(gene[,which(type==unique(type)[1])],1,function(x) stats::sd(x,na.rm=T)))
+    metabsd1 <- as.numeric(apply(metab[,which(type==unique(type)[1])],1,function(x) stats::sd(x,na.rm=T)))
+    genesd2 <- as.numeric(apply(gene[,which(type==unique(type)[2])],1,function(x) stats::sd(x,na.rm=T)))
+    metabsd2 <- as.numeric(apply(metab[,which(type==unique(type)[2])],1,function(x) stats::sd(x,na.rm=T)))
 
     mymessage=""
-    if(length(which(genesd==0))>0) {
-	toremove <- which(genesd==0)   
+    if(length(which(genesd1==0))>0 || length(which(genesd2==0))>0) {
+	toremove <- c(which(genesd1==0),which(genesd2==0))
 	gene <- gene[-toremove,]
 	mymessage <- c(mymessage,paste("Removed",length(toremove),"genes that had a standard deviation of 0:"))
 	mymessage <- c(mymessage,rownames(gene)[toremove])
     }
-    if(length(which(metabsd==0))>0) {
-        toremove <- which(metabsd==0)
-        gene <- metab[-toremove,]
+    if(length(which(metabsd1==0))>0 || length(which(metabsd2==0))>0) {
+        toremove <- c(which(metabsd1==0),which(metabsd2==0))
+        metab <- metab[-toremove,]
         mymessage <- c(mymessage,paste("Removed",length(toremove),"metabolites that had a standard deviation of 0:"))
         mymessage <- c(mymessage,rownames(metab)[toremove])
     }
@@ -143,7 +145,8 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
 	# Retrieve pvalues by iterating through each gene 
 	numgenes <- nrow(gene)
         list.pvals <- lapply(1:numgenes, function(x) {
-                g <- gene[x,]
+                #print(x)
+		g <- as.numeric(gene[x,])
                 clindata <- data.frame(g, type)
                 mlin <- getstatsOneLM(Y ~ g + type + g:type, clindata = clindata,
                         arraydata = arraydata)
