@@ -1,10 +1,11 @@
-library(shiny)
-
+require(shiny)
 require(Biobase)
 require(highcharter)
 require(magrittr)
 require(rCharts)
 require(IntLim)
+options(shiny.trace=TRUE)
+
 shinyServer(function(input, output) {
     
     multiData <- eventReactive(input$run,{
@@ -46,9 +47,15 @@ shinyServer(function(input, output) {
     
     
     output$choosestype <- renderUI({
+        if(input$dataset=="metabolite"){
         choice<-reactive({
-            varLabels(FmultiData()[[input$dataset]])
-        })
+            varLabels(FmultiData()[["metabolite"]])
+         })
+        }else if(input$dataset=="gene"){
+            choice<-reactive({
+            varLabels(FmultiData()[["expression"]])
+            })
+        }
         selectInput("stype", "Sample Type:", 
                     choices=choice())
     })
@@ -57,14 +64,22 @@ shinyServer(function(input, output) {
     myres <- reactive({
         RunIntLim(FmultiData(),stype=input$stype,outcome=input$dataset)
     })
-    
+    logText <- reactive({
+        textoutput <- capture.output(data <- myres())
+        
+        
+    })
+    output$process<-renderPrint({
+        logText()
+        return(print(logText()))
+    })
     output$Pdist<-renderPlot({
         DistPvalues(myres())
     })
     
     output$heatmap<-renderHighchart({
         myres2 <- IntLim::ProcessResults(myres(),FmultiData())
-        plotCorrHeatmap(myres2)
+        CorrHeatmap(myres2)
     }
     )
     

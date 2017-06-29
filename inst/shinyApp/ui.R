@@ -1,3 +1,4 @@
+require(shiny)
 require(shinydashboard)
 headerbar <- dashboardHeader(
     title = "IntLim",
@@ -131,14 +132,17 @@ body <- dashboardBody(
                         h5("This step help you filter the data"),
                         
                         hr(),
+                        tags$b("Please chose the filtered options"),
                         checkboxInput('filter', 'FILTER', FALSE),
                         numericInput("geneperc", "percentile cutoff for filtering genes:", 15, min = 0, max = 100),
                         numericInput("metabperc", "percentile cutoff for filtering metabolites:", 15, min = 0, max = 100),
                         actionButton("run2", "Run"),
                         hr(),
+                        tags$b("The statistic summary of filtered data"),
                         pre(tableOutput('Fstats')),
                         
                         hr(),
+                        tags$b("Verify the distribution of the filtered data."),
                         htmlOutput('Fplot'),
                         hr()
                         
@@ -155,10 +159,11 @@ body <- dashboardBody(
                         solidHeader = TRUE,
                         h5("Run the linear models and plot distribution of p-values:"),
                         radioButtons("dataset", label = h3("Data set"),
-                                     choices = list("metabolite" = "metabolite", "gene" = "expression"), 
+                                     choices = list("metabolite" = "metabolite", "gene" = "gene"), 
                                      selected = "metabolite"),
                         hr(),
                         uiOutput('choosestype'),
+                        verbatimTextOutput("process"),
                         pre(plotOutput("Pdist")),
                         hr()
                         
