@@ -155,7 +155,7 @@ body <- dashboardBody(
                         solidHeader = TRUE,
                         h5("Run the linear models and plot distribution of p-values:"),
                         radioButtons("dataset", label = h3("Data set"),
-                                     choices = list("metabolite" = "metabolite", "gene" = "gene"), 
+                                     choices = list("metabolite" = "metabolite", "gene" = "expression"), 
                                      selected = "metabolite"),
                         hr(),
                         uiOutput('choosestype'),
