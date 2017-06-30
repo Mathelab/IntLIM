@@ -13,9 +13,11 @@ DistPvalues(IntLimResults)
 Visualize the distribution of unadjusted p-values from linear models
 }
 \examples{
+\dontrun{
 dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 csvfile <- file.path(dir, "NCIinput.csv")
 mydata <- ReadData(csvfile,metabid='id',geneid='id')
-myres <- RunIntLim(mydata,stype="cancertype")
+myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
 DistPvalues(myres)
+}
 }

@@ -16,11 +16,13 @@
 #' @return IntResults object with model results (now includes correlations)
 #'
 #' @examples
+#' \dontrun{
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCIinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
-#' myres <- RunIntLim(mydata,stype="cancertype")
+#' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
 #' myres <- ProcessResults(myres,mydata)
+#' }
 #' @export
 ProcessResults <- function(inputResults,
 				inputData,

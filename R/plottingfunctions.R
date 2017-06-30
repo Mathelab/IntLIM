@@ -105,11 +105,13 @@ PlotDistributions <- function(inputData,viewer=T,
 #' @param IntLimResults output of RunIntLim()
 #'
 #' @examples
+#' \dontrun{
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCIinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
-#' myres <- RunIntLim(mydata,stype="cancertype")
+#' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
 #' DistPvalues(myres)
+#' }
 #' @export
 DistPvalues<- function(IntLimResults) {
         return(hist(IntLimResults))
@@ -127,12 +129,14 @@ DistPvalues<- function(IntLimResults) {
 #' @return a highcharter object
 #'
 #' @examples
+#' \dontrun{
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCIinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
-#' myres <- RunIntLim(mydata,stype="cancertype")
+#' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
 #' myres <- ProcessResults(myres,mydata)
 #' CorrHeatmap(myres)
+#' }
 #' @export
 CorrHeatmap <- function(inputResults,viewer=T) {
 type <- cor <- c()

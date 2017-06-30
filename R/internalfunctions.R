@@ -112,11 +112,16 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
 
     gene <- Biobase::assayDataElement(inputData[["expression"]], 'exprs')
     metab <- Biobase::assayDataElement(inputData[["metabolite"]], 'metabData')
+   
+    uniqtypes <- unique(type)
+    if(length(uniqtypes)!=2) {
+	stop("The number of unique categores is not 2.")
+    }
 
-    genesd1 <- as.numeric(apply(gene[,which(type==unique(type)[1])],1,function(x) stats::sd(x,na.rm=T)))
-    metabsd1 <- as.numeric(apply(metab[,which(type==unique(type)[1])],1,function(x) stats::sd(x,na.rm=T)))
-    genesd2 <- as.numeric(apply(gene[,which(type==unique(type)[2])],1,function(x) stats::sd(x,na.rm=T)))
-    metabsd2 <- as.numeric(apply(metab[,which(type==unique(type)[2])],1,function(x) stats::sd(x,na.rm=T)))
+    genesd1 <- as.numeric(apply(gene[,which(type==uniqtypes[1])],1,function(x) stats::sd(x,na.rm=T)))
+    metabsd1 <- as.numeric(apply(metab[,which(type==uniqtypes[1])],1,function(x) stats::sd(x,na.rm=T)))
+    genesd2 <- as.numeric(apply(gene[,which(type==uniqtypes[2])],1,function(x) stats::sd(x,na.rm=T)))
+    metabsd2 <- as.numeric(apply(metab[,which(type==uniqtypes[2])],1,function(x) stats::sd(x,na.rm=T)))
 
     mymessage=""
     if(length(which(genesd1==0))>0 || length(which(genesd2==0))>0) {

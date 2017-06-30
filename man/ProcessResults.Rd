@@ -35,9 +35,11 @@ non-cancer).  Users can then remove pairs with a difference in correlations betw
 groups 1 and 2 less than a user-defined threshold.
 }
 \examples{
+\dontrun{
 dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 csvfile <- file.path(dir, "NCIinput.csv")
 mydata <- ReadData(csvfile,metabid='id',geneid='id')
-myres <- RunIntLim(mydata,stype="cancertype")
+myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
 myres <- ProcessResults(myres,mydata)
+}
 }

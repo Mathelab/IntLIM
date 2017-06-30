@@ -55,7 +55,7 @@ IntLim::PlotDistributions(inputData)
 
 Run the linear models and plot distribution of p-values:
 ```{r}
-myres <- IntLim::RunIntLim(inputData,stype="cancertype")
+myres <- IntLim::RunIntLim(inputData,stype="PBO_vs_Leukemia")
 IntLim::DistPvalues(myres)
 ```
 

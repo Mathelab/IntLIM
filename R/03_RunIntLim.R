@@ -14,7 +14,9 @@
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCIinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
-#' myres <- RunIntLim(mydata,stype="cancertype")
+#' \dontrun{
+#' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
+#' }
 #' @export
 RunIntLim <- function(inputData,stype=NULL,outcome="metabolite"){
 
@@ -29,14 +31,26 @@ RunIntLim <- function(inputData,stype=NULL,outcome="metabolite"){
     if (is.null(stype)) {stop("Please set the variable type (e.g. sample group)")}
 
     incommon<-MultiDataSet::commonSamples(inputData)
-    mp <- Biobase::pData(incommon[["metabolite"]])[,stype]
-    gp <- Biobase::pData(incommon[["expression"]])[,stype]
+    mp <- as.character(Biobase::pData(incommon[["metabolite"]])[,stype])
+    gp <- as.character(Biobase::pData(incommon[["expression"]])[,stype])
     if(all.equal(mp,gp)[1] != TRUE) {
 	stop(paste("The column", stype,"for the samples in common between the metabolite and gene datasets are not equal.  Please check your input."))
     }
-    if(length(unique(mp)) > 2) {
+    mp[which(mp=="")]=NA
+    if(length(unique(stats::na.omit(mp))) > 2) {
 	stop(paste("IntLim currently requires only two categories.  Make sure the column",stype,"only has two unique values"))
     }
+    # Get the samples where the outcome has a non-missing value
+    if(any(is.na(mp))) {
+	keepers <- which(!is.na(mp))
+        namestokeep <- rownames(Biobase::pData(incommon[["metabolite"]]))[keepers]
+    	incommon <- incommon[namestokeep]
+	mp <- mp[keepers]
+    }
+
+    print("Running the analysis on")
+    print(table(mp))
+
     ptm <- proc.time()
     myres <- RunLM(incommon,outcome=outcome,type=mp)
     print(proc.time() - ptm)

@@ -26,5 +26,7 @@ Run linear models and retrieve relevant statistics
 dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 csvfile <- file.path(dir, "NCIinput.csv")
 mydata <- ReadData(csvfile,metabid='id',geneid='id')
-myres <- RunIntLim(mydata,stype="cancertype")
+\dontrun{
+myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
+}
 }
