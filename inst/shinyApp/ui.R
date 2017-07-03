@@ -1,11 +1,10 @@
-require(shiny)
-require(shinydashboard)
-headerbar <- dashboardHeader(
+
+headerbar <- shinydashboard::dashboardHeader(
     title = "IntLim",
     titleWidth = 270,
-    dropdownMenu(
+    shinydashboard::dropdownMenu(
         type = "notifications",
-        notificationItem(
+        shinydashboard::notificationItem(
             text = "Plots might take some time to display",
             icon("truck"),
             status = "warning"
@@ -13,50 +12,50 @@ headerbar <- dashboardHeader(
     )
 )
 
-sidebar <- dashboardSidebar(
+sidebar <- shinydashboard::dashboardSidebar(
     width = 270,
-    sidebarMenu(
-        menuItem("About",
+    shinydashboard::sidebarMenu(
+        shinydashboard::menuItem("About",
                  tabName = "about",
                  icon = icon("info")),
-        menuItem(
+        shinydashboard::menuItem(
             "Load Data",
             tabName = "loaddata",
             icon = icon("folder-open"),
             badgeLabel = "step 1"
         ),
-        menuItem(
+        shinydashboard::menuItem(
             "Filter Data (optional)",
             tabName = "Filterdata",
             icon = icon("bullseye"),
             badgeLabel = "step 2"
         ),
-        menuItem(
-            "Correlation",
-            tabName = "correlation",
+        shinydashboard::menuItem(
+            "adjusted p value",
+            tabName = "adPval",
             icon = icon("bolt"),
             badgeLabel = "step 3"
         ),
-        menuItem(
+        shinydashboard::menuItem(
             "Process result",
             tabName = "processresult",
             icon = icon("pie-chart"),
             badgeLabel = "step 4"
         ),
         
-        menuItem(
+        shinydashboard::menuItem(
             actionButton("buttonstop", strong("Click to Exit Shiny App")),
             icon = icon("sign-out")
         )
     )
 )
 
-body <- dashboardBody(
+body <- shinydashboard::dashboardBody(
     tags$head(
         tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
     ),
-    tabItems(
-        tabItem(tabName = "about",
+    shinydashboard::tabItems(
+        shinydashboard::tabItem(tabName = "about",
                                 shiny::tabPanel("About",
                                 box(
                              width = 12,
@@ -65,7 +64,7 @@ body <- dashboardBody(
                          )
                 )
         ),
-        tabItem(tabName = "loaddata",
+        shinydashboard::tabItem(tabName = "loaddata",
                 fluidRow(
                     
                     box(
@@ -102,17 +101,28 @@ body <- dashboardBody(
                         textInput("metabid", "Metab ID", "id"),
                         textInput("geneid", "Gene ID", "id"),
                         hr(),
-                        fileInput('file1', 'Choose CSV File',
+                        tags$head(tags$style(HTML(
+                            ".fileinput_2 {
+                            width: 0.1px;
+                            height: 0.1px;
+                            opacity: 0;
+                            overflow: hidden;
+                            position: absolute;
+                            z-index: -1;
+                            }"
+                        ))),
+                        fileInput2('file1', 'Choose CSV File',labelIcon = "folder-open-o",
                                   accept=c('text/csv', 
                                            'text/comma-separated-values,text/plain', 
-                                           '.csv')),
+                                           '.csv'),progress = FALSE),
+                        verbatimTextOutput('filename'),
                         actionButton("run", "Run"),
                         hr(),
                         tags$b("The statistic summary of the data"),
                         pre(tableOutput('stats')),
                         hr(),
                         tags$b("Verify the distribution of the input data."),
-                        htmlOutput("plot")
+                        uiOutput("plot")
                         
                         
                         
@@ -123,7 +133,7 @@ body <- dashboardBody(
                         ),
         
         
-        tabItem(tabName = "Filterdata",
+        shinydashboard::tabItem(tabName = "Filterdata",
                 fluidRow(
                     box(
                         title = strong("Filter Data (optional)") ,
@@ -143,7 +153,7 @@ body <- dashboardBody(
                         
                         hr(),
                         tags$b("Verify the distribution of the filtered data."),
-                        htmlOutput('Fplot'),
+                        uiOutput('Fplot'),
                         hr()
                         
                         
@@ -151,10 +161,10 @@ body <- dashboardBody(
                 )
         ),
         
-        tabItem(tabName = "correlation",
+        shinydashboard::tabItem(tabName = "adPval",
                 fluidRow(
                     box(
-                        title = strong("correlation") ,
+                        title = strong("Adjusted P value") ,
                         width = NULL,
                         solidHeader = TRUE,
                         h5("Run the linear models and plot distribution of p-values:"),
@@ -163,14 +173,14 @@ body <- dashboardBody(
                                      selected = "metabolite"),
                         hr(),
                         uiOutput('choosestype'),
-                        verbatimTextOutput("process"),
-                        pre(plotOutput("Pdist")),
+                        actionButton("run3", "Plot the adjusted p value distribution"),
+                        pre(plotOutput('Pdist')),
                         hr()
                         
                     )
                 )
         ),
-        tabItem(tabName = "processresult",
+        shinydashboard::tabItem(tabName = "processresult",
                 fluidRow(
                     box(
                         title = strong("Process the result") ,
@@ -181,6 +191,7 @@ body <- dashboardBody(
                            Then plot heatmap of significant gene-metabolite pairs
                            
                            "),
+                        actionButton("run4", "Run heatmap"),
                         hr(),
                         highcharter::highchartOutput("heatmap"),
                         hr()
