@@ -42,7 +42,12 @@ sidebar <- shinydashboard::dashboardSidebar(
             icon = icon("pie-chart"),
             badgeLabel = "step 4"
         ),
-        
+        shinydashboard::menuItem(
+            "Scatter plot",
+            tabName = "scatterplot",
+            icon = icon("star"),
+            badgeLabel = "step 5"
+        ),
         shinydashboard::menuItem(
             actionButton("buttonstop", strong("Click to Exit Shiny App")),
             icon = icon("sign-out")
@@ -98,8 +103,8 @@ body <- shinydashboard::dashboardBody(
                         
                         hr(),
                         tags$b("Please input the MetabID and the GeneID for your data "),
-                        textInput("metabid", "Metab ID", "id"),
-                        textInput("geneid", "Gene ID", "id"),
+                        textInput("metabid", "Metab ID", "BIOCHEMICAL"),
+                        textInput("geneid", "Gene ID", "X"),
                         hr(),
                         tags$head(tags$style(HTML(
                             ".fileinput_2 {
@@ -198,7 +203,34 @@ body <- shinydashboard::dashboardBody(
                         
                         )
                     )
-                )
+                ),
+        shinydashboard::tabItem(tabName = "scatterplot",
+                                fluidRow(
+                                    box(
+                                        title = strong("Scatter plot the data") ,
+                                        width = NULL,
+                                        solidHeader = TRUE,
+                                        h5("ppppppppppp
+                                           
+                                           "),
+                                        uiOutput('choosesampletype'),
+                                        hr(),
+                                        
+                                        tags$b("Please input the gene name and metab name you choose"),
+                                        textInput("geneName", "Gene name","X7892501"),
+                                        textInput("metabName", "Metab name","1-arachidonoylglycerophosphoethanolamine*"),
+                                        hr(),
+                                        actionButton("run5", "Run scatter plot"),
+                                        hr(),
+                                        #pre(textOutput('temp')),
+                                        highcharter::highchartOutput("scatterPlot"),
+                                        hr()
+                                        
+                                        )
+                                    )
+                                )
+        
+        
         
         
         

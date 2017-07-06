@@ -75,15 +75,11 @@ shinyServer(function(input, output) {
     
     #adjusted p values
     output$choosestype <- renderUI({
-        if(input$dataset=="metabolite"){
-            choice<-reactive({
-                varLabels(FmultiData()[[input$dataset]])
-            })
-        }else if(input$dataset=="gene"){
+        
             choice<-reactive({
                 varLabels(FmultiData()[["expression"]])
             })
-        }
+        
         selectInput("stype", "Sample Type:", 
                     choices=choice())
     })
@@ -108,6 +104,28 @@ shinyServer(function(input, output) {
     }
     )
     
+    #scatter plot
+    output$choosesampletype <- renderUI({
+        choice <- reactive({
+            varLabels(FmultiData()[["expression"]])
+        })
+        
+        selectInput("sampletype", "Sample Type:",
+                    choices = choice())
+    })
+ 
+    s<-reactive(input$sampletype)
+    stypeList<-eventReactive(input$run5,{FmultiData()[["expression"]]$s})
+    #output$temp<-renderPrint({
+    #    s2<-input$sampletype
+    #    stypeList2<-FmultiData()[["expression"]]$s
+    #    return(stypeList2)
+    #    })
+    
+    
+    output$scatterPlot<-renderHighchart({
+        scatterPlot2(FmultiData(),stypeList,geneName=input$geneName,metabName=input$metabName)
+    })
     
     
 })
