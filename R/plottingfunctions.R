@@ -215,5 +215,35 @@ type <- cor <- c()
 	return(p)	
 }
 
-
-	
+#' scatter plot of select gene and metab
+#'
+#' @import magrittr
+#' @import highcharter
+#'
+#' @param inputData IntLimObject output of ReadData() or FilterData()
+#' @param stype vector of color
+#' @param geneName string of select geneName
+#' @param geneName string of select metabName
+#' @return a highcharter object
+#'
+#' @examples
+#' \dontrun{
+#' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+#' csvfile <- file.path(dir, "NCIinput.csv")
+#' mydata <- ReadData(csvfile,metabid='id',geneid='id')
+#' stype = inputData[["expression"]]$PBO_vs_Leukemia
+#' scatterPlot2(inputData,stype,"PRPF8","(p-Hydroxyphenyl)lactic acid")
+#' 
+#' }
+#' @export
+scatterPlot2<- function(inputData,stype,geneName,metabName) {
+    #extract gene data
+    gene<-exprs(inputData[["expression"]])
+    sGene<-gene[geneName,]
+    #extract metab data
+    matab<-assayDataElement(inputData[["metabolite"]], 'metabData')
+    sMetab<-as.numeric(metab[metabName,])
+    #plot
+    scatterPlot(gene1,metab1,stype,geneName,metabName)
+    
+}	
