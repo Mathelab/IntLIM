@@ -263,3 +263,30 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
          )
         }
 
+#' scatter plot of select gene and metab
+#'
+#' @import magrittr
+#' @import highcharter
+#'
+#' @param gene numeric vector of gene data
+#' @param metab numeric vector of metab data
+#' @param stype vector of color
+#' @param geneName string of select geneName
+#' @param geneName string of select metabName
+#' @return a highcharter object
+#'
+
+#' @export
+scatterPlot<-function(gene,metab,stype,geneName,metabName) {
+    highchart() %>% 
+        
+        hc_title(text = "Scatter plot",
+                 style = list(color = '#2E1654',fontWeight = 'bold', fontSize = "20px")) %>% 
+        hc_yAxis(title = list(text = metabName)
+                 ) %>% 
+        hc_xAxis(title = list(text = geneName)
+                 ) %>% 
+        hc_add_series_scatter(gene, metab,color=stype,
+                             showInLegend = TRUE) 
+        
+}
