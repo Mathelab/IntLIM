@@ -268,25 +268,58 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
 #' @import magrittr
 #' @import highcharter
 #'
-#' @param gene numeric vector of gene data
-#' @param metab numeric vector of metab data
-#' @param stype vector of color
-#' @param geneName string of select geneName
-#' @param geneName string of select metabName
+#' @param well-formact data
 #' @return a highcharter object
 #'
 
 #' @export
-scatterPlot<-function(gene,metab,stype,geneName,metabName) {
-    highchart() %>% 
-        
-        hc_title(text = "Scatter plot",
-                 style = list(color = '#2E1654',fontWeight = 'bold', fontSize = "20px")) %>% 
-        hc_yAxis(title = list(text = metabName)
-                 ) %>% 
-        hc_xAxis(title = list(text = geneName)
-                 ) %>% 
-        hc_add_series_scatter(gene, metab,color=stype,
-                             showInLegend = TRUE) 
+scatterPlot<-function(data) {
+     b<-glm(data$metab~data$gene+data$type+data$gene:data$type)
+    coefficients<-t(b$coefficients)
+    i<-coefficients[,1]
+    g<-coefficients[,2]
+    c2<-coefficients[,3]
+    c1<-coefficients[,4]
+    g.c2<-coefficients[,5]
+    g.c1<-coefficients[,6]
+    
+    u<-unique(data$type)
+    remove<-""
+    u<-as.matrix(u [! u %in% remove])
+    type1<-u[1,1]
+    type2<-u[2,1]
+    
+    largest1<- max(data$gene[data$type==type1])
+    largest2<-max(data$gene[data$type==type2])
+    min1<-min(data$gene[data$type==type1])
+    min2<-min(data$gene[data$type==type2])
+    
+    line1<-data.frame(x=c(largest1,min1),y=c(g*largest1+i,min1*g+i))
+    line2<-data.frame(x=c(largest2,min2),y=c(g*largest2+g.c2*largest2+i+c2,min2*g+i+c2))
+    
+    
+    
+    hc<-highchart(width = 800, height = 700) 
+    #hc_title(text = "scatterplot",
+                 #style = list(color = '#2E1717',fontSize = '20px',
+                              #fontWeight = 'bold')) %>%
+    for(type in u){
+           hc<-hc%>% 
+            hc_add_series_scatter(data$gene[data$type==type],data$metab[data$type==type],name=sprintf("type %s", type),
+                                  showInLegend = TRUE) 
+            #if(type==type1){
+                #line<-data.frame(x=c(8,0),y=c(g*8+i,i)) 
+               #hc_add_series(hc,data=line1,type='line',name='regression line1') 
+           #}else if (type==type2){
+                #line<-data.frame(x=c(8.84,0),y=c(g*8.84+g.c2*8.84+i+c2,i+c2)) 
+            #hc_add_series(hc,data=line2,type='line',name='regression line2')
+            #}
+    } 
+     
+    hc
+  
+    hc_add_series(hc,data=line1,type='line',name='regression line1',enableMouseTracking=FALSE,marker=FALSE)
+    hc_add_series(hc,data=line2,type='line',name='regression line2',enableMouseTracking=FALSE,marker=FALSE)
+    
         
 }
