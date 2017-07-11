@@ -8,3 +8,7 @@ However, despite this progress, there are many challenges to interpreting metabo
 The novel linear model is:  E(m|g,t) = β1 + β2 g + β3 t + β4 (g:t) + ε where m and g are log-transformed metabolite abundances and gene levels respectively, t is phenotype (cancer type, patient diagnosis, treatment group, etc), (g:t) is the interaction between gene expression and phenotype, and ε is the error term.  A statistically significant p value of the (g:t) interaction term indicates that the slope relating gene expression and metabolite abundance is different from one phenotype compared to another.  Through this model, we can identify gene-metabolite correlations that are specific to a particular phenotype.  
 
 This model has been applied in this study to the publically available NCI-60 cancer cell line data on gene expression and metabolomics (available in this package) as well as previously published gene expression and metabolomics data from a breast cancer study.  To increase usability of our approach, we have also implemented our approach as an R Bioconductor package, IntLim or Integration through Linear Modeling, that includes an RShiny web application (which does not require knowledge of R).  
+
+## Contact
+
+If you have any questions, comments, or concerns on how to use IntLim please contact Ewy Mathe at ewy.mathe@osumc.edu.  You can also contact Jalal Siddiqui at jalal.siddiqui@osumc.edu
