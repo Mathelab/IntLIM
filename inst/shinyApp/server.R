@@ -37,38 +37,42 @@ shinyServer(function(input, output) {
             }
         }
     )
+    
+    
     multiData <- eventReactive(input$run,{
         
         inFile<-input$file1
-        multiData<-ReadData(inFile$datapath,input$metabid,input$geneid)
+        multiData<-IntLim::ReadData(inFile$datapath,input$metabid,input$geneid)
         multiData
     })
     
+    
     output$stats<-renderTable(
-        t(OutputStats(multiData())),
+        t(IntLim::OutputStats(multiData())),
         include.rownames=TRUE,
         include.colnames=FALSE
     )
     
     output$plot<-renderUI(
-        PlotDistributions(multiData())
+        IntLim::PlotDistributions(multiData())
     )
+    
     #filter data
     FmultiData<-eventReactive(input$run2,{
         FmultiData<-multiData()
         if(input$filter){
-            FmultiData<-FilterData(multiData(),geneperc=input$geneperc,metabperc=input$metabperc)
+            FmultiData<-IntLim::FilterData(multiData(),geneperc=input$geneperc,metabperc=input$metabperc)
         }
         FmultiData
     },ignoreNULL=FALSE)
     
     output$Fstats<-renderTable(
-        as.data.frame(t(OutputStats(FmultiData()))),
+        as.data.frame(t(IntLim::OutputStats(FmultiData()))),
         include.rownames=TRUE,
         include.colnames=FALSE
     )
     output$Fplot<-renderUI(
-        PlotDistributions(FmultiData())
+        IntLim::PlotDistributions(FmultiData())
         
     )
     
@@ -77,7 +81,7 @@ shinyServer(function(input, output) {
     output$choosestype <- renderUI({
         
             choice<-reactive({
-                varLabels(FmultiData()[["expression"]])
+                Biobase::varLabels(FmultiData()[["expression"]])
             })
         
         selectInput("stype", "Sample Type:", 
@@ -86,10 +90,10 @@ shinyServer(function(input, output) {
         
        
     myres <- eventReactive(input$run3,{
-       RunIntLim(FmultiData(),stype=input$stype,outcome=input$dataset)
+        IntLim::RunIntLim(FmultiData(),stype=input$stype,outcome=input$dataset)
     })
     output$Pdist<-renderPlot({
-       DistPvalues(myres()@interaction.adj.pvalues)
+        IntLim::DistPvalues(myres()@interaction.adj.pvalues)
         
     })
    
@@ -99,33 +103,57 @@ shinyServer(function(input, output) {
     myres2 <- eventReactive(input$run4,{
         IntLim::ProcessResults(myres(),FmultiData())
     })
-    output$heatmap<-renderHighchart({
-        CorrHeatmap(myres2())
+    output$heatmap<-highcharter::renderHighchart({
+        IntLim::CorrHeatmap(myres2())
     }
     )
     
     #scatter plot
-    output$choosesampletype <- renderUI({
-        choice <- reactive({
-            varLabels(FmultiData()[["expression"]])
+    output$table<-renderTable({
+        a<-myres2()@corr
+        b<-abs(a[,3]-a[,4])
+        a$diff<-b
+        a<-a[,-3]
+        a<-a[,-3]
+        top.type<-head(a[order(a[,4],decreasing = TRUE),])
+        return(top.type)
+    })
+    
+    
+    
+    output$chooseMetabName <- renderUI({
+        
+        metabName<-reactive({
+            a<-myres2()@corr
+            a[,1]
         })
         
-        selectInput("sampletype", "Sample Type:",
-                    choices = choice())
+        selectInput('metabName', 'Metab Name', choices=metabName(), selectize=TRUE)
     })
- 
-    s<-reactive(input$sampletype)
-    stypeList<-eventReactive(input$run5,{FmultiData()[["expression"]]$s})
-    #output$temp<-renderPrint({
-    #    s2<-input$sampletype
-    #    stypeList2<-FmultiData()[["expression"]]$s
-    #    return(stypeList2)
-    #    })
     
-    
-    output$scatterPlot<-renderHighchart({
-        scatterPlot2(FmultiData(),stypeList,geneName=input$geneName,metabName=input$metabName)
+    output$chooseGeneName <- renderUI({
+        
+        geneName<-reactive({
+            a<-myres2()@corr
+            a[,2]
+        })
+        
+        selectInput('geneName', 'Gene Name', choices=geneName(), selectize=TRUE)
     })
+    
+    stypeList<-eventReactive(input$run5,{
+        s2<-input$stype
+        expression<-FmultiData()[["expression"]]
+        expression[[s2]]
+        
+    })
+    
+  
+   
+    output$scatterPlot<-highcharter::renderHighchart({
+        scatterPlot2(FmultiData(),stypeList(),geneName=input$geneName,metabName=input$metabName)
+        })
+    
     
     
 })

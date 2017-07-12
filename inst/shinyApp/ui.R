@@ -62,10 +62,12 @@ body <- shinydashboard::dashboardBody(
     shinydashboard::tabItems(
         shinydashboard::tabItem(tabName = "about",
                                 shiny::tabPanel("About",
-                                box(
+                                                box(
                              width = 12,
                              #includeMarkdown("include.md")
-                             tags$b("Here is some introduction of the InLim")
+                             tags$b("Here is some introduction of the InLim"),
+                             h5("We developed a new Bioconductor R pachage and R shiny app  Utilizing our novel linear modeling approach, we are able to identify putative changes in gene-metabolite associations resulting from cancer-type (with respect to NCI-60 data) and tissue-type (with respect to breast cancer data).  The gene-metabolite pairs identified were enriched for pathways linked to cancer in both cases.  The IntLiM package and App is designed such that other researchers can better interpret their metabolomics data in light of transcriptomic data by using our new linear modeling approach.  While this is not the “be all end all” tool for interpreting data, this package and approach will greatly assist researchers in formulating novel hypothesis and proposing new studies especially with regards to the gene-metabolite pairs identified.  Integrating the results with pathway analysis tools will provide further insight.  The IntLim package and App will be available for download via Github and a sample data-set and vignette is provided for users (https://github.com/mingrui-liu/IntLim/).  With metabolomics being a rising field, it will be necessary to interpret metabolomics data in light of gene expression.  IntLim provides a novel approach for doing so.   
+")
                          )
                 )
         ),
@@ -103,8 +105,8 @@ body <- shinydashboard::dashboardBody(
                         
                         hr(),
                         tags$b("Please input the MetabID and the GeneID for your data "),
-                        textInput("metabid", "Metab ID", "BIOCHEMICAL"),
-                        textInput("geneid", "Gene ID", "X"),
+                        textInput("metabid", "Metab ID", "id"),
+                        textInput("geneid", "Gene ID", "id"),
                         hr(),
                         tags$head(tags$style(HTML(
                             ".fileinput_2 {
@@ -210,19 +212,24 @@ body <- shinydashboard::dashboardBody(
                                         title = strong("Scatter plot the data") ,
                                         width = NULL,
                                         solidHeader = TRUE,
-                                        h5("ppppppppppp
+                                        h5("scatter plot
                                            
                                            "),
                                         uiOutput('choosesampletype'),
                                         hr(),
-                                        
+                                        tags$b("Top 6 pairs of difference of correlation "),
+                                        pre(tableOutput('table')),
+                                      
+                                        hr(),
                                         tags$b("Please input the gene name and metab name you choose"),
-                                        textInput("geneName", "Gene name","X7892501"),
-                                        textInput("metabName", "Metab name","1-arachidonoylglycerophosphoethanolamine*"),
+                                        
+                                        uiOutput('chooseMetabName'),
+                                        uiOutput('chooseGeneName'),
+        
+                                        
                                         hr(),
                                         actionButton("run5", "Run scatter plot"),
                                         hr(),
-                                        #pre(textOutput('temp')),
                                         highcharter::highchartOutput("scatterPlot"),
                                         hr()
                                         
