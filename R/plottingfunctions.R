@@ -237,13 +237,15 @@ type <- cor <- c()
 #' }
 #' @export
 scatterPlot2<- function(inputData,stype,geneName,metabName) {
-    #extract gene data
-    gene<-exprs(inputData[["expression"]])
+    gene<-Biobase::exprs(inputData[["expression"]])
     sGene<-gene[geneName,]
-    #extract metab data
-    matab<-assayDataElement(inputData[["metabolite"]], 'metabData')
-    sMetab<-as.numeric(metab[metabName,])
-    #plot
-    scatterPlot(gene1,metab1,stype,geneName,metabName)
     
+    metab<-Biobase::assayDataElement(inputData[["metabolite"]], 'metabData')
+    sMetab<-as.numeric(metab[metabName,])
+    
+    data<-data.frame('gene'=sGene,'metab'=sMetab,'type'=stype)
+    
+    scatterPlot(data)
+    
+}
 }	
