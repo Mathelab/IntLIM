@@ -118,6 +118,7 @@ body <- shinydashboard::dashboardBody(
                             z-index: -1;
                             }"
                         ))),
+                        
                         fileInput2('file1', 'Choose CSV File',labelIcon = "folder-open-o",
                                   accept=c('text/csv', 
                                            'text/comma-separated-values,text/plain', 
@@ -125,6 +126,23 @@ body <- shinydashboard::dashboardBody(
                         verbatimTextOutput('filename'),
                         actionButton("run", "Run"),
                         hr(),
+                        tags$head(tags$style(type="text/css", "
+                        loadmessage {
+                                             position: fixed;
+                                             top: 0px;
+                                             left: 0px;
+                                             width: 100%;
+                                             padding: 5px 0px 5px 0px;
+                                             text-align: center;
+                                             font-weight: bold;
+                                             font-size: 100%;
+                                             color: #000000;
+                                             background-color: #CCFF66;
+                                             z-index: 105;
+                                             }
+                                             ")),
+                        conditionalPanel(condition="$('html').hasClass('shiny-busy')",
+                                         tags$div("Loading...",id="loadmessage")),
                         tags$b("The statistic summary of the data"),
                         pre(tableOutput('stats')),
                         hr(),
@@ -170,6 +188,7 @@ body <- shinydashboard::dashboardBody(
         
         shinydashboard::tabItem(tabName = "adPval",
                 fluidRow(
+                    
                     box(
                         title = strong("Adjusted P value") ,
                         width = NULL,
@@ -181,6 +200,25 @@ body <- shinydashboard::dashboardBody(
                         hr(),
                         uiOutput('choosestype'),
                         actionButton("run3", "Plot the adjusted p value distribution"),
+                        #pre(tableOutput('process')),
+                        tags$head(tags$style(type="text/css", "
+                        loadmessage {
+                                             position: fixed;
+                                             top: 0px;
+                                             left: 0px;
+                                             width: 100%;
+                                             padding: 5px 0px 5px 0px;
+                                             text-align: center;
+                                             font-weight: bold;
+                                             font-size: 100%;
+                                             color: #000000;
+                                             background-color: #CCFF66;
+                                             z-index: 105;
+                                             }
+                                             ")),
+                        conditionalPanel(condition="$('html').hasClass('shiny-busy')",
+                                         tags$div("Loading...",id="loadmessage")),
+                    
                         pre(plotOutput('Pdist')),
                         hr()
                         
@@ -200,6 +238,23 @@ body <- shinydashboard::dashboardBody(
                            "),
                         actionButton("run4", "Run heatmap"),
                         hr(),
+                        tags$head(tags$style(type="text/css", "
+                        loadmessage {
+                                             position: fixed;
+                                             top: 0px;
+                                             left: 0px;
+                                             width: 100%;
+                                             padding: 5px 0px 5px 0px;
+                                             text-align: center;
+                                             font-weight: bold;
+                                             font-size: 100%;
+                                             color: #000000;
+                                             background-color: #CCFF66;
+                                             z-index: 105;
+                                             }
+                                             ")),
+                        conditionalPanel(condition="$('html').hasClass('shiny-busy')",
+                                         tags$div("Loading...",id="loadmessage")),
                         highcharter::highchartOutput("heatmap"),
                         hr()
                         
@@ -230,6 +285,23 @@ body <- shinydashboard::dashboardBody(
                                         hr(),
                                         actionButton("run5", "Run scatter plot"),
                                         hr(),
+                                        tags$head(tags$style(type="text/css", "
+                        loadmessage {
+                                                             position: fixed;
+                                                             top: 0px;
+                                                             left: 0px;
+                                                             width: 100%;
+                                                             padding: 5px 0px 5px 0px;
+                                                             text-align: center;
+                                                             font-weight: bold;
+                                                             font-size: 100%;
+                                                             color: #000000;
+                                                             background-color: #CCFF66;
+                                                             z-index: 105;
+                                                             }
+                                                             ")),
+                                        conditionalPanel(condition="$('html').hasClass('shiny-busy')",
+                                                         tags$div("Loading...",id="loadmessage")),
                                         highcharter::highchartOutput("scatterPlot"),
                                         hr()
                                         

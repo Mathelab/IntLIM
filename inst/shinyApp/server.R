@@ -42,6 +42,7 @@ shinyServer(function(input, output) {
     multiData <- eventReactive(input$run,{
         
         inFile<-input$file1
+     
         multiData<-IntLim::ReadData(inFile$datapath,input$metabid,input$geneid)
         multiData
     })
@@ -90,9 +91,12 @@ shinyServer(function(input, output) {
         
        
     myres <- eventReactive(input$run3,{
+        shinyjs::html("text", "")
         IntLim::RunIntLim(FmultiData(),stype=input$stype,outcome=input$dataset)
+        
     })
     output$Pdist<-renderPlot({
+        
         IntLim::DistPvalues(myres()@interaction.adj.pvalues)
         
     })
@@ -115,7 +119,7 @@ shinyServer(function(input, output) {
         a$diff<-b
         a<-a[,-3]
         a<-a[,-3]
-        top.type<-head(a[order(a[,4],decreasing = TRUE),])
+        top.type<-head(a[order(a[,3],decreasing = TRUE),])
         return(top.type)
     })
     
