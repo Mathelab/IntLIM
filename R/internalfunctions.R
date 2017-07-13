@@ -274,52 +274,42 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
 
 #' @export
 scatterPlot<-function(data) {
-     b<-glm(data$metab~data$gene+data$type+data$gene:data$type)
+    
+    data<-data[data$type!="",]
+    data$type <- factor(data$type)
+    b<-glm(data$metab~data$gene+data$type+data$gene:data$type)
+    
+    
     coefficients<-t(b$coefficients)
     i<-coefficients[,1]
     g<-coefficients[,2]
-    c2<-coefficients[,3]
-    c1<-coefficients[,4]
-    g.c2<-coefficients[,5]
-    g.c1<-coefficients[,6]
+    c<-coefficients[,3]
+    g.c<-coefficients[,4]
     
-    u<-unique(data$type)
-    remove<-""
-    u<-as.matrix(u [! u %in% remove])
+    u<-as.matrix(levels(data$type))
     type1<-u[1,1]
     type2<-u[2,1]
     
-    largest1<- max(data$gene[data$type==type1])
-    largest2<-max(data$gene[data$type==type2])
-    min1<-min(data$gene[data$type==type1])
-    min2<-min(data$gene[data$type==type2])
+    max<- max(data$gene)
+    min<-min(data$gene)
     
-    line1<-data.frame(x=c(largest1,min1),y=c(g*largest1+i,min1*g+i))
-    line2<-data.frame(x=c(largest2,min2),y=c(g*largest2+g.c2*largest2+i+c2,min2*g+i+c2))
+    line1<-data.frame(x=c(max,min),y=c(g*max+i,min*g+i))
+    line2<-data.frame(x=c(max,min),y=c(g*max+g.c*max+i+c,min*g+i+c))
     
     
     
-    hc<-highchart(width = 800, height = 700) 
-    #hc_title(text = "scatterplot",
-                 #style = list(color = '#2E1717',fontSize = '20px',
-                              #fontWeight = 'bold')) %>%
+    hc<-highcharter::highchart(width = 800, height = 700) 
     for(type in u){
-           hc<-hc%>% 
-            hc_add_series_scatter(data$gene[data$type==type],data$metab[data$type==type],name=sprintf("type %s", type),
+        hc<-hc%>% 
+            highcharter::hc_add_series_scatter(data$gene[data$type==type],data$metab[data$type==type],name=sprintf("type %s", type),
                                   showInLegend = TRUE) 
-            #if(type==type1){
-                #line<-data.frame(x=c(8,0),y=c(g*8+i,i)) 
-               #hc_add_series(hc,data=line1,type='line',name='regression line1') 
-           #}else if (type==type2){
-                #line<-data.frame(x=c(8.84,0),y=c(g*8.84+g.c2*8.84+i+c2,i+c2)) 
-            #hc_add_series(hc,data=line2,type='line',name='regression line2')
-            #}
+       
     } 
-     
-    hc
-  
-    hc_add_series(hc,data=line1,type='line',name='regression line1',enableMouseTracking=FALSE,marker=FALSE)
-    hc_add_series(hc,data=line2,type='line',name='regression line2',enableMouseTracking=FALSE,marker=FALSE)
     
-        
+    hc <- hc %>%
+        highcharter::hc_add_series(data=line1,type='line',name=sprintf("regression line %s",type1),color = "#6AB9FF",enableMouseTracking=FALSE,marker=FALSE) %>%
+        highcharter::hc_add_series(data=line2,type='line',name=sprintf("regression line %s",type2),color = "#474544",enableMouseTracking=FALSE,marker=FALSE)
+    
+    hc
+    
 }
