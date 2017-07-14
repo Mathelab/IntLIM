@@ -56,25 +56,20 @@ sidebar <- shinydashboard::dashboardSidebar(
 )
 
 body <- shinydashboard::dashboardBody(
-    tags$head(
-        tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
-    ),
+    
     shinydashboard::tabItems(
         shinydashboard::tabItem(tabName = "about",
-                                shiny::tabPanel("About",
-                                                box(
+                             shiny::tabPanel("About",
+                                             shinydashboard::box(
                              width = 12,
-                             #includeMarkdown("include.md")
-                             tags$b("Here is some introduction of the InLim"),
-                             h5("We developed a new Bioconductor R pachage and R shiny app  Utilizing our novel linear modeling approach, we are able to identify putative changes in gene-metabolite associations resulting from cancer-type (with respect to NCI-60 data) and tissue-type (with respect to breast cancer data).  The gene-metabolite pairs identified were enriched for pathways linked to cancer in both cases.  The IntLiM package and App is designed such that other researchers can better interpret their metabolomics data in light of transcriptomic data by using our new linear modeling approach.  While this is not the “be all end all” tool for interpreting data, this package and approach will greatly assist researchers in formulating novel hypothesis and proposing new studies especially with regards to the gene-metabolite pairs identified.  Integrating the results with pathway analysis tools will provide further insight.  The IntLim package and App will be available for download via Github and a sample data-set and vignette is provided for users (https://github.com/mingrui-liu/IntLim/).  With metabolomics being a rising field, it will be necessary to interpret metabolomics data in light of gene expression.  IntLim provides a novel approach for doing so.   
-")
+                             includeMarkdown("README.md")
                          )
                 )
         ),
         shinydashboard::tabItem(tabName = "loaddata",
                 fluidRow(
                     
-                    box(
+                    shinydashboard::box(
                         title = strong("Input menu file"),
                         width = NULL,
                         solidHeader = TRUE,
@@ -144,9 +139,11 @@ body <- shinydashboard::dashboardBody(
                         conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                          tags$div("Loading...",id="loadmessage")),
                         tags$b("The statistic summary of the data"),
+                        plot.new(),
                         pre(tableOutput('stats')),
                         hr(),
                         tags$b("Verify the distribution of the input data."),
+                        plot.new(),
                         uiOutput("plot")
                         
                         
@@ -160,7 +157,7 @@ body <- shinydashboard::dashboardBody(
         
         shinydashboard::tabItem(tabName = "Filterdata",
                 fluidRow(
-                    box(
+                    shinydashboard::box(
                         title = strong("Filter Data (optional)") ,
                         width = NULL,
                         solidHeader = TRUE,
@@ -189,7 +186,7 @@ body <- shinydashboard::dashboardBody(
         shinydashboard::tabItem(tabName = "adPval",
                 fluidRow(
                     
-                    box(
+                    shinydashboard::box(
                         title = strong("Adjusted P value") ,
                         width = NULL,
                         solidHeader = TRUE,
@@ -227,7 +224,7 @@ body <- shinydashboard::dashboardBody(
         ),
         shinydashboard::tabItem(tabName = "processresult",
                 fluidRow(
-                    box(
+                    shinydashboard::box(
                         title = strong("Process the result") ,
                         width = NULL,
                         solidHeader = TRUE,
@@ -263,7 +260,7 @@ body <- shinydashboard::dashboardBody(
                 ),
         shinydashboard::tabItem(tabName = "scatterplot",
                                 fluidRow(
-                                    box(
+                                    shinydashboard::box(
                                         title = strong("Scatter plot the data") ,
                                         width = NULL,
                                         solidHeader = TRUE,
@@ -322,7 +319,7 @@ body <- shinydashboard::dashboardBody(
 
 
 shinyUI(fluidPage(
-    dashboardPage(
+    shinydashboard::dashboardPage(
         headerbar,
         sidebar,
         body
