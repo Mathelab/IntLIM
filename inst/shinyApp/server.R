@@ -131,7 +131,7 @@ shinyServer(function(input, output) {
   
    
     output$scatterPlot<-highcharter::renderHighchart({
-        scatterPlot2(FmultiData(),stypeList(),geneName=input$geneName,metabName=input$metabName)
+        IntLim::scatterPlot2(FmultiData(),stypeList(),geneName=input$geneName,metabName=input$metabName)
         })
     
     
