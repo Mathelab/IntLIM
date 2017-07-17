@@ -1,5 +1,8 @@
 # Intlim:  Integration through Linear Modeling
 
+[![Build Status](https://travis-ci.org/michaelliao/openweixin.svg?branch=master)](https://travis-ci.org/michaelliao/openweixin)
+
+
 ## Introduction
 
 Metabolomics is playing an increasing role in clinical and translational research and has greatly assisted in identifying novel, putative biomarkers for cancers.  Studies of metabolomics involve the measurements of small molecules (<1500 Daltons) in biospecimens such as blood, tissue, and urine, among others.  Given that metabolites reflect disease phenotype and downstream effects of biochemical pathways/post-translational modifications, they are seen as ideal candidates for biomarker discovery.  Several studies have utilized metabolomics to identify biomarkers for various cancers, heart disease, and diabetes.  
