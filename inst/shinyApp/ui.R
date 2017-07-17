@@ -114,7 +114,7 @@ body <- shinydashboard::dashboardBody(
                             }"
                         ))),
                         
-                        IntLim::fileInput2('file1', 'Choose CSV File',labelIcon = "folder-open-o",
+                        fileInput2('file1', 'Choose CSV File',labelIcon = "folder-open-o",
                                   accept=c('text/csv', 
                                            'text/comma-separated-values,text/plain', 
                                            '.csv'),progress = FALSE),
