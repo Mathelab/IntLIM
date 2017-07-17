@@ -219,7 +219,7 @@ body <- shinydashboard::dashboardBody(
                         hr(),
                         uiOutput('choosestype'),
                         actionButton("run3", "Plot the adjusted p value distribution"),
-                        #pre(tableOutput('process')),
+                        
                         tags$head(tags$style(type="text/css", "
                         loadmessage {
                                              position: fixed;
@@ -283,10 +283,10 @@ body <- shinydashboard::dashboardBody(
         shinydashboard::tabItem(tabName = "scatterplot",
                                 fluidRow(
                                     shinydashboard::box(
-                                        title = strong("Scatter plot the data") ,
+                                        title = strong("Scatter plot") ,
                                         width = NULL,
                                         solidHeader = TRUE,
-                                        h5("scatter plot
+                                        h5("some introduction of scatter plot
                                            
                                            "),
                                         uiOutput('choosesampletype'),
@@ -302,8 +302,8 @@ body <- shinydashboard::dashboardBody(
         
                                         
                                         hr(),
-                                        actionButton("run5", "Run scatter plot"),
-                                        hr(),
+                                        actionButton("run5", "Plot"),
+                                        
                                         tags$head(tags$style(type="text/css", "
                         loadmessage {
                                                              position: fixed;
@@ -314,7 +314,7 @@ body <- shinydashboard::dashboardBody(
                                                              text-align: center;
                                                              font-weight: bold;
                                                              font-size: 100%;
-                                                             color: #000000;
+                                                             color: #37649b;
                                                              background-color: #CCFF66;
                                                              z-index: 105;
                                                              }
