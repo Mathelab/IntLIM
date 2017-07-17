@@ -248,4 +248,3 @@ scatterPlot2<- function(inputData,stype,geneName,metabName) {
     scatterPlot(data)
     
 }
-}	
