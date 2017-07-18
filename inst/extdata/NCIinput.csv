@@ -1,6 +1,6 @@
 type,filenames
-metabData,/Library/Frameworks/R.framework/Versions/3.3/Resources/library/IntLim/extdata/metabData.csv
-geneData,/Library/Frameworks/R.framework/Versions/3.3/Resources/library/IntLim/extdata/geneData.csv
-metabMetaData,/Library/Frameworks/R.framework/Versions/3.3/Resources/library/IntLim/extdata/fData.metab.csv
-geneMetaData,/Library/Frameworks/R.framework/Versions/3.3/Resources/library/IntLim/extdata/fData.gene.csv
-sampleMetaData,/Library/Frameworks/R.framework/Versions/3.3/Resources/library/IntLim/extdata/pData.csv
+metabData,/Library/Frameworks/R.framework/Versions/Current/Resources/library/IntLim/extdata/metabData.csv
+geneData,/Library/Frameworks/R.framework/Versions/Current/Resources/library/IntLim/extdata/geneData.csv
+metabMetaData,/Library/Frameworks/R.framework/Versions/Current/Resources/library/IntLim/extdata/fData.metab.csv
+geneMetaData,/Library/Frameworks/R.framework/Versions/Current/Resources/library/IntLim/extdata/fData.gene.csv
+sampleMetaData,/Library/Frameworks/R.framework/Versions/Current/Resources/library/IntLim/extdata/pData.csv
