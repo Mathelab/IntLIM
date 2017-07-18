@@ -218,7 +218,7 @@ body <- shinydashboard::dashboardBody(
                                      selected = "metabolite"),
                         hr(),
                         uiOutput('choosestype'),
-                        actionButton("run3", "Plot the adjusted p value distribution"),
+                        actionButton("run3", "Plot"),
                         
                         tags$head(tags$style(type="text/css", "
                         loadmessage {
