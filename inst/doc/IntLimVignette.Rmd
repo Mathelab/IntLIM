@@ -1,0 +1,70 @@
+---
+title: "IntLim vignette"
+author: "Mingrui Liu, Ewy Mathe, Jalal Siddiqui"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+
+## Data Input Format
+All files supplied in the CSV file, and the CSV file itself should be placed in the same folder.  
+The software assumes will automatically retrieve the file path of the input files (based on location of CSV files).  Note also that the input data files should be in a specific format: 
+	metabData: rows are metabolites, columns are samples 
+	geneData: rows are genes, columns are samples 
+	metabMetaData: rows are metabolites, features are columns 
+	geneMetaData: rows are genes, features are columns
+	sampleMetaData: rows are samples, features are columns 
+
+In addition, the first column of the sampleMetaData file is assumed to be the sample id, and those sample ids should match the columns of metabData and geneData (e.g. it is required that all sample ids in the metabData and geneData are also in the sampleMetaDatafile).
+
+## Running the user-friendly shiny web application
+To start up the app, simply type:
+```{r eval=FALSE}
+	runIntLimApp()
+```
+
+## Example Workflow
+A small data set is embedded in a package.  To access it:
+```{r}
+     dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+     csvfile <- file.path(dir, "NCItestinput.csv")
+     csvfile
+```
+
+Read in the data and organize into a MultiDataset object, and print out some statistics:
+```{r}
+inputData <- IntLim::ReadData(csvfile,metabid='id',geneid='id')
+IntLim::OutputStats(inputData)
+```
+
+Optionally, the features (genes or metabolites) can be filtered out based on their mean values. Users should input a percentile cutoff and any feature with a mean value below that cutoff will be removed.
+```{r}
+inputDatafilt <- IntLim::FilterData(inputData,geneperc=15)
+IntLim::OutputStats(inputDatafilt)
+```
+
+Verify the distribution of the input data:
+```{r}
+IntLim::PlotDistributions(inputData)
+```
+
+Run the linear models and plot distribution of p-values:
+```{r}
+myres <- IntLim::RunIntLim(inputData,stype="PBO_vs_Leukemia")
+IntLim::DistPvalues(myres)
+```
+
+Process the results and filter pairs of genes-metabolites based on adjusted p-values and differences in correlation coefficients between groups 1 and 2.  Then plot heatmap of significant gene-metabolite pairs
+```{r}
+myres <- IntLim::ProcessResults(myres,inputData)
+IntLim::CorrHeatmap(myres)
+```
+
+```{r}
+sessionInfo()
+```

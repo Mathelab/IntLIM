@@ -35,3 +35,7 @@ runIntLIMApp()
 ## Vignette
 A detailed vignette can be found here:
 https://mathelab.github.io/IntLIM/vignette.html
+
+## Highcharts
+
+All plots from this package use Highcharts: Highcharts (www.highcharts.com) is a Highsoft software product which is not free for commercial and Governmental use.
