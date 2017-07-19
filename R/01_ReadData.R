@@ -59,30 +59,36 @@ ReadData <- function(inputFile,metabid,geneid, logmetab=FALSE,loggene=FALSE){
     if(sum(mymatches)!=5) {
 	stop("The column 'type' contains non-allowed entries (See Description)")}
  
+    mydir <- base::dirname(inputFile)
     # Check that files exist then read them in one by one
-    if(!file.exists(as.character(csvfile['metabData',]))) {
-	stop(paste("File", csvfile['metabData',], "does not exist"))} else {
-    MData<-utils::read.csv(as.character(csvfile['metabData',]),row.names = 1,check.names=F)}
+    temp <- paste0(mydir,"/",as.character(csvfile['metabData',]))
+    if(!file.exists(temp)) {
+	stop(paste("File", temp, "does not exist"))} else {
+    MData<-utils::read.csv(temp,row.names = 1,check.names=F)}
 
-    if(!file.exists(as.character(csvfile['geneData',]))) {
-        stop(paste("File", csvfile['geneData',], "does not exist"))} else {
-    GData<-utils::read.csv(as.character(csvfile['geneData',]),row.names = 1,check.names=F)}
+    temp <- paste0(mydir,"/",as.character(csvfile['geneData',]))
+    if(!file.exists(temp)) {
+        stop(paste("File", temp, "does not exist"))} else {
+    GData<-utils::read.csv(temp,row.names = 1,check.names=F)}
 
+    temp <- paste0(mydir,"/",as.character(csvfile['metabMetaData',]))
     if(as.character(csvfile['metabMetaData',])=="") {
 	warning("No metadata provided for metabolites");MmetaData<-NULL; } else if
-    (!file.exists(as.character(csvfile['metabMetaData',]))) {
-        stop(paste("File", csvfile['metabMetaData',], "does not exist"))} else {
-    MmetaData<-utils::read.csv(as.character(csvfile['metabMetaData',]))}
+    (!file.exists(temp)) {
+        stop(paste("File", temp, "does not exist"))} else {
+    MmetaData<-utils::read.csv(temp)}
 
-    if(as.character(csvfile['geneMetaData',])=="") {
+   temp <- paste0(mydir,"/",as.character(csvfile['geneMetaData',]))
+   if(as.character(csvfile['geneMetaData',])=="") {
         warning("No metadta provided for genes");GmetaData<-NULL;} else if
-    (!file.exists(as.character(csvfile['geneMetaData',]))) {
-        stop(paste("File", csvfile['geneMetaData',], "does not exist"))} else {
-    GmetaData<-utils::read.csv(as.character(csvfile['geneMetaData',]))}
+    (!file.exists(temp)) {
+        stop(paste("File", temp, "does not exist"))} else {
+    GmetaData<-utils::read.csv(temp)}
 
-    if(!file.exists(as.character(csvfile['sampleMetaData',]))) {
-        stop(paste("File", csvfile['sampleMetaData',], "does not exist"))} else {
-    pData<-utils::read.csv(as.character(csvfile['sampleMetaData',]),row.names = 1)}
+    temp <- paste0(mydir,"/",as.character(csvfile['sampleMetaData',]))
+    if(!file.exists(temp)) {
+        stop(paste("File", temp, "does not exist"))} else {
+    pData<-utils::read.csv(temp,row.names = 1)}
 
     #Create Multi
     GMdata <- CreateIntLimObject(genefdata=GmetaData, metabfdata=MmetaData,
