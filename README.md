@@ -1,4 +1,4 @@
-# Intlim:  Integration through Linear Modeling
+# IntLIM:  Integration through LInear Modeling
 [![Build Status](https://travis-ci.com/mingrui-liu/IntLim.svg?token=Bq2KXMARaDh31C6yNoTF&branch=master)](https://travis-ci.com/mingrui-liu/IntLim)
 
 ## IntLIM

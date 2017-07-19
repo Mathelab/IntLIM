@@ -11,7 +11,7 @@ Description: This workflow takes normalized gene expression and metabolite level
   meta-information on genes, metabolites, and samples to identify gene:metabolite pairs 
   that are significantly associated with an outcome (e.g. tumors).
 License: GPL-2
-Depends: R (>= 3.3.0)
+Depends: R (>= 3.2.0)
 Imports:
     shiny,
     shinydashboard,
