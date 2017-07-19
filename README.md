@@ -1,14 +1,37 @@
 # Intlim:  Integration through Linear Modeling
 [![Build Status](https://travis-ci.com/mingrui-liu/IntLim.svg?token=Bq2KXMARaDh31C6yNoTF&branch=master)](https://travis-ci.com/mingrui-liu/IntLim)
-## Introduction
 
-Metabolomics is playing an increasing role in clinical and translational research and has greatly assisted in identifying novel, putative biomarkers for cancers.  Studies of metabolomics involve the measurements of small molecules (<1500 Daltons) in biospecimens such as blood, tissue, and urine, among others.  Given that metabolites reflect disease phenotype and downstream effects of biochemical pathways/post-translational modifications, they are seen as ideal candidates for biomarker discovery.  Several studies have utilized metabolomics to identify biomarkers for various cancers, heart disease, and diabetes.  
+## IntLIM
 
-However, despite this progress, there are many challenges to interpreting metabolomics data- especially for untargeted studies that involve many unidentified metabolites (as opposed to targeted studies involving known metabolites)[6].  One of the challenges is to interpret the metabolomics profiles and understand how they affect, and are affected by genes and the proteins they produce.  Approaches have been developed to integrate transcriptomic and metabolomics data.  Pathway-based approaches such as Metaboanalyst, INMEX, and IMPALA integrate transcriptomic and metabolomics data for pathway enrichment analysis.  One caveat is that these approaches rely on previously curated pathways and “expert” definitions of what constitutes a pathway[10].  Correlation based approaches have been developed to integrate gene expression and metabolomics data.  MixOmics and DiffCorr are examples of such tools available.  While identifying globally correlated gene-metabolite pairs will enhance our understanding of how genes affect metabolic phenotypes, these co-regulated gene-metabolite pairs may not represent biological interactions specific to a phenotype of interest (e.g. diagnosis, hormone receptor status, cancer type, etc.).  To identify these phenotype-specific gene-metabolite relationships, we propose a novel linear modeling approach. 
-The novel linear model is:  E(m|g,t) = β1 + β2 g + β3 t + β4 (g:t) + ε where m and g are log-transformed metabolite abundances and gene levels respectively, t is phenotype (cancer type, patient diagnosis, treatment group, etc), (g:t) is the interaction between gene expression and phenotype, and ε is the error term.  A statistically significant p value of the (g:t) interaction term indicates that the slope relating gene expression and metabolite abundance is different from one phenotype compared to another.  Through this model, we can identify gene-metabolite correlations that are specific to a particular phenotype.  
+The goal of the IntLim R package is to identify gene:metabolite relationships that are specific to a given phenotype (e.g. cancer vs non-cancer). For example, a given gene:metabolite pair could show a strong correlation in one phenotype (e.g. cancer) and no correlation in the other (e.g. non-cancer).  Users are expected to provide normalized gene expression and metabolite abundance data, as well as associated meta-information on the samples (at the minimum, users need to provide a phenotype column).  Currently, IntLim requires the phenotype of interest to have 2 categories.  Optionally, users can also input meta-information on metabolites and genes (e.g. names, pathways).  
 
-This model has been applied in this study to the publically available NCI-60 cancer cell line data on gene expression and metabolomics (available in this package) as well as previously published gene expression and metabolomics data from a breast cancer study.  To increase usability of our approach, we have also implemented our approach as an R Bioconductor package, IntLim or Integration through Linear Modeling, that includes an RShiny web application (which does not require knowledge of R).  
+An example data set is provided within the package, and is a subset of the NCI-60 gene expression and metabolomics data (https://wiki.nci.nih.gov/display/NCIDTPdata/Molecular+Target+Data).  
+
+## IntLIM prerequisites
+IntLIM is an R package and can be run on version >= 3.2.0. 
+
+Download (or upgrade) R here: https://cloud.r-project.org/
+
+RStudio (an interface to R than can make R easier to use) can be download here (not required): https://www.rstudio.com/products/rstudio/download3/
 
 ## Contact
 
-If you have any questions, comments, or concerns on how to use IntLim please contact Ewy Mathe at ewy.mathe@osumc.edu.  You can also contact Jalal Siddiqui at jalal.siddiqui@osumc.edu
+If you have any questions, comments, or concerns on how to use IntLim please contact Ewy Mathe at ewy.mathe@osumc.edu or Jalal Siddiqui at jalal.siddiqui@osumc.edu.
+
+## Installation from Github
+
+To install IntLIM, simply type the following in the R terminal:
+```
+install.packages("devtools")
+devtools::install_github("mathelab/IntLIM")
+
+## Running IntLIM's user-friendly web app:
+
+The package functions can be run direclty in the R console.  Alternatively, to launch the web app, type th following in your R console:
+```
+library(IntLim)
+runIntLIMApp()
+
+## Vignette
+A detailed vignette can be found here:
+https://mathelab.github.io/IntLIM/vignette.html
