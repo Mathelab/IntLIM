@@ -12,7 +12,7 @@
 #'
 #' @examples
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
-#' csvfile <- file.path(dir, "NCIinput.csv")
+#' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' \dontrun{
 #' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")

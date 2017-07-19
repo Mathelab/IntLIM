@@ -1,4 +1,4 @@
-##' Read in CSV file
+#' Read in CSV file
 #'
 #' The metadata associated with data files to be analyzed in IntLim is supplied
 #' as a CSV file with two columns and 6 rows: 
@@ -35,7 +35,7 @@
 #'
 #' @examples
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
-#' csvfile <- file.path(dir, "NCIinput.csv")
+#' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' @export
 ReadData <- function(inputFile,metabid,geneid, logmetab=FALSE,loggene=FALSE){

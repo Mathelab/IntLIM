@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
-#' csvfile <- file.path(dir, "NCIinput.csv")
+#' csvfile <- file.path(dir, "NCItestinput.csv")
 #' inputData <- ReadData(csvfile,metabid='id',geneid='id')
 #' inputDatafilt <- FilterData(inputData,geneperc=15)
 #' @export

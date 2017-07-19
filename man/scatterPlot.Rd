@@ -7,7 +7,7 @@
 scatterPlot(data)
 }
 \arguments{
-\item{well-formact}{data}
+\item{data}{formatted data}
 }
 \value{
 a highcharter object

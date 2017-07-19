@@ -13,7 +13,7 @@ scatterPlot2(inputData, stype, geneName, metabName)
 
 \item{geneName}{string of select geneName}
 
-\item{geneName}{string of select metabName}
+\item{metabName}{string of select metabName}
 }
 \value{
 a highcharter object
@@ -24,7 +24,7 @@ scatter plot of select gene and metab
 \examples{
 \dontrun{
 dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
-csvfile <- file.path(dir, "NCIinput.csv")
+csvfile <- file.path(dir, "NCItestinput.csv")
 mydata <- ReadData(csvfile,metabid='id',geneid='id')
 stype = inputData[["expression"]]$PBO_vs_Leukemia
 scatterPlot2(inputData,stype,"PRPF8","(p-Hydroxyphenyl)lactic acid")

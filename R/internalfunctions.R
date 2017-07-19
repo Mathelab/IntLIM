@@ -269,7 +269,7 @@ RunLM <- function(inputData, outcome="metabolite", type=NULL) {
 #' @import magrittr
 #' @import highcharter
 #'
-#' @param well-formact data
+#' @param data formatted data
 #' @return a highcharter object
 #'
 
@@ -278,7 +278,7 @@ scatterPlot<-function(data) {
     
     data<-data[data$type!="",]
     data$type <- factor(data$type)
-    b<-glm(data$metab~data$gene+data$type+data$gene:data$type)
+    b<-stats::glm(data$metab~data$gene+data$type+data$gene:data$type)
     
     
     coefficients<-t(b$coefficients)

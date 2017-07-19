@@ -13,7 +13,7 @@
 #'
 #' @examples
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
-#' csvfile <- file.path(dir, "NCIinput.csv")
+#' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' PlotDistributions(mydata)
 #' @export
@@ -107,7 +107,7 @@ PlotDistributions <- function(inputData,viewer=T,
 #' @examples
 #' \dontrun{
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
-#' csvfile <- file.path(dir, "NCIinput.csv")
+#' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
 #' DistPvalues(myres)
@@ -131,7 +131,7 @@ DistPvalues<- function(IntLimResults) {
 #' @examples
 #' \dontrun{
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
-#' csvfile <- file.path(dir, "NCIinput.csv")
+#' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
 #' myres <- ProcessResults(myres,mydata)
@@ -223,13 +223,13 @@ type <- cor <- c()
 #' @param inputData IntLimObject output of ReadData() or FilterData()
 #' @param stype vector of color
 #' @param geneName string of select geneName
-#' @param geneName string of select metabName
+#' @param metabName string of select metabName
 #' @return a highcharter object
 #'
 #' @examples
 #' \dontrun{
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
-#' csvfile <- file.path(dir, "NCIinput.csv")
+#' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' stype = inputData[["expression"]]$PBO_vs_Leukemia
 #' scatterPlot2(inputData,stype,"PRPF8","(p-Hydroxyphenyl)lactic acid")
