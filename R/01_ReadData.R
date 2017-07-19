@@ -1,4 +1,4 @@
-#' Read in CSV file
+##' Read in CSV file
 #'
 #' The metadata associated with data files to be analyzed in IntLim is supplied
 #' as a CSV file with two columns and 6 rows: 
