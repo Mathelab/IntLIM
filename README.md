@@ -28,12 +28,12 @@ devtools::install_github("mathelab/IntLIM")
 
 ## Running IntLIM's user-friendly web app:
 
-The package functions can be run direclty in the R console.  Alternatively, to launch the web app, type the following in your R console:
-```
+The package functions can be run direclty in the R console.  
+Alternatively, to launch the web app, type th following in your R console:
+
 library(IntLim)
 runIntLIMApp()
 ```
-
 ## Vignette
 A detailed vignette can be found here:
 https://mathelab.github.io/IntLIM/vignette.html
