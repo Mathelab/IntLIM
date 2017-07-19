@@ -229,14 +229,14 @@ type <- cor <- c()
 #' @examples
 #' \dontrun{
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
-#' csvfile <- file.path(dir, "NCItestinput.csv")
+#' csvfile <- file.path(dir, "NCIinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' stype = inputData[["expression"]]$PBO_vs_Leukemia
-#' scatterPlot2(inputData,stype,"PRPF8","(p-Hydroxyphenyl)lactic acid")
+#' PlotGMPair(inputData,stype,"PRPF8","(p-Hydroxyphenyl)lactic acid")
 #' 
 #' }
 #' @export
-scatterPlot2<- function(inputData,stype,geneName,metabName) {
+PlotGMPair<- function(inputData,stype,geneName,metabName) {
     gene<-Biobase::exprs(inputData[["expression"]])
     sGene<-gene[geneName,]
     
@@ -245,6 +245,41 @@ scatterPlot2<- function(inputData,stype,geneName,metabName) {
     
     data<-data.frame('gene'=sGene,'metab'=sMetab,'type'=stype)
     
-    scatterPlot(data)
     
+    data<-data[data$type!="",]
+    data$type <- factor(data$type)
+    b<-stats::glm(data$metab~data$gene+data$type+data$gene:data$type)
+    
+    
+    coefficients<-t(b$coefficients)
+    i<-coefficients[,1]
+    g<-coefficients[,2]
+    c<-coefficients[,3]
+    g.c<-coefficients[,4]
+    
+    u<-as.matrix(levels(data$type))
+    type1<-u[1,1]
+    type2<-u[2,1]
+    
+    max<- max(data$gene)
+    min<-min(data$gene)
+    
+    line1<-data.frame(x=c(max,min),y=c(g*max+i,min*g+i))
+    line2<-data.frame(x=c(max,min),y=c(g*max+g.c*max+i+c,min*g+i+c))
+    
+    
+    
+    hc<-highcharter::highchart(width = 800, height = 700) 
+    for(type in u){
+        hc<-hc%>% 
+            highcharter::hc_add_series_scatter(data$gene[data$type==type],data$metab[data$type==type],name=sprintf("type %s", type),
+                                               showInLegend = TRUE) 
+        
+    } 
+    
+    hc <- hc %>%
+        highcharter::hc_add_series(data=line1,type='line',name=sprintf("regression line %s",type1),color = "#6AB9FF",enableMouseTracking=FALSE,marker=FALSE) %>%
+        highcharter::hc_add_series(data=line2,type='line',name=sprintf("regression line %s",type2),color = "#474544",enableMouseTracking=FALSE,marker=FALSE)
+    
+    hc
 }
