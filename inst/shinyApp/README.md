@@ -1,14 +1,40 @@
-# Intlim:  Integration through Linear Modeling
+# Welcome to the IntLIM shiny app!
 
-## Introduction
+The goal of this app is to provide users with a user-friendly platform for integrating gene expression and metabolomics data.  Specifically, the software finds gene:metabolite relationships that are specific to a given phenotype (e.g. cancer vs non-cancer). For example, a given gene:metabolite pair could show a strong correlation in one phenotype (e.g. cancer) and no correlation in the other (e.g. non-cancer). 
 
-Metabolomics is playing an increasing role in clinical and translational research and has greatly assisted in identifying novel, putative biomarkers for cancers.  Studies of metabolomics involve the measurements of small molecules (<1500 Daltons) in biospecimens such as blood, tissue, and urine, among others.  Given that metabolites reflect disease phenotype and downstream effects of biochemical pathways/post-translational modifications, they are seen as ideal candidates for biomarker discovery.  Several studies have utilized metabolomics to identify biomarkers for various cancers, heart disease, and diabetes.  
+## Getting started (loading in data)
 
-However, despite this progress, there are many challenges to interpreting metabolomics data- especially for untargeted studies that involve many unidentified metabolites (as opposed to targeted studies involving known metabolites)[6].  One of the challenges is to interpret the metabolomics profiles and understand how they affect, and are affected by genes and the proteins they produce.  Approaches have been developed to integrate transcriptomic and metabolomics data.  Pathway-based approaches such as Metaboanalyst, INMEX, and IMPALA integrate transcriptomic and metabolomics data for pathway enrichment analysis.  One caveat is that these approaches rely on previously curated pathways and “expert” definitions of what constitutes a pathway[10].  Correlation based approaches have been developed to integrate gene expression and metabolomics data.  MixOmics and DiffCorr are examples of such tools available.  While identifying globally correlated gene-metabolite pairs will enhance our understanding of how genes affect metabolic phenotypes, these co-regulated gene-metabolite pairs may not represent biological interactions specific to a phenotype of interest (e.g. diagnosis, hormone receptor status, cancer type, etc.).  To identify these phenotype-specific gene-metabolite relationships, we propose a novel linear modeling approach. 
-The novel linear model is:  E(m|g,t) = β1 + β2 g + β3 t + β4 (g:t) + ε where m and g are log-transformed metabolite abundances and gene levels respectively, t is phenotype (cancer type, patient diagnosis, treatment group, etc), (g:t) is the interaction between gene expression and phenotype, and ε is the error term.  A statistically significant p value of the (g:t) interaction term indicates that the slope relating gene expression and metabolite abundance is different from one phenotype compared to another.  Through this model, we can identify gene-metabolite correlations that are specific to a particular phenotype.  
+__*Please be sure that all files noted in the CSV file, including the CSV file, are in the same folder. Do not include path names in the filenames.*__
 
-This model has been applied in this study to the publically available NCI-60 cancer cell line data on gene expression and metabolomics (available in this package) as well as previously published gene expression and metabolomics data from a breast cancer study.  To increase usability of our approach, we have also implemented our approach as an R Bioconductor package, IntLim or Integration through Linear Modeling, that includes an RShiny web application (which does not require knowledge of R).  
+Users need to input a CSV file with two required columns: 'type' and 'filenames'.
+The CSV file is expecected to have the following 2 columns and 6 rows:
+1. type,filenames
+2. metabData,myfilename
+3. geneData,myfilename
+4. metabMetaData,myfilename (optional)
+5. geneMetaData,myfilename (optional)
+6. sampleMetaData,myfilename"
+
+Note also that the input data files should be in a specific format:
+- metabData: rows are metabolites, columns are samples
+- geneData: rows are genes, columns are samples
+- metabMetaData: rows are metabolites, features are columns
+- geneMetaData: rows are genes, features are columns
+- sampleMetaData: rows are samples, features are columns
+
+*NOTE*: The first column of the sampleMetaData file is assumed to be the sample id, and those sample ids should match the columns of metabData and geneData (e.g. it is required that all sample ids in the metabData and geneData are also in the sampleMetaDatafile).
+
+## Test data
+The package includes a reduced set of the original NCI-60 dataset.  The CSV input file location for this test dataset can be located by typing the following in the R console:
+```
+     dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+     csvfile <- file.path(dir, "NCItestinput.csv")
+     csvfile
+```
+Please see the vignette at XXX for additional information.
+
+In addition, the original datasets for the NCI-60 and the breast cancer dataset used in the manuscript can be found HEREXXX.
 
 ## Contact
 
-If you have any questions, comments, or concerns on how to use IntLim please contact Ewy Mathe at ewy.mathe@osumc.edu.  You can also contact Jalal Siddiqui at jalal.siddiqui@osumc.edu
+If you have any questions, comments, or concerns on how to use IntLim please contact Ewy Mathe at ewy.mathe@osumc.edu or  Jalal Siddiqui at jalal.siddiqui@osumc.edu.

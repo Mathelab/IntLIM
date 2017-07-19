@@ -92,38 +92,15 @@ body <- shinydashboard::dashboardBody(
                 fluidRow(
                     
                     shinydashboard::box(
-                        title = strong("Input menu file"),
+                        title = strong("Load Data"),
                         width = NULL,
                         solidHeader = TRUE,
-                        tags$b("Please be sure that all files noted in the CSV file,
-                               including the CSV file, are in the same folder."),
-                        h5("This step does the following: "),
+                        h5("This functions takes a CSV file as input (see About) and performs the following:"),
                         tags$ul(
-                            tags$li("Loads a metadata spreadsheet with a CSV file extention."),
-                            tags$li("The metadata associated with data files to be analyzed in IntLim is supplied
-                                    as a CSV file with two columns and 6 rows: 
-                                    type,filenames
-                                    metabData,myfilename
-                                    geneData,myfilename
-                                    metabMetaData,myfilename (optional)
-                                    geneMetaData,myfilename (optional)
-                                    sampleMetaData,myfilename"),
-                            tags$li(" Note also that the input data files should be in a specific format:
-                                    metabData: rows are metabolites, columns are samples
-                                    geneData: rows are genes, columns are samples
-                                    metabMetaData: rows are metabolites, features are columns
-                                    geneMetaData: rows are genes, features https://stackoverflow.com/documentationare columns
-                                    sampleMetaData: rows are samples, features are columns
-                                    In addition, the first column of the sampleMetaData file is assumed to be the sample id, 
-                                    and those sample ids should match the columns of metabData and geneData (e.g. it is required
-                                    that all sample ids in the metabData and geneData are also in the sampleMetaDatafile)."),
-                            tags$li("Prints out the statistic summary of the data.")
-                            ),
-                        
-                        hr(),
-                        tags$b("Please input the MetabID and the GeneID for your data "),
-                        textInput("metabid", "Metab ID", "id"),
-                        textInput("geneid", "Gene ID", "id"),
+                             tags$li("Loads the CSV input file and checks that all files exist"),
+                             tags$li("Reads in all files from the CSV input file and creates a MultiOmics object"),
+                             tags$li("Outputs a statistic summary of the data loaded in")
+                        ),
                         hr(),
                         tags$head(tags$style(HTML(
                             ".fileinput_2 {
@@ -135,16 +112,19 @@ body <- shinydashboard::dashboardBody(
                             z-index: -1;
                             }"
                         ))),
-                        
-                        fileInput2('file1', 'Choose CSV File',labelIcon = "folder-open-o",
-                                  accept=c('text/csv', 
-                                           'text/comma-separated-values,text/plain', 
+                        fileInput2('file1', 'Select CSV File',labelIcon = "folder-open-o",
+                                  accept=c('text/csv',
+                                           'text/comma-separated-values,text/plain',
                                            '.csv'),progress = FALSE),
                         verbatimTextOutput('filename'),
+                        tags$b("Please input the MetabID and the GeneID for your data"),
+                        textInput("metabid", "Metab ID", "id"),
+                        textInput("geneid", "Gene ID", "id"),
+                        hr(),
                         actionButton("run", "Run"),
                         hr(),
                         tags$head(tags$style(type="text/css", "
-                        loadmessage {
+                              loadmessage {
                                              position: fixed;
                                              top: 0px;
                                              left: 0px;
@@ -167,14 +147,9 @@ body <- shinydashboard::dashboardBody(
                         tags$b("Verify the distribution of the input data."),
                         plot.new(),
                         uiOutput("plot")
-                        
-                        
-                        
                             )
-                    
-                    
                         )
-                        ),
+                        ), # end tab loaddata
         
         
         shinydashboard::tabItem(tabName = "Filterdata",

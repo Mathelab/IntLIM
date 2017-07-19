@@ -4,16 +4,17 @@
 \alias{ReadData}
 \title{Read in CSV file}
 \usage{
-ReadData(inputFile, metabid, geneid, logmetab = FALSE, loggene = FALSE)
+ReadData(inputFile, metabid = NULL, geneid = NULL, logmetab = FALSE,
+  loggene = FALSE)
 }
 \arguments{
 \item{inputFile}{input file in CSV format (see Despcription)}
 
 \item{metabid}{name of column from metabolite meta data to be used as id
-(required, must match metabolite abundances data)}
+(required if a metabolite meta dadta file is present, must match metabolite abundances data)}
 
 \item{geneid}{name of column from gene meta data to be used as id
-(required, must match gene expression data)}
+(required if a gene meta data file is present, must match gene expression data)}
 
 \item{logmetab}{whether or not to log metabolite values (T/F)}
 

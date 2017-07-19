@@ -7,7 +7,7 @@ shinyServer(function(input, output) {
         {
             inFile <- input$file1
             if (is.null(inFile)){
-                cat("Please chose file")
+                cat("Please select CSV file by clicking the button above")
             }else{
             paste("File name:", inFile$name)
             }

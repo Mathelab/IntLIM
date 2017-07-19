@@ -15,10 +15,10 @@ CreateIntLimObject(genefdata, metabfdata, pdata, geneid, metabid, metabdata,
 \item{pdata}{sample meta data}
 
 \item{geneid}{name of column from metabolite meta data to be used as id 
-(required, must match metabolite abundances matrix))}
+(required if a gene meta data file is present, must match gene expression matrix))}
 
 \item{metabid}{name of column from gene meta data to be used as id
-(required, must match gene abundances matrix))}
+(required if a metabolite meta data file is present, must match metabolite abundances matrix))}
 
 \item{metabdata}{metabolite abundances (samples are in columns)}
 

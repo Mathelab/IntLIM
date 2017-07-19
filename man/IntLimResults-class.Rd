@@ -2,11 +2,9 @@
 % Please edit documentation in R/AllClasses.R
 \name{IntLimResults-class}
 \alias{IntLimResults-class}
-\title{MetaboliteSet class extenstion for MultiDataSet object}
+\title{IntLimResults class}
 \description{
-This class is specific to metabolomics data and will then be stored into the class
-\code{MultiDataSet}, which stores multiple dataset types (e.g. metabolite and gene levels
-in this case.
+IntLimResults class
 }
 \section{Slots}{
 

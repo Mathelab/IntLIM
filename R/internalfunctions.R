@@ -8,9 +8,9 @@
 #' @param metabfdata metabolite meta data
 #' @param pdata sample meta data
 #' @param geneid name of column from metabolite meta data to be used as id 
-#'	(required, must match metabolite abundances matrix))
+#'	(required if a gene meta data file is present, must match gene expression matrix))
 #' @param metabid name of column from gene meta data to be used as id
-#'      (required, must match gene abundances matrix))
+#'      (required if a metabolite meta data file is present, must match metabolite abundances matrix))
 #' @param metabdata metabolite abundances (samples are in columns)
 #' @param genedata gene expression (samples are in columns)
 #' @param logmetab T/F 
@@ -20,6 +20,7 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
 	metabdata, genedata, logmetab=FALSE,loggene=FALSE) {
 
 	# Check that feature data and abundance data metabolites corresponds
+        if (!is.null(metabfdata)) {
         if(length(which(colnames(metabfdata)==metabid))!=1) {
                 stop(paste("metabid provided",metabid,"does not exist in metabolite meta data file"))} else if 
 	(length(intersect(rownames(metabdata),as.character(metabfdata[,metabid])))<nrow(metabdata)){
@@ -29,6 +30,7 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
                         metabpdata<-pdata[myind,]}
 
 	rownames(metabfdata)=as.character(metabfdata[,metabid])
+        }
 
         # Check that samples data and abundance data samples correspond
         if(length(intersect(colnames(metabdata),rownames(pdata)))<ncol(metabdata)){
@@ -42,17 +44,23 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
 	#new data frames are set for phenoData and featureData
 	metabpdata$id=rownames(metabpdata)
 	metabphenoData <- Biobase::AnnotatedDataFrame(data = metabpdata)
-	metabfeatureData <- Biobase::AnnotatedDataFrame(data = metabfdata)
 
 	if (logmetab == TRUE){
 		metabdata <- log2(metabdata)
 	}
-
+	
+	if(is.null(metabfdata)) {
+		metabfdata <- data.frame(id = rownames(metabdata))
+                rownames(metabfdata) <- metabfdata[,1]
+	}
+	metabfeatureData <- Biobase::AnnotatedDataFrame(data = metabfdata)
 	metab.set <- methods::new("MetaboliteSet",metabData = metabdata, 
 		phenoData = metabphenoData, featureData = metabfeatureData)
+	
 
 	#####  Now the genes
 	# Check that feature data and gene expression data corresponds
+       if(!is.null(genefdata)) {
        if(length(which(colnames(genefdata)==geneid))!=1) {
                 stop(paste("geneid provided",geneid,"does not exist in gene meta data file"))
         } else if(length(intersect(rownames(genedata),as.character(genefdata[,geneid]))) < nrow(genedata)){
@@ -64,7 +72,7 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
         }
 
         rownames(genefdata)=as.character(genefdata[,geneid])
-
+        }
         # Check that samples data and abundance data samples correspond
         if(length(intersect(colnames(genedata),rownames(pdata)))<ncol(genedata)){ 
                 stop("Samples in expression data file and sample meta data file are not equal")
@@ -80,6 +88,10 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
         }
 
         gene.set <- Biobase::ExpressionSet(assayData=as.matrix(genedata))
+	if(is.null(genefdata)) {
+		genefdata <- data.frame(id = rownames(genedata))
+		rownames(genefdata) <- genefdata[,1]
+        }
 	if(length(which(colnames(genefdata)=="chromosome"))==0) {
 		genefdata$chromosome <- rep("chr",nrow(genefdata))}
 	if(length(which(colnames(genefdata)=="start"))==0) {

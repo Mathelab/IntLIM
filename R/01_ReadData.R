@@ -26,9 +26,9 @@
 #'
 #' @param inputFile input file in CSV format (see Despcription)
 #' @param metabid name of column from metabolite meta data to be used as id
-#'      (required, must match metabolite abundances data)
+#'      (required if a metabolite meta dadta file is present, must match metabolite abundances data)
 #' @param geneid name of column from gene meta data to be used as id
-#'	(required, must match gene expression data)
+#'	(required if a gene meta data file is present, must match gene expression data)
 #' @param logmetab whether or not to log metabolite values (T/F)
 #' @param loggene whether or not to log gene values (T/F)
 #' @return MultiDataSet object with input data
@@ -38,7 +38,7 @@
 #' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' @export
-ReadData <- function(inputFile,metabid,geneid, logmetab=FALSE,loggene=FALSE){
+ReadData <- function(inputFile,metabid=NULL,geneid=NULL, logmetab=FALSE,loggene=FALSE){
     # Check that file exists
     if (!file.exists(inputFile)) {
         stop("CSV input file does not exist")
@@ -57,7 +57,7 @@ ReadData <- function(inputFile,metabid,geneid, logmetab=FALSE,loggene=FALSE){
     mymatches <- as.numeric(lapply(mytypes,function(x) 
 		length(which(rownames(csvfile)==x))))
     if(sum(mymatches)!=5) {
-	stop("The column 'type' contains non-allowed entries (See Description)")}
+	stop("The column 'type' contains non-allowed entries (See Description). The CSV input file must contain 6 rows (if optional meta data files for metabolites and genes are not to be input, have the corresponding filenames be blanks.")}
  
     mydir <- base::dirname(inputFile)
     # Check that files exist then read them in one by one
@@ -73,14 +73,14 @@ ReadData <- function(inputFile,metabid,geneid, logmetab=FALSE,loggene=FALSE){
 
     temp <- paste0(mydir,"/",as.character(csvfile['metabMetaData',]))
     if(as.character(csvfile['metabMetaData',])=="") {
-	warning("No metadata provided for metabolites");MmetaData<-NULL; } else if
+	warning("No metadata provided for metabolites");MmetaData<-NULL;metabid=NULL; } else if
     (!file.exists(temp)) {
         stop(paste("File", temp, "does not exist"))} else {
     MmetaData<-utils::read.csv(temp)}
 
    temp <- paste0(mydir,"/",as.character(csvfile['geneMetaData',]))
    if(as.character(csvfile['geneMetaData',])=="") {
-        warning("No metadta provided for genes");GmetaData<-NULL;} else if
+        warning("No metadata provided for genes");GmetaData<-NULL;geneid=NULL} else if
     (!file.exists(temp)) {
         stop(paste("File", temp, "does not exist"))} else {
     GmetaData<-utils::read.csv(temp)}
