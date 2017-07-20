@@ -18,7 +18,7 @@ shinyServer(function(input, output, session) {
 	if (is.null(myFile)){
                 cat("Please select CSV file by clicking the button above")
             }else{
-            paste("File name:", myFile)
+            cat(paste0("File to load:", myFile))
             }
         }
     )
@@ -92,7 +92,7 @@ shinyServer(function(input, output, session) {
         FmultiData
     },ignoreNULL=FALSE)
     
-    # Filter dadta message
+    # Filter data message
     output$FiltMessage <- renderPrint({
         if(input$geneperc<=0) {cat("Filtering of genes not performed\n")}
         if(input$metabperc<=0) {cat("Filtering of metabolites not performed")}

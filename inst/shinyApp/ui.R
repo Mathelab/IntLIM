@@ -31,8 +31,8 @@ sidebar <- shinydashboard::dashboardSidebar(
             badgeLabel = "step 2"
         ),
         shinydashboard::menuItem(
-            "adjusted p value",
-            tabName = "adPval",
+            "Run Linear Models",
+            tabName = "RunLM",
             icon = icon("bolt"),
             badgeLabel = "step 3"
         ),
