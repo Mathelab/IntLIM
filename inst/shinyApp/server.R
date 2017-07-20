@@ -23,10 +23,7 @@ shinyServer(function(input, output, session) {
         }
     )
     
-    #tags$b("Please input the MetabID and the GeneID for your data"),
-    #textInput("metabid", "Metab ID", ""),
-    #textInput("geneid", "Gene ID", ""),
-    
+   
     output$idChooseM <- renderUI({
         if (is.null(input$file1)){
             
@@ -90,11 +87,15 @@ shinyServer(function(input, output, session) {
     })
     
     
-    output$stats<-renderTable(
-        t(IntLim::OutputStats(multiData())),
-        include.rownames=TRUE,
-        include.colnames=FALSE
-    )
+    
+    output$stats<-renderDataTable({
+        
+       table<- as.data.frame(t(IntLim::OutputStats(multiData())))
+       colnames(table)<-"value"
+       cbind(names=rownames(table),table)
+       
+    },options = list(dom = 'ft'))
+    
     
     output$plot<-renderUI(
         IntLim::PlotDistributions(multiData())
@@ -109,11 +110,15 @@ shinyServer(function(input, output, session) {
         FmultiData
     },ignoreNULL=FALSE)
     
-    output$Fstats<-renderTable(
-        as.data.frame(t(IntLim::OutputStats(FmultiData()))),
-        include.rownames=TRUE,
-        include.colnames=FALSE
-    )
+    output$Fstats<-renderDataTable({
+        
+        table<- as.data.frame(t(IntLim::OutputStats(FmultiData())))
+        colnames(table)<-"value"
+        cbind(names=rownames(table),table)
+        
+    },options = list(dom = 'ft'))
+    
+    
     output$Fplot<-renderUI(
         IntLim::PlotDistributions(FmultiData())
         
