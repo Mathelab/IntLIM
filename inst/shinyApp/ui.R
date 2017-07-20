@@ -73,7 +73,7 @@ body <- shinydashboard::dashboardBody(
                         title = strong("Load Data"),
                         width = NULL,
                         solidHeader = TRUE,
-                        h5("This functions takes a CSV file as input (see About) and performs the following:"),
+                        h5("This function takes a CSV file as input (see About) and performs the following:"),
                         tags$ul(
                              tags$li("Loads the CSV input file and checks that all files exist"),
                              tags$li("Reads in all files from the CSV input file and creates a MultiOmics object"),
@@ -136,19 +136,17 @@ body <- shinydashboard::dashboardBody(
                         title = strong("Filter Data (optional)") ,
                         width = NULL,
                         solidHeader = TRUE,
-                        h5("This step help you filter the data"),
-                        
+                        h5("This step allows you to filter the metabolomics or gene expression data by a user-defined percentile cutoff."),
                         hr(),
-                        tags$b("Please chose the filtered options"),
-                        checkboxInput('filter', 'FILTER', FALSE),
-                        numericInput("geneperc", "percentile cutoff for filtering genes:", 15, min = 0, max = 100),
-                        numericInput("metabperc", "percentile cutoff for filtering metabolites:", 15, min = 0, max = 100),
+                        numericInput("geneperc", "percentile cutoff for filtering genes:", 5, min = 0, max = 100),
+                        numericInput("metabperc", "percentile cutoff for filtering metabolites:", 0, min = 0, max = 100),
                         actionButton("run2", "Run"),
                         hr(),
+                        verbatimTextOutput('FiltMessage'),
                         tags$b("The statistic summary of filtered data"),
                         pre(dataTableOutput('Fstats')),
                         tags$style(type="text/css", '#Fstats tfoot {display:none;}'),
-                        
+                       
                         hr(),
                         tags$b("Verify the distribution of the filtered data."),
                         uiOutput('Fplot'),

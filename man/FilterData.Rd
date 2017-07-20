@@ -4,16 +4,16 @@
 \alias{FilterData}
 \title{Filter data by abundance and/or CV}
 \usage{
-FilterData(inputData, geneperc = NULL, metabperc = NULL)
+FilterData(inputData, geneperc = 5, metabperc = 0)
 }
 \arguments{
 \item{inputData}{MultiDataSet object (output of ReadData()) with gene expression, 
 metabolite abundances, and associated meta-data}
 
 \item{geneperc}{percentile cutoff for filtering genes (e.g. remove genes with mean values 
-< 15th percentile)}
+< 'geneperc' percentile) (default: 5th percentile)}
 
-\item{metabperc}{percentile cutoff for filtering metabolites}
+\item{metabperc}{percentile cutoff for filtering metabolites (default: no filtering of metabolites)}
 }
 \value{
 filtData MultiDataSet object with input data after filtering
@@ -25,5 +25,5 @@ Filter data by abundance and/or CV
 dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 csvfile <- file.path(dir, "NCItestinput.csv")
 inputData <- ReadData(csvfile,metabid='id',geneid='id')
-inputDatafilt <- FilterData(inputData,geneperc=15)
+inputDatafilt <- FilterData(inputData,geneperc=5)
 }
