@@ -22,6 +22,49 @@ shinyServer(function(input, output, session) {
             }
         }
     )
+    
+    #tags$b("Please input the MetabID and the GeneID for your data"),
+    #textInput("metabid", "Metab ID", ""),
+    #textInput("geneid", "Gene ID", ""),
+    
+    output$idChooseM <- renderUI({
+        if (is.null(input$file1)){
+            
+        }else{
+            myFile <- as.character(
+                parseFilePaths(
+                    rootVolumes,
+                    input$file1)$datapath)
+            file<- read.csv(myFile)
+            rownames(file)<-file$type
+            if(file["metabMetaData","filenames"]==""){
+                return()
+            }
+            textInput("metabid", "Metab ID", "")
+        }
+        
+        
+    })
+    
+    output$idChooseG <- renderUI({
+        if (is.null(input$file1)){
+            
+        }else{
+            myFile <- as.character(
+                parseFilePaths(
+                    rootVolumes,
+                    input$file1)$datapath)
+            file<- read.csv(myFile)
+            rownames(file)<-file$type
+            if(file["geneMetaData","filenames"]==""){
+                return()
+            }
+            textInput("geneid", "Gene ID", "")
+        }
+        
+        
+    })
+    
 
     multiData <- eventReactive(input$run,{
         IntLim::ReadData(req(as.character(
