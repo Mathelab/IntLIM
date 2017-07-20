@@ -1,26 +1,49 @@
 
 options(shiny.trace=TRUE)
 
-shinyServer(function(input, output) {      
-    #file input
-    output$filename<-renderPrint(
-        {
-            inFile <- input$file1
-            if (is.null(inFile)){
+
+shinyServer(function(input, output, session) {      
+
+    rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
+
+    shinyFileChoose(input,'file1',
+                  roots = rootVolumes,
+                  session = session)
+
+    output$filename <- renderPrint( {
+	myFile <- as.character(
+             parseFilePaths(
+               rootVolumes,
+               input$file1)$datapath)
+	if (is.null(myFile)){
                 cat("Please select CSV file by clicking the button above")
             }else{
-            paste("File name:", inFile$name)
+            paste("File name:", myFile)
             }
         }
     )
+
+
+    #file input
+#    output$filename<-renderPrint(
+#        {
+#            inFile <- xinput$file1
+#            if (is.null(inFile)){
+#                cat("Please select CSV file by clicking the button above")
+#            }else{
+#            paste("File name:", inFile$name)
+#            }
+#        }
+#    )
     
     
     multiData <- eventReactive(input$run,{
         
-        inFile<-input$file1
-     
-        multiData<-IntLim::ReadData(inFile$datapath,input$metabid,input$geneid)
-        multiData
+        IntLim::ReadData(req(as.character(
+             parseFilePaths(
+               rootVolumes,
+               input$file1)$datapath)),
+                  inFile$datapath,input$metabid,input$geneid)
     })
     
     

@@ -111,15 +111,15 @@ body <- shinydashboard::dashboardBody(
                             position: absolute;
                             z-index: -1;
                             }"
-                        ))),
-                        fileInput2('file1', 'Select CSV File',labelIcon = "folder-open-o",
-                                  accept=c('text/csv',
-                                           'text/comma-separated-values,text/plain',
-                                           '.csv'),progress = FALSE),
+                       ))),
+                        shinyFilesButton('file1',
+		                 'Select CSV File',
+		                 'Provide CSV File to Load Data',
+                                  FALSE),
                         verbatimTextOutput('filename'),
                         tags$b("Please input the MetabID and the GeneID for your data"),
-                        textInput("metabid", "Metab ID", "id"),
-                        textInput("geneid", "Gene ID", "id"),
+                        textInput("metabid", "Metab ID", ""),
+                        textInput("geneid", "Gene ID", ""),
                         hr(),
                         actionButton("run", "Run"),
                         hr(),
@@ -193,7 +193,7 @@ body <- shinydashboard::dashboardBody(
                                      selected = "metabolite"),
                         hr(),
                         uiOutput('choosestype'),
-                        actionButton("run3", "Plot"),
+                        actionButton("run3", "Run"),
                         
                         tags$head(tags$style(type="text/css", "
                         loadmessage {
@@ -270,8 +270,9 @@ body <- shinydashboard::dashboardBody(
                                         pre(tableOutput('table')),
                                       
                                         hr(),
-                                        tags$b("Please input the gene name and metab name you choose"),
-                                        
+                                        tags$b("Input the gene name and metab name you choose if meta
+                                           data files are provided for genes and/or metabolites."),
+                                        hr(),
                                         uiOutput('chooseMetabName'),
                                         uiOutput('chooseGeneName'),
         
