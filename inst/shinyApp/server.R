@@ -43,7 +43,7 @@ shinyServer(function(input, output, session) {
              parseFilePaths(
                rootVolumes,
                input$file1)$datapath)),
-                  inFile$datapath,input$metabid,input$geneid)
+                  input$metabid,input$geneid)
     })
     
     
