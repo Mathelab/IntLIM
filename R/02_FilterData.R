@@ -3,17 +3,17 @@
 #' @param inputData MultiDataSet object (output of ReadData()) with gene expression, 
 #' metabolite abundances, and associated meta-data
 #' @param geneperc percentile cutoff for filtering genes (e.g. remove genes with mean values 
-#' < 15th percentile)
-#' @param metabperc percentile cutoff for filtering metabolites
+#' < 'geneperc' percentile) (default: 5th percentile)
+#' @param metabperc percentile cutoff for filtering metabolites (default: no filtering of metabolites)
 #' @return filtData MultiDataSet object with input data after filtering
 #'
 #' @examples
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCItestinput.csv")
 #' inputData <- ReadData(csvfile,metabid='id',geneid='id')
-#' inputDatafilt <- FilterData(inputData,geneperc=15)
+#' inputDatafilt <- FilterData(inputData,geneperc=5)
 #' @export
-FilterData <- function(inputData,geneperc=NULL,metabperc=NULL) {
+FilterData <- function(inputData,geneperc=5,metabperc=0) {
 
     # Check that input is a MultiDataSet
     if (class(inputData) != "MultiDataSet") {
@@ -34,7 +34,7 @@ FilterData <- function(inputData,geneperc=NULL,metabperc=NULL) {
     else {
 	mygenes <- Biobase::assayDataElement(inputData[["expression"]], 'exprs')
 	mymetab <- Biobase::assayDataElement(inputData[["metabolite"]], 'metabData')
-	if(!is.null(geneperc)) {
+	if(geneperc > 0) {
 		if(geneperc>1) {geneperc=geneperc/100}
 		mymean <- as.numeric(apply(mygenes,1, function(x)
 			mean(x,na.rm=T)))
@@ -43,10 +43,11 @@ FilterData <- function(inputData,geneperc=NULL,metabperc=NULL) {
 		pgenes <- Biobase::pData(inputData[["expression"]])
 		fgenes <- Biobase::fData(inputData[["expression"]])[keepers,]
 	} else {
+                print("No gene filtering applied")
 		mygenes <- mygenes
                 fgenes <- Biobase::fData(inputData[["expression"]])
 	}
-	if(!is.null(metabperc)) {
+	if(metabperc > 0) {
 		if(metabperc>1) {metabperc=metabperc/100}
                 mymean <- as.numeric(apply(mymetab,1, function(x)
                         mean(x,na.rm=T)))
@@ -54,6 +55,7 @@ FilterData <- function(inputData,geneperc=NULL,metabperc=NULL) {
                 mymetab <- mymetab[keepers,]
 		fmetab <- Biobase::AnnotatedDataFrame(data = Biobase::fData(inputData[["metabolite"]])[keepers,])
         } else {
+                print("No metabolite filtering applied")
 		mymetab <- mymetab
 		fmetab <- Biobase::AnnotatedDataFrame(data = Biobase::fData(inputData[["metabolite"]]))
 	}
