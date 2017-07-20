@@ -48,7 +48,7 @@ shinyServer(function(input, output, session) {
     
     output$idChooseG <- renderUI({
         if (is.null(input$file1)){
-            cat("Please select CSV file by clicking the button above")
+            
         }else{
             myFile <- as.character(
                 parseFilePaths(
