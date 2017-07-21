@@ -2,24 +2,27 @@
 % Please edit documentation in R/plottingfunctions.R
 \name{PlotGMPair}
 \alias{PlotGMPair}
-\title{scatter plot of select gene and metab}
+\title{scatter plot of gene-metabolite pairs (based on user selection)}
 \usage{
 PlotGMPair(inputData, stype, geneName, metabName)
 }
 \arguments{
 \item{inputData}{IntLimObject output of ReadData() or FilterData()}
 
-\item{stype}{vector of color}
+\item{stype}{category to color-code by}
 
 \item{geneName}{string of select geneName}
 
 \item{metabName}{string of select metabName}
+
+\item{palette}{choose an RColorBrewer palette ("Set1", "Set2", "Set3",
+"Pastel1", "Pastel2", "Paired", etc.) or submit a vector of colors}
 }
 \value{
 a highcharter object
 }
 \description{
-scatter plot of select gene and metab
+scatter plot of gene-metabolite pairs (based on user selection)
 }
 \examples{
 \dontrun{
