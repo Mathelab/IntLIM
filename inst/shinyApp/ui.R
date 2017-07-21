@@ -213,7 +213,7 @@ body <- shinydashboard::dashboardBody(
                            Then plot heatmap of significant gene-metabolite pairs
                            
                            "),
-                        actionButton("run4", "Run heatmap"),
+                        actionButton("run4", "Run"),
                         hr(),
                         tags$head(tags$style(type="text/css", "
                         loadmessage {
@@ -261,7 +261,7 @@ body <- shinydashboard::dashboardBody(
         
                                         
                                         hr(),
-                                        actionButton("run5", "Plot"),
+                                        actionButton("run5", "Run"),
                                         
                                         tags$head(tags$style(type="text/css", "
                         loadmessage {
