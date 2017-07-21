@@ -23,10 +23,7 @@ shinyServer(function(input, output, session) {
         }
     )
     
-    #tags$b("Please input the MetabID and the GeneID for your data"),
-    #textInput("metabid", "Metab ID", ""),
-    #textInput("geneid", "Gene ID", ""),
-    
+   
     output$idChooseM <- renderUI({
         if (is.null(input$file1)){
             
@@ -66,7 +63,22 @@ shinyServer(function(input, output, session) {
     })
     
 
+
+    #file input
+#    output$filename<-renderPrint(
+#        {
+#            inFile <- xinput$file1
+#            if (is.null(inFile)){
+#                cat("Please select CSV file by clicking the button above")
+#            }else{
+#            paste("File name:", inFile$name)
+#            }
+#        }
+#    )
+    
+    
     multiData <- eventReactive(input$run,{
+        
         IntLim::ReadData(req(as.character(
              parseFilePaths(
                rootVolumes,
@@ -75,34 +87,38 @@ shinyServer(function(input, output, session) {
     })
     
     
-    output$stats<-renderTable(
-        t(IntLim::OutputStats(multiData())),
-        include.rownames=TRUE,
-        include.colnames=FALSE
-    )
+    
+    output$stats<-renderDataTable({
+        
+       table<- as.data.frame(t(IntLim::OutputStats(multiData())))
+       colnames(table)<-"value"
+       cbind(names=rownames(table),table)
+       
+    },options = list(dom = 'ft'))
+    
     
     output$plot<-renderUI(
         IntLim::PlotDistributions(multiData())
     )
- 
+    
     #filter data
     FmultiData<-eventReactive(input$run2,{
         FmultiData<-multiData()
-        FmultiData<-IntLim::FilterData(multiData(),geneperc=input$geneperc,metabperc=input$metabperc)
+        if(input$filter){
+            FmultiData<-IntLim::FilterData(multiData(),geneperc=input$geneperc,metabperc=input$metabperc)
+        }
         FmultiData
     },ignoreNULL=FALSE)
     
-    # Filter data message
-    output$FiltMessage <- renderPrint({
-        if(input$geneperc<=0) {cat("Filtering of genes not performed\n")}
-        if(input$metabperc<=0) {cat("Filtering of metabolites not performed")}
-    })
-
-    output$Fstats<-renderTable(
-        as.data.frame(t(IntLim::OutputStats(FmultiData()))),
-        include.rownames=TRUE,
-        include.colnames=FALSE
-    )
+    output$Fstats<-renderDataTable({
+        
+        table<- as.data.frame(t(IntLim::OutputStats(FmultiData())))
+        colnames(table)<-"value"
+        cbind(names=rownames(table),table)
+        
+    },options = list(dom = 'ft'))
+    
+    
     output$Fplot<-renderUI(
         IntLim::PlotDistributions(FmultiData())
         

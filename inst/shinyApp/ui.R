@@ -119,7 +119,8 @@ body <- shinydashboard::dashboardBody(
                                          tags$div("Loading...",id="loadmessage")),
                         tags$b("The statistic summary of the data"),
                         plot.new(),
-                        pre(tableOutput('stats')),
+                        pre(dataTableOutput('stats')),
+		                tags$style(type="text/css", '#stats tfoot {display:none;}'),
                         hr(),
                         tags$b("Verify the distribution of the input data."),
                         plot.new(),
@@ -143,8 +144,9 @@ body <- shinydashboard::dashboardBody(
                         hr(),
                         verbatimTextOutput('FiltMessage'),
                         tags$b("The statistic summary of filtered data"),
-                        pre(tableOutput('Fstats')),
-                        
+                        pre(dataTableOutput('Fstats')),
+                        tags$style(type="text/css", '#Fstats tfoot {display:none;}'),
+                       
                         hr(),
                         tags$b("Verify the distribution of the filtered data."),
                         uiOutput('Fplot'),
