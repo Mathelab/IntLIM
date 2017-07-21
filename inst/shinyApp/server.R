@@ -99,7 +99,7 @@ shinyServer(function(input, output, session) {
         
     })
     
-    
+   
     
     output$stats<-renderDataTable({
         
@@ -116,10 +116,11 @@ shinyServer(function(input, output, session) {
     
     #filter data
     
-    temp<-reactive(
-        IntLim::FilterData(multiData(),geneperc=input$geneperc,metabperc=input$metabperc)
-    )
-    output$temp2<-renderPrint(temp())
+    #temp<-reactive(
+    #    IntLim::FilterData(multiData(),geneperc=input$geneperc,metabperc=input$metabperc)
+    #)
+    
+    #output$temp2<-renderPrint(temp())
     FmultiData<-eventReactive(input$run2,{
         if(input$run2==0){
             FmultiData<-multiData()

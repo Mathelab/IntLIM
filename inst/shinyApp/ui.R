@@ -143,7 +143,7 @@ body <- shinydashboard::dashboardBody(
                         numericInput("metabperc", "percentile cutoff for filtering metabolites:", 0, min = 0, max = 100),
                         actionButton("run2", "Run"),
                         
-                        pre(textOutput("temp2")),
+                        #pre(textOutput("temp2")),
                         hr(),
                         verbatimTextOutput('FiltMessage'),
                         
