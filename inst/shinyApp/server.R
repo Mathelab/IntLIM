@@ -1,29 +1,28 @@
-
 options(shiny.trace=FALSE)
 
 
 shinyServer(function(input, output, session) {      
-
+    
     rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
-
+    
     shinyFileChoose(input,'file1',
-                  roots = rootVolumes,
-                  session = session)
-
+                    roots = rootVolumes,
+                    session = session)
+    
     output$filename <- renderPrint( {
-	myFile <- as.character(
-             parseFilePaths(
-               rootVolumes,
-               input$file1)$datapath)
-	if (is.null(myFile)){
-                cat("Please select CSV file by clicking the button above")
-            }else{
+        myFile <- as.character(
+            parseFilePaths(
+                rootVolumes,
+                input$file1)$datapath)
+        if (is.null(myFile)){
+            cat("Please select CSV file by clicking the button above")
+        }else{
             paste("File name:", myFile)
-            }
         }
+    }
     )
     
-   
+    
     output$idChooseM <- renderUI({
         if (is.null(input$file1)){
             
@@ -62,38 +61,40 @@ shinyServer(function(input, output, session) {
         
     })
     
-
-
+    
+    
     #file input
-#    output$filename<-renderPrint(
-#        {
-#            inFile <- xinput$file1
-#            if (is.null(inFile)){
-#                cat("Please select CSV file by clicking the button above")
-#            }else{
-#            paste("File name:", inFile$name)
-#            }
-#        }
-#    )
+    #    output$filename<-renderPrint(
+    #        {
+    #            inFile <- xinput$file1
+    #            if (is.null(inFile)){
+    #                cat("Please select CSV file by clicking the button above")
+    #            }else{
+    #            paste("File name:", inFile$name)
+    #            }
+    #        }
+    #    )
     
     
     multiData <- eventReactive(input$run,{
         
-        IntLim::ReadData(req(as.character(
-             parseFilePaths(
-               rootVolumes,
-               input$file1)$datapath)),
-                  input$metabid,input$geneid)
+        multiData<-IntLim::ReadData(req(as.character(
+            parseFilePaths(
+                rootVolumes,
+                input$file1)$datapath)),
+            input$metabid,input$geneid)
+        IntLim::FilterData(multiData,geneperc=5,metabperc=5)
+        
     })
     
     
     
     output$stats<-renderDataTable({
         
-       table<- as.data.frame(t(IntLim::OutputStats(multiData())))
-       colnames(table)<-"value"
-       cbind(names=rownames(table),table)
-       
+        table<- as.data.frame(t(IntLim::OutputStats(multiData())))
+        colnames(table)<-"value"
+        cbind(names=rownames(table),table)
+        
     },options = list(dom = 'ft'))
     
     
@@ -102,16 +103,23 @@ shinyServer(function(input, output, session) {
     )
     
     #filter data
+    
+    temp<-reactive(
+        IntLim::FilterData(multiData(),geneperc=input$geneperc,metabperc=input$metabperc)
+    )
+    output$temp2<-renderPrint(temp())
     FmultiData<-eventReactive(input$run2,{
-        FmultiData<-multiData()
-        if(input$filter){
+        if(input$run2==0){
+            FmultiData<-multiData()
+        }
+        if(input$run2!=0){
             FmultiData<-IntLim::FilterData(multiData(),geneperc=input$geneperc,metabperc=input$metabperc)
         }
+        
         FmultiData
     },ignoreNULL=FALSE)
     
     output$Fstats<-renderDataTable({
-        
         table<- as.data.frame(t(IntLim::OutputStats(FmultiData())))
         colnames(table)<-"value"
         cbind(names=rownames(table),table)
@@ -128,15 +136,15 @@ shinyServer(function(input, output, session) {
     #adjusted p values
     output$choosestype <- renderUI({
         
-            choice<-reactive({
-                Biobase::varLabels(FmultiData()[["expression"]])
-            })
+        choice<-reactive({
+            Biobase::varLabels(FmultiData()[["expression"]])
+        })
         
         selectInput("stype", "Sample Type:", 
                     choices=choice())
     })
-        
-       
+    
+    
     myres <- eventReactive(input$run3,{
         shinyjs::html("text", "")
         IntLim::RunIntLim(FmultiData(),stype=input$stype,outcome=input$dataset)
@@ -147,7 +155,7 @@ shinyServer(function(input, output, session) {
         IntLim::DistPvalues(myres()@interaction.adj.pvalues)
         
     })
-   
+    
     
     #heatmap
     
@@ -199,11 +207,11 @@ shinyServer(function(input, output, session) {
         
     })
     
-  
-   
+    
+    
     output$scatterPlot<-highcharter::renderHighchart({
         IntLim::PlotGMPair(FmultiData(),stypeList(),geneName=input$geneName,metabName=input$metabName)
-        })
+    })
     
     
     
