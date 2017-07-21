@@ -138,7 +138,6 @@ body <- shinydashboard::dashboardBody(
                         solidHeader = TRUE,
                         h5("This step allows you to filter the metabolomics or gene expression data by a user-defined percentile cutoff."),
                         hr(),
-                        #checkboxInput('filter', 'FILTER', FALSE),
                         numericInput("geneperc", "percentile cutoff for filtering genes:", 0, min = 0, max = 100),
                         numericInput("metabperc", "percentile cutoff for filtering metabolites:", 0, min = 0, max = 100),
                         actionButton("run2", "Run"),
@@ -146,12 +145,15 @@ body <- shinydashboard::dashboardBody(
                         #pre(textOutput("temp2")),
                         hr(),
                         verbatimTextOutput('FiltMessage'),
-                        
+                        tags$b("The statistic summary of origin data"),
+                        pre(dataTableOutput('Ostats')),
                         tags$b("The statistic summary of filtered data"),
                         pre(dataTableOutput('Fstats')),
                         tags$style(type="text/css", '#Fstats tfoot {display:none;}'),
                        
                         hr(),
+                        tags$b("The distribution of the origin data."),
+                        uiOutput('Oplot'),
                         tags$b("Verify the distribution of the filtered data."),
                         uiOutput('Fplot'),
                         hr()
@@ -161,7 +163,7 @@ body <- shinydashboard::dashboardBody(
                 )
         ),
         
-        shinydashboard::tabItem(tabName = "adPval",
+        shinydashboard::tabItem(tabName = "RunLM",
                 fluidRow(
                     
                     shinydashboard::box(

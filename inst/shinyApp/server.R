@@ -131,7 +131,18 @@ shinyServer(function(input, output, session) {
         
         FmultiData
     },ignoreNULL=FALSE)
+    output$Ostats<-renderDataTable({
+        
+        table<- as.data.frame(t(IntLim::OutputStats(multiData())))
+        colnames(table)<-"value"
+        cbind(names=rownames(table),table)
+        
+    },options = list(dom = 'ft'))
     
+    
+    output$Oplot<-renderUI(
+        IntLim::PlotDistributions(multiData())
+    )
     output$Fstats<-renderDataTable({
         table<- as.data.frame(t(IntLim::OutputStats(FmultiData())))
         colnames(table)<-"value"
