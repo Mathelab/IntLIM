@@ -53,6 +53,11 @@ Verify the distribution of the input data:
 IntLim::PlotDistributions(inputData)
 ```
 
+Evaluate the clustering of the data via a Principal Components Analysis (unsupervised)
+```{r}
+IntLim::PlotPCA(inputData,stype = "PBO_vs_Leukemia")
+```
+
 Run the linear models and plot distribution of p-values:
 ```{r}
 myres <- IntLim::RunIntLim(inputData,stype="PBO_vs_Leukemia")

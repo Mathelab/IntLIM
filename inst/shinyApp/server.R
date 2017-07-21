@@ -10,6 +10,7 @@ shinyServer(function(input, output, session) {
                     session = session)
     
     output$filename <- renderPrint( {
+
         myFile <- as.character(
             parseFilePaths(
                 rootVolumes,
@@ -18,6 +19,17 @@ shinyServer(function(input, output, session) {
             cat("Please select CSV file by clicking the button above")
         }else{
             paste("File name:", myFile)
+
+	myFile <- as.character(
+             parseFilePaths(
+               rootVolumes,
+               input$file1)$datapath)
+	if (is.null(myFile)){
+                cat("Please select CSV file by clicking the button above")
+            }else{
+            cat(paste0("File to load:", myFile))
+            }
+
         }
     }
     )
@@ -78,12 +90,12 @@ shinyServer(function(input, output, session) {
     
     multiData <- eventReactive(input$run,{
         
-        multiData<-IntLim::ReadData(req(as.character(
+        IntLim::ReadData(req(as.character(
             parseFilePaths(
                 rootVolumes,
                 input$file1)$datapath)),
             input$metabid,input$geneid)
-        IntLim::FilterData(multiData,geneperc=5,metabperc=5)
+       
         
     })
     

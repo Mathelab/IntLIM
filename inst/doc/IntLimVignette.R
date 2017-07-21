@@ -18,6 +18,9 @@ IntLim::OutputStats(inputDatafilt)
 IntLim::PlotDistributions(inputData)
 
 ## ------------------------------------------------------------------------
+IntLim::PlotPCA(inputData,stype = "PBO_vs_Leukemia")
+
+## ------------------------------------------------------------------------
 myres <- IntLim::RunIntLim(inputData,stype="PBO_vs_Leukemia")
 IntLim::DistPvalues(myres)
 
