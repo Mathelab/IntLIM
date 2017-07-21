@@ -174,7 +174,7 @@ shinyServer(function(input, output, session) {
         IntLim::RunIntLim(FmultiData(),stype=input$stype,outcome=input$dataset)
         
     })
-    output$Pdist<-renderPlot({
+    output$Pdist<-highcharter::renderHighchart({
         
         IntLim::DistPvalues(myres()@interaction.adj.pvalues)
         

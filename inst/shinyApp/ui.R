@@ -196,7 +196,7 @@ body <- shinydashboard::dashboardBody(
                         conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                          tags$div("Loading...",id="loadmessage")),
                     
-                        pre(plotOutput('Pdist')),
+                        pre(highcharter::highchartOutput("Pdist")),
                         hr()
                         
                     )
