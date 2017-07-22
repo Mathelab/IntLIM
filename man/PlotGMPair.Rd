@@ -29,8 +29,7 @@ scatter plot of gene-metabolite pairs (based on user selection)
 dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 csvfile <- file.path(dir, "NCIinput.csv")
 mydata <- ReadData(csvfile,metabid='id',geneid='id')
-stype = inputData[["expression"]]$PBO_vs_Leukemia
-PlotGMPair(inputData,stype,"PRPF8","(p-Hydroxyphenyl)lactic acid")
+PlotGMPair(mydata,stype="PBO_vs_Leukemia","DLG4","(p-Hydroxyphenyl)lactic acid")
 
 }
 }

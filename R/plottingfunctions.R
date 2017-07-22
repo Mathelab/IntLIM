@@ -25,7 +25,7 @@ PlotDistributions <- function(inputData,viewer=T,
         cols <- c(palette)
       }
       else if (length(palette) == 1) {
-        cols <- RColorBrewer::brewer.pal(2, palette)
+        cols <- RColorBrewer::brewer.pal(3, palette)[1:2]
       }
       else {
         stop("palette must either be an RColorBrewer palette or a vector of hex colors of size 2")
@@ -33,7 +33,7 @@ PlotDistributions <- function(inputData,viewer=T,
     }
     else{
       if(!is.null(palette)){
-        cols <- RColorBrewer::brewer.pal(2, palette)
+        cols <- RColorBrewer::brewer.pal(3, palette)[1:2]
       }
     }
     categ <- c("Genes","Metabolites")
@@ -126,7 +126,7 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,
         cols <- c(palette)
       }
       else if (length(palette) == 1) {
-        cols <- RColorBrewer::brewer.pal(2, palette)
+        cols <- RColorBrewer::brewer.pal(3, palette)[1:2]
       }
       else {
         stop("palette must either be an RColorBrewer palette or a vector of hex colors of size 2")
@@ -134,7 +134,7 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,
     }
     else{
       if(!is.null(palette)){
-        cols <- RColorBrewer::brewer.pal(2, palette)
+        cols <- RColorBrewer::brewer.pal(3, palette)[1:2]
       }
     }
     categ <- c("Genes","Metabolites")
@@ -143,7 +143,7 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,
 		warning("The resulting PCA plot is not color-coded because you did not provide a category in 'stype'")
 		mytype <- NULL
         } else if (length(intersect(colnames(Biobase::pData(inputData[["metabolite"]])),stype))!=1) {
-		stop(paste0("You provided ",stype, "as your stype variable but id does not exist in your data"))}
+		stop(paste0("You provided ",stype, "as your stype variable but it does not exist in your data"))}
         else {
         	mytype <- Biobase::pData(inputData[["metabolite"]])[,stype]
 	}
@@ -341,55 +341,81 @@ type <- cor <- c()
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCIinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
-#' stype = inputData[["expression"]]$PBO_vs_Leukemia
-#' PlotGMPair(inputData,stype,"PRPF8","(p-Hydroxyphenyl)lactic acid")
+#' PlotGMPair(mydata,stype="PBO_vs_Leukemia","DLG4","(p-Hydroxyphenyl)lactic acid")
 #' 
 #' }
 #' @export
 PlotGMPair<- function(inputData,stype,geneName,metabName) {
-    gene<-Biobase::exprs(inputData[["expression"]])
-    sGene<-gene[geneName,]
+
+    if (class(inputData) != "MultiDataSet") {
+        stop("input data is not a MultiDataSet class")
+    }
+
+	if(is.null(stype)) {
+                stop("A category to colorcode by (e.g. stype) must be provided")
+        } else if (length(intersect(colnames(Biobase::pData(inputData[["metabolite"]])),stype))!=1) {
+                stop(paste0("You provided ",stype, "as your stype variable but it does not exist in your data"))}
+        else {
+                mytypes <- Biobase::pData(inputData[["metabolite"]])[,stype]
+        }
+
+    incommon <- MultiDataSet::commonSamples(inputData)
+
+    gene<-Biobase::exprs(incommon[["expression"]])
+    if(length(which(rownames(gene)==geneName))>0) {
+	    sGene<-gene[geneName,]
+    } else {
+	stop(paste0("The gene ",geneName," was not found in your data"))
+    }
     
-    metab<-Biobase::assayDataElement(inputData[["metabolite"]], 'metabData')
-    sMetab<-as.numeric(metab[metabName,])
+    metab<-Biobase::assayDataElement(incommon[["metabolite"]], 'metabData')
+    if(length(which(rownames(metab)==metabName))>0) {
+    	sMetab<-as.numeric(metab[metabName,])
+    } else {
+	stop(paste0("The metabolite ",metabName," was not found in your data"))
+    }
     
-    data<-data.frame('gene'=sGene,'metab'=sMetab,'type'=stype)
+    mycols <- as.character(mytype)
+    mycols[which(mytype==unique(mytype)[1])] <- cols[1]
+    mycols[which(mytype==unique(mytype)[2])] <- cols[2]
     
-    
-    data<-data[data$type!="",]
-    data$type <- factor(data$type)
-    b<-stats::glm(data$metab~data$gene+data$type+data$gene:data$type)
-    
-    
-    coefficients<-t(b$coefficients)
-    i<-coefficients[,1]
-    g<-coefficients[,2]
-    c<-coefficients[,3]
-    g.c<-coefficients[,4]
-    
-    u<-as.matrix(levels(data$type))
-    type1<-u[1,1]
-    type2<-u[2,1]
-    
-    max<- max(data$gene)
-    min<-min(data$gene)
-    
-    line1<-data.frame(x=c(max,min),y=c(g*max+i,min*g+i))
-    line2<-data.frame(x=c(max,min),y=c(g*max+g.c*max+i+c,min*g+i+c))
-    
-    
-    
-    hc<-highcharter::highchart(width = 800, height = 700) 
-    for(type in u){
-        hc<-hc%>% 
-            highcharter::hc_add_series_scatter(data$gene[data$type==type],data$metab[data$type==type],name=sprintf("type %s", type),
-                                               showInLegend = TRUE) 
-        
-    } 
-    
+    data<-data.frame(x=sGene,y=sMetab,z=colnames(gene),label=mytypes,color=mycols)
+
+    data<-data[data$label!="",]
+    #data$type <- factor(data$type)
+
+    max<- max(data$x)
+    min<-min(data$x)
+
+    m1<-stats::glm(data$y[which(data$label==mytypes[1])]~data$x[which(data$label==mytypes[1])])
+    line1<-data.frame(x=c(max,min),
+	y=c(as.numeric(m1$coefficients[2])*max+as.numeric(m1$coefficients[1]),
+		as.numeric(m1$coefficients[2])*min+as.numeric(m1$coefficients[1])))
+    m2<-stats::glm(data$y[which(data$label==mytypes[2])]~data$x[which(data$label==mytypes[2])])
+    line2<-data.frame(x=c(max,min),
+	y=c(as.numeric(m2$coefficients[2])*max+as.numeric(m2$coefficients[1]),
+		as.numeric(m2$coefficients[2])*min+as.numeric(m2$coefficients[1])))
+
+    ds <- list_parse(data)
+    cols=c("blue","pink")
+
+        hc <- highcharter::highchart(width = 350, height = 350 ) %>%
+                highcharter::hc_title(text="Gene:metabolite scatterplot") %>%
+                highcharter::hc_xAxis(title=list(text=geneName)) %>%
+                highcharter::hc_yAxis(title=list(text=metabName)) %>%
+                hc_chart(zoomType = "xy") %>%
+                highcharter::hc_add_series(data=ds,type="scatter",#col=cols[1],
+                        tooltip = list(headerFormat="",
+                          pointFormat=paste("{point.label}","{point.z}")),
+                        showInLegend=FALSE)
+
     hc <- hc %>%
-        highcharter::hc_add_series(data=line1,type='line',name=sprintf("regression line %s",type1),color = "#6AB9FF",enableMouseTracking=FALSE,marker=FALSE) %>%
-        highcharter::hc_add_series(data=line2,type='line',name=sprintf("regression line %s",type2),color = "#474544",enableMouseTracking=FALSE,marker=FALSE)
+        highcharter::hc_add_series(name = mytypes[1],
+		data=line1,type='line',#name=sprintf("regression line %s",type1),
+		color = cols[1],enableMouseTracking=FALSE,marker=FALSE) %>%
+        highcharter::hc_add_series(name = mytypes[2],
+		data=line2,type='line',#name=sprintf("regression line %s",type2),
+		color = cols[2],enableMouseTracking=FALSE,marker=FALSE)
     
     hc
 }
