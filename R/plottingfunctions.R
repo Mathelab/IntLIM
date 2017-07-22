@@ -333,6 +333,8 @@ type <- cor <- c()
 ##' @param palette choose an RColorBrewer palette ("Set1", "Set2", "Set3",
 ##' "Pastel1", "Pastel2", "Paired", etc.) or submit a vector of colors
 #' @param geneName string of select geneName
+#' @param viewer whether the plot should be displayed in the RStudio viewer (T) or
+#' in Shiny/Knittr (F)
 #' @param metabName string of select metabName
 #' @return a highcharter object
 #'
@@ -345,8 +347,24 @@ type <- cor <- c()
 #' 
 #' }
 #' @export
-PlotGMPair<- function(inputData,stype,geneName,metabName) {
-
+PlotGMPair<- function(inputData,stype,geneName,metabName,palette = c("#C71585", "#00E5EE"),
+	viewer=T) {
+   if ( viewer == TRUE ){
+      if (length(palette) == 2) {
+        cols <- c(palette)
+      }
+      else if (length(palette) == 1) {
+        cols <- RColorBrewer::brewer.pal(3, palette)[1:2]
+      }
+      else {
+        stop("palette must either be an RColorBrewer palette or a vector of hex colors of size 2")
+      }
+    }
+    else{
+      if(!is.null(palette)){
+        cols <- RColorBrewer::brewer.pal(3, palette)[1:2]
+      }
+    }
     if (class(inputData) != "MultiDataSet") {
         stop("input data is not a MultiDataSet class")
     }
@@ -375,9 +393,9 @@ PlotGMPair<- function(inputData,stype,geneName,metabName) {
 	stop(paste0("The metabolite ",metabName," was not found in your data"))
     }
     
-    mycols <- as.character(mytype)
-    mycols[which(mytype==unique(mytype)[1])] <- cols[1]
-    mycols[which(mytype==unique(mytype)[2])] <- cols[2]
+    mycols <- as.character(mytypes)
+    mycols[which(mytypes==unique(mytypes)[1])] <- cols[1]
+    mycols[which(mytypes==unique(mytypes)[2])] <- cols[2]
     
     data<-data.frame(x=sGene,y=sMetab,z=colnames(gene),label=mytypes,color=mycols)
 

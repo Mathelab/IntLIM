@@ -4,7 +4,8 @@
 \alias{PlotGMPair}
 \title{scatter plot of gene-metabolite pairs (based on user selection)}
 \usage{
-PlotGMPair(inputData, stype, geneName, metabName)
+PlotGMPair(inputData, stype, geneName, metabName, palette = c("#C71585",
+  "#00E5EE"), viewer = T)
 }
 \arguments{
 \item{inputData}{IntLimObject output of ReadData() or FilterData()}
@@ -17,6 +18,9 @@ PlotGMPair(inputData, stype, geneName, metabName)
 
 \item{palette}{choose an RColorBrewer palette ("Set1", "Set2", "Set3",
 "Pastel1", "Pastel2", "Paired", etc.) or submit a vector of colors}
+
+\item{viewer}{whether the plot should be displayed in the RStudio viewer (T) or
+in Shiny/Knittr (F)}
 }
 \value{
 a highcharter object
