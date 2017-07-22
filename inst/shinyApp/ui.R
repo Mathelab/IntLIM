@@ -1,4 +1,3 @@
-   
 headerbar <- shinydashboard::dashboardHeader(
     title = "IntLim",
     titleWidth = 270,
@@ -119,6 +118,7 @@ body <- shinydashboard::dashboardBody(
                                          tags$div("Loading...",id="loadmessage")),
                         tags$b("The statistic summary of the data"),
                         plot.new(),
+		                
                         pre(dataTableOutput('stats')),
 		                tags$style(type="text/css", '#stats tfoot {display:none;}'),
                         hr(),
@@ -138,16 +138,22 @@ body <- shinydashboard::dashboardBody(
                         solidHeader = TRUE,
                         h5("This step allows you to filter the metabolomics or gene expression data by a user-defined percentile cutoff."),
                         hr(),
-                        numericInput("geneperc", "percentile cutoff for filtering genes:", 5, min = 0, max = 100),
+                        numericInput("geneperc", "percentile cutoff for filtering genes:", 0, min = 0, max = 100),
                         numericInput("metabperc", "percentile cutoff for filtering metabolites:", 0, min = 0, max = 100),
                         actionButton("run2", "Run"),
+                        
+                        #pre(textOutput("temp2")),
                         hr(),
                         verbatimTextOutput('FiltMessage'),
+                        tags$b("The statistic summary of origin data"),
+                        pre(dataTableOutput('Ostats')),
                         tags$b("The statistic summary of filtered data"),
                         pre(dataTableOutput('Fstats')),
                         tags$style(type="text/css", '#Fstats tfoot {display:none;}'),
                        
                         hr(),
+                        tags$b("The distribution of the origin data."),
+                        uiOutput('Oplot'),
                         tags$b("Verify the distribution of the filtered data."),
                         uiOutput('Fplot'),
                         hr()
@@ -157,7 +163,7 @@ body <- shinydashboard::dashboardBody(
                 )
         ),
         
-        shinydashboard::tabItem(tabName = "adPval",
+        shinydashboard::tabItem(tabName = "RunLM",
                 fluidRow(
                     
                     shinydashboard::box(
@@ -190,7 +196,7 @@ body <- shinydashboard::dashboardBody(
                         conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                          tags$div("Loading...",id="loadmessage")),
                     
-                        pre(plotOutput('Pdist')),
+                        pre(highcharter::highchartOutput("Pdist")),
                         hr()
                         
                     )
@@ -207,7 +213,7 @@ body <- shinydashboard::dashboardBody(
                            Then plot heatmap of significant gene-metabolite pairs
                            
                            "),
-                        actionButton("run4", "Run heatmap"),
+                        actionButton("run4", "Run"),
                         hr(),
                         tags$head(tags$style(type="text/css", "
                         loadmessage {
@@ -255,7 +261,7 @@ body <- shinydashboard::dashboardBody(
         
                                         
                                         hr(),
-                                        actionButton("run5", "Plot"),
+                                        actionButton("run5", "Run"),
                                         
                                         tags$head(tags$style(type="text/css", "
                         loadmessage {
@@ -287,7 +293,6 @@ body <- shinydashboard::dashboardBody(
         
         )
                 )
-
 
 
 
