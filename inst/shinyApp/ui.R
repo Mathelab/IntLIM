@@ -142,11 +142,11 @@ body <- shinydashboard::dashboardBody(
                         numericInput("metabperc", "percentile cutoff for filtering metabolites:", 0, min = 0, max = 100),
                         actionButton("run2", "Run"),
                         
-                        #pre(textOutput("temp2")),
                         hr(),
                         verbatimTextOutput('FiltMessage'),
                         tags$b("The statistic summary of origin data"),
                         pre(dataTableOutput('Ostats')),
+                        tags$style(type="text/css", '#stats tfoot {display:none;}'),
                         tags$b("The statistic summary of filtered data"),
                         pre(dataTableOutput('Fstats')),
                         tags$style(type="text/css", '#Fstats tfoot {display:none;}'),
@@ -249,17 +249,9 @@ body <- shinydashboard::dashboardBody(
                                            "),
                                         uiOutput('choosesampletype'),
                                         hr(),
-                                        tags$b("Top 6 pairs of difference of correlation "),
-                                        pre(tableOutput('table')),
+                                        tags$b("Pairs of difference of correlation "),
+                                        pre(DT::dataTableOutput('table')),
                                       
-                                        hr(),
-                                        tags$b("Input the gene name and metab name you choose if meta
-                                           data files are provided for genes and/or metabolites."),
-                                        hr(),
-                                        uiOutput('chooseMetabName'),
-                                        uiOutput('chooseGeneName'),
-        
-                                        
                                         hr(),
                                         actionButton("run5", "Run"),
                                         
