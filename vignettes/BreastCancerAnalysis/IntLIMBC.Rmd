@@ -1,0 +1,95 @@
+---
+title: "Analyzing Breast Cancer Data using IntLIM"
+author: "Jalal K. Siddiqui, PhD"
+date: "7/20/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+The vignette describes how we import and analyze breast cancer data using IntLIM.  Prior to running it is necessary to have downloaded IntLIM available via GitHub.  The Readme file illustrates how to install IntLIM.  You also should install pheatmap, MultiDataSet, Biobase, and RColorBrewer.  
+
+```{r}
+rm(list = ls())
+library(IntLim)
+library(pheatmap)
+library(MultiDataSet)
+library(Biobase)
+library(RColorBrewer)
+```
+
+The data is imported as follows.  A bc.ambs.csv meta-file contains the list of files that will be imported into the import data object. From the Output Stats, we find out that we have gene expression data involving 108 patient samples and 20254 genes.  We have metabolite abundance data involving 132 patient samples and 536 metabolites.  108 samples are common between the two.  
+
+```{r}
+inputData <- IntLim::ReadData('bc.ambs.csv',metabid='id',geneid='id')
+IntLim::OutputStats(inputData)
+```
+
+## Filtering Data
+
+The FilterData function is used to remove the genes with the lowest 10th percentile mean expression.  From the OutputStats function we find the total number of genes removed from 20254 to 18228 genes.  
+
+```{r}
+inputDatafilt <- IntLim::FilterData(inputData,geneperc=10)
+IntLim::OutputStats(inputDatafilt)
+```
+
+## Distribution of Gene Expression and Metabolomics Data
+
+The PlotDistributions function allows us to observe a distribution of gene expression and metabolomics data.  
+
+```{r}
+IntLim::PlotDistributions(inputDatafilt)
+```
+
+## Principal Component Analysis
+
+A principal component analysis allows us to observe clustering between tumor and non-tumor samples.  
+```{r}
+IntLim::PlotPCA(inputDatafilt,stype = "DIAG")
+#Error will need to be corrected
+```
+
+## Running Model on IntLIM
+
+IntLIM is used to run the model that will describe how patient sample type will affect the gene-metabolite relationships in breast tissue.  We divide the data by 'DIAG' which represents whether a patient samples is tumor or adjacent non-tumor breast tissue as we are investigating the differences.  The outcome selected by default involves 'metabolite' data.  We find the data contains 47 non-tumor samples and 61 tumor samples.  The RunIntLIM function determines the p-values of the (g:t) coefficient describing how the interaction between phenotype influences the gene-metabolite relationship.  The p-values are subsequently FDR-adjusted.  
+
+```{r}
+myres <- IntLim::RunIntLim(inputDatafilt,stype="DIAG")
+IntLim::DistPvalues(myres)
+```
+
+The next step is to filter the gene-metabolite relations for those with an FDR adjusted p-value of 0.10 or lower.  We find 9348 interactions with an FDR adjusted p-value of 0.10 or less and a correlation difference of 0.10 or less.  
+```{r}
+myres <- IntLim::ProcessResults(myres,inputDatafilt, diffcorr = 0.50, pvalcutoff = 0.10)
+IntLim::CorrHeatmap(myres)
+```
+
+Another heatmap can be plotted using pheatmap.  This allows for clustering of gene-metabolite pairs.  
+
+```{r}
+mycols=colorRampPalette(brewer.pal(5,"PiYG")) (255)[255:1]
+
+myheat=pheatmap(myres@corr[,c(3,4)],col=mycols,cutree_rows=5,
+main="Breast Cancer Gene-Metabolite Correlations", show_rownames = F, cluster_cols = FALSE)
+
+```
+We can divide the heatmap into 5 major clusters.  
+
+```{r}
+myclust=myheat$tree_row
+mygroups=cutree(myclust,5)
+
+group.entries <- c()
+
+for (i in 1:5){
+    group.entries[i] <- length(which(mygroups == i))
+}
+
+group.entries
+```
+
