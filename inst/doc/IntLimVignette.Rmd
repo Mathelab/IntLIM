@@ -61,7 +61,7 @@ IntLim::PlotPCA(inputData,stype = "PBO_vs_Leukemia")
 Run the linear models and plot distribution of p-values:
 ```{r}
 myres <- IntLim::RunIntLim(inputData,stype="PBO_vs_Leukemia")
-IntLim::DistPvalues(myres)
+IntLim::DistPvalues(myres@interaction.adj.pvalues)
 ```
 
 Process the results and filter pairs of genes-metabolites based on adjusted p-values and differences in correlation coefficients between groups 1 and 2.  Then plot heatmap of significant gene-metabolite pairs

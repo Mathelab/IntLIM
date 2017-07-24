@@ -27,7 +27,9 @@ Imports:
     RColorBrewer,
     parallel,
     BiocGenerics,
-    tidyr
+    tidyr,
+    dplyr,
+    purrr
 Suggests:
     knitr
 Encoding: UTF-8

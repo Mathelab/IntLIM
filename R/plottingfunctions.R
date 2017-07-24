@@ -18,9 +18,10 @@
 #' PlotDistributions(mydata)
 #' @export
 PlotDistributions <- function(inputData,viewer=T,
-	palette = c("#C71585", "#00E5EE")) {
+#	palette = c("#C71585", "#00E5EE")) {
+        palette="Set1"){
 
-    if ( viewer == TRUE ){
+    #if ( viewer == TRUE ){
       if (length(palette) == 2) {
         cols <- c(palette)
       }
@@ -30,17 +31,28 @@ PlotDistributions <- function(inputData,viewer=T,
       else {
         stop("palette must either be an RColorBrewer palette or a vector of hex colors of size 2")
       }
-    }
-    else{
-      if(!is.null(palette)){
-        cols <- RColorBrewer::brewer.pal(3, palette)[1:2]
-      }
-    }
+    #}
+    #else{
+    #  if(!is.null(palette)){
+    #    cols <- RColorBrewer::brewer.pal(3, palette)[1:2]
+    #  }
+    #}
     categ <- c("Genes","Metabolites")
 
 	mygene <- as.data.frame(Biobase::assayDataElement(inputData[["expression"]],'exprs'))
-	toplot <- reshape2::melt(mygene)
-
+	toplot <- suppressMessages(reshape2::melt(mygene))
+        df <- dplyr::data_frame(value = toplot$value, by = toplot$variable) %>% dplyr::group_by_("by") %>%
+ 	       dplyr::do(data = grDevices::boxplot.stats(.$value))
+#	names(df$data) <- df$by
+#        df$color <- df$by
+	bxps <- purrr::map(df$data, "stats")
+	outs <- purrr::map2_df(seq(nrow(df)), df$data, function(x, y) {
+            if (length(y$out) > 0)
+                d <- dplyr::data_frame(x = x - 1, y = y$out)
+            else d <- dplyr::data_frame()
+            d
+        })
+# To try to get the gene names of outliers, would have to go back and get the gene names from original data frame and put htem in outs$color
 	boxplotOptions <- list(
           fillColor = '#ffffff',
           lineWidth = 2,
@@ -60,17 +72,30 @@ PlotDistributions <- function(inputData,viewer=T,
       highcharter::hc_plotOptions(
         boxplot = boxplotOptions
         ) %>%
-       highcharter::hc_add_series_boxplot(toplot$value,by=toplot$variable,col=cols[1]) %>%
+      hc_add_series(data = bxps,type="boxplot",color=cols[1],showInLegend=FALSE) %>%
+      highcharter::hc_add_series(data=list_parse(outs),type="scatter",color=cols[1],showInLegend=FALSE) %>%
+#		name = str_trim(paste(list(...)$name, "outliers")),
+#                type = "scatter") #marker = list(...)) %>%
+#		tooltip = list(headerFormat = "<span>{point.key}</span><br/>")) %>%
+#                  pointFormat = "<span style='color:{point.color}'></span> \nOutlier: <b>{point.y}</b><br/>")) %>%
       highcharter::hc_yAxis(title = list(text = "log(expression)",
                             style = list(fontSize = "13px")),
                labels = list(format = "{value}")) %>%
       highcharter::hc_xAxis(labels="") %>%
-      highcharter::hc_colors(cols) %>%
       highcharter::hc_tooltip(valueDecimals = 2) %>%
       highcharter::hc_exporting(enabled = TRUE)
 
 	mymetab <- Biobase::assayDataElement(inputData[["metabolite"]],'metabData')
-	toplot <- reshape2::melt(mymetab)
+	toplot <- suppressMessages(reshape2::melt(mymetab))
+        df <- dplyr::data_frame(value = toplot$value, by = toplot$variable) %>% dplyr::group_by_("by") %>%
+               dplyr::do(data = grDevices::boxplot.stats(.$value))
+        bxps <- purrr::map(df$data, "stats")
+        outs <- purrr::map2_df(seq(nrow(df)), df$data, function(x, y) {
+            if (length(y$out) > 0)
+                d <- dplyr::data_frame(x = x - 1, y = y$out)
+            else d <- dplyr::data_frame()
+            d
+        })
 
         m <- highcharter::highchart(width = 750, height = 750 ) %>%
       highcharter::hc_title(text = "Metabolite Levels",
@@ -79,12 +104,13 @@ PlotDistributions <- function(inputData,viewer=T,
       highcharter::hc_plotOptions(
         boxplot = boxplotOptions
         ) %>%
-       highcharter::hc_add_series_boxplot(toplot$value,by=toplot$variable,col=cols[2]) %>%
-      highcharter::hc_yAxis(title = list(text = "log(levels)",
+      highcharter::hc_add_series(data = bxps,type="boxplot",color=cols[2],showInLegend=FALSE) %>%
+      highcharter::hc_add_series(data=list_parse(outs),type="scatter",color=cols[2],showInLegend=FALSE) %>%
+      
+      highcharter::hc_yAxis(title = list(text = "log(abundances)",
                             style = list(fontSize = "13px")),
                labels = list(format = "{value}")) %>%
       highcharter::hc_xAxis(labels="") %>%
-      highcharter::hc_colors(cols[2]) %>%
       highcharter::hc_tooltip(valueDecimals = 2) %>%
       highcharter::hc_exporting(enabled = TRUE)
 

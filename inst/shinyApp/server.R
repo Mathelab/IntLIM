@@ -4,7 +4,9 @@ options(shiny.trace=FALSE)
 shinyServer(function(input, output, session) {      
     
     rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
-    
+   
+#    rootVolumes <- c(Home="/Users/ewymathe/Downloads/IntLim/inst/extdata/",getVolumes()(),WD=".")
+ 
     shinyFileChoose(input,'file1',
                     roots = rootVolumes,
                     session = session)
@@ -110,9 +112,9 @@ shinyServer(function(input, output, session) {
     },options = list(dom = 'ft'))
     
     
-    output$plot<-renderUI(
-        IntLim::PlotDistributions(multiData())
-    )
+    output$distplot<-renderUI({
+        IntLim::PlotDistributions(req(multiData()),viewer=FALSE)
+    })
     
     #filter data
     
