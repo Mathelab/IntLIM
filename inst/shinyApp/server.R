@@ -194,37 +194,18 @@ shinyServer(function(input, output, session) {
     )
     
     #scatter plot
-    output$table<-renderTable({
+    
+    pairTable<-reactive({
         a<-myres2()@corr
         b<-abs(a[,3]-a[,4])
         a$diff<-b
         a<-a[,-3]
         a<-a[,-3]
-        top.type<-head(a[order(a[,3],decreasing = TRUE),])
-        return(top.type)
+        table<-a[order(a[,3],decreasing = TRUE),]
+        table
     })
-    
-    
-    
-    output$chooseMetabName <- renderUI({
-        
-        metabName<-reactive({
-            a<-myres2()@corr
-            a[,1]
-        })
-        
-        selectInput('metabName', 'Metab Name', choices=metabName(), selectize=TRUE)
-    })
-    
-    output$chooseGeneName <- renderUI({
-        
-        geneName<-reactive({
-            a<-myres2()@corr
-            a[,2]
-        })
-        
-        selectInput('geneName', 'Gene Name', choices=geneName(), selectize=TRUE)
-    })
+    output$table<-DT::renderDataTable(pairTable(),selection = 'single')
+   
     
     stypeList<-eventReactive(input$run5,{
         s2<-input$stype
@@ -236,7 +217,11 @@ shinyServer(function(input, output, session) {
     
     
     output$scatterPlot<-highcharter::renderHighchart({
-        IntLim::PlotGMPair(FmultiData(),stypeList(),geneName=input$geneName,metabName=input$metabName)
+        rows<-input$table_rows_selected
+        pair<-as.matrix(pairTable()[rows,])
+        geneName<-pair[,"gene"]
+        metabName<-pair[,"metab"]
+        IntLim::PlotGMPair(FmultiData(),stypeList(),geneName=geneName,metabName=metabName)
     })
     
     
