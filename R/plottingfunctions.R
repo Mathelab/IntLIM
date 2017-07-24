@@ -21,7 +21,6 @@ PlotDistributions <- function(inputData,viewer=T,
 #	palette = c("#C71585", "#00E5EE")) {
         palette="Set1"){
 
-    #if ( viewer == TRUE ){
       if (length(palette) == 2) {
         cols <- c(palette)
       }
@@ -31,12 +30,7 @@ PlotDistributions <- function(inputData,viewer=T,
       else {
         stop("palette must either be an RColorBrewer palette or a vector of hex colors of size 2")
       }
-    #}
-    #else{
-    #  if(!is.null(palette)){
-    #    cols <- RColorBrewer::brewer.pal(3, palette)[1:2]
-    #  }
-    #}
+
     categ <- c("Genes","Metabolites")
 
 	mygene <- as.data.frame(Biobase::assayDataElement(inputData[["expression"]],'exprs'))
