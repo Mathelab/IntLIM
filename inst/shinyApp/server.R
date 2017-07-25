@@ -3,8 +3,10 @@ options(shiny.trace=FALSE)
 
 shinyServer(function(input, output, session) {      
     
-    rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
-    
+#    rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
+   
+    rootVolumes <- c(Home="/Users/ewymathe/Downloads/IntLim/inst/extdata/",getVolumes()(),WD=".")
+ 
     shinyFileChoose(input,'file1',
                     roots = rootVolumes,
                     session = session)
@@ -73,21 +75,6 @@ shinyServer(function(input, output, session) {
         
     })
     
-    
-    
-    #file input
-    #    output$filename<-renderPrint(
-    #        {
-    #            inFile <- xinput$file1
-    #            if (is.null(inFile)){
-    #                cat("Please select CSV file by clicking the button above")
-    #            }else{
-    #            paste("File name:", inFile$name)
-    #            }
-    #        }
-    #    )
-    
-    
     multiData <- eventReactive(input$run,{
         
         IntLim::ReadData(req(as.character(
@@ -110,12 +97,19 @@ shinyServer(function(input, output, session) {
     },options = list(dom = 'ft'))
     
     
+<<<<<<< HEAD
     output$plot<-renderUI(
         IntLim::PlotDistributions(multiData())
     )
     
     #filter data
   
+=======
+    output$distplot<-renderUI({
+        IntLim::PlotDistributions(req(multiData()),viewer=FALSE)
+    })
+    
+>>>>>>> 1386b27e6d56feae1565dc02f01a562639878cbf
     FmultiData<-eventReactive(input$run2,{
         if(input$run2==0){
             FmultiData<-multiData()
@@ -174,9 +168,13 @@ shinyServer(function(input, output, session) {
         IntLim::RunIntLim(FmultiData(),stype=input$stype,outcome=input$dataset)
         
     })
+#    output$runintlimlog <- renderPrint({
+#         print(capture.output(req(myres())))
+#    })
+         
     output$Pdist<-highcharter::renderHighchart({
         
-        IntLim::DistPvalues(myres()@interaction.adj.pvalues)
+        IntLim::DistPvalues(myres())
         
     })
     

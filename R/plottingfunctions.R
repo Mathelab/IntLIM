@@ -18,9 +18,9 @@
 #' PlotDistributions(mydata)
 #' @export
 PlotDistributions <- function(inputData,viewer=T,
-	palette = c("#C71585", "#00E5EE")) {
+#	palette = c("#C71585", "#00E5EE")) {
+        palette="Set1"){
 
-    if ( viewer == TRUE ){
       if (length(palette) == 2) {
         cols <- c(palette)
       }
@@ -30,17 +30,23 @@ PlotDistributions <- function(inputData,viewer=T,
       else {
         stop("palette must either be an RColorBrewer palette or a vector of hex colors of size 2")
       }
-    }
-    else{
-      if(!is.null(palette)){
-        cols <- RColorBrewer::brewer.pal(3, palette)[1:2]
-      }
-    }
+
     categ <- c("Genes","Metabolites")
 
 	mygene <- as.data.frame(Biobase::assayDataElement(inputData[["expression"]],'exprs'))
-	toplot <- reshape2::melt(mygene)
-
+	toplot <- suppressMessages(reshape2::melt(mygene))
+        df <- dplyr::data_frame(value = toplot$value, by = toplot$variable) %>% dplyr::group_by_("by") %>%
+ 	       dplyr::do(data = grDevices::boxplot.stats(.$value))
+#	names(df$data) <- df$by
+#        df$color <- df$by
+	bxps <- purrr::map(df$data, "stats")
+	outs <- purrr::map2_df(seq(nrow(df)), df$data, function(x, y) {
+            if (length(y$out) > 0)
+                d <- dplyr::data_frame(x = x - 1, y = y$out)
+            else d <- dplyr::data_frame()
+            d
+        })
+# To try to get the gene names of outliers, would have to go back and get the gene names from original data frame and put htem in outs$color
 	boxplotOptions <- list(
           fillColor = '#ffffff',
           lineWidth = 2,
@@ -60,17 +66,31 @@ PlotDistributions <- function(inputData,viewer=T,
       highcharter::hc_plotOptions(
         boxplot = boxplotOptions
         ) %>%
-       highcharter::hc_add_series_boxplot(toplot$value,by=toplot$variable,col=cols[1]) %>%
+      hc_add_series(data = bxps,type="boxplot",color=cols[1],showInLegend=FALSE) %>%
+      highcharter::hc_add_series(data=list_parse(outs),type="scatter",color=cols[1],showInLegend=FALSE) %>%
+#		name = str_trim(paste(list(...)$name, "outliers")),
+#                type = "scatter") #marker = list(...)) %>%
+#		tooltip = list(headerFormat = "<span>{point.key}</span><br/>")) %>%
+#                  pointFormat = "<span style='color:{point.color}'></span> \nOutlier: <b>{point.y}</b><br/>")) %>%
       highcharter::hc_yAxis(title = list(text = "log(expression)",
                             style = list(fontSize = "13px")),
                labels = list(format = "{value}")) %>%
       highcharter::hc_xAxis(labels="") %>%
-      highcharter::hc_colors(cols) %>%
       highcharter::hc_tooltip(valueDecimals = 2) %>%
       highcharter::hc_exporting(enabled = TRUE)
 
 	mymetab <- Biobase::assayDataElement(inputData[["metabolite"]],'metabData')
-	toplot <- reshape2::melt(mymetab)
+	toplot <- suppressMessages(reshape2::melt(mymetab))
+        df <- dplyr::data_frame(value = toplot$value, by = toplot$variable) %>% 
+		dplyr::group_by_("by") %>%
+               dplyr::do(data = grDevices::boxplot.stats(.$value))
+        bxps <- purrr::map(df$data, "stats")
+        outs <- purrr::map2_df(seq(nrow(df)), df$data, function(x, y) {
+            if (length(y$out) > 0)
+                d <- dplyr::data_frame(x = x - 1, y = y$out)
+            else d <- dplyr::data_frame()
+            d
+        })
 
         m <- highcharter::highchart(width = 750, height = 750 ) %>%
       highcharter::hc_title(text = "Metabolite Levels",
@@ -79,12 +99,13 @@ PlotDistributions <- function(inputData,viewer=T,
       highcharter::hc_plotOptions(
         boxplot = boxplotOptions
         ) %>%
-       highcharter::hc_add_series_boxplot(toplot$value,by=toplot$variable,col=cols[2]) %>%
-      highcharter::hc_yAxis(title = list(text = "log(levels)",
+      highcharter::hc_add_series(data = bxps,type="boxplot",color=cols[2],showInLegend=FALSE) %>%
+      highcharter::hc_add_series(data=list_parse(outs),type="scatter",color=cols[2],showInLegend=FALSE) %>%
+      
+      highcharter::hc_yAxis(title = list(text = "log(abundances)",
                             style = list(fontSize = "13px")),
                labels = list(format = "{value}")) %>%
       highcharter::hc_xAxis(labels="") %>%
-      highcharter::hc_colors(cols[2]) %>%
       highcharter::hc_tooltip(valueDecimals = 2) %>%
       highcharter::hc_exporting(enabled = TRUE)
 
@@ -105,7 +126,7 @@ PlotDistributions <- function(inputData,viewer=T,
 #' @include MultiDataSet_extendedfunctions.R
 #'
 #' @param inputData IntLimObject output of ReadData()
-#' @param stype category to color-code by
+#' @param stype category to color-code by (can be more than two categories)
 #' @param palette choose an RColorBrewer palette ("Set1", "Set2", "Set3",
 #' "Pastel1", "Pastel2", "Paired", etc.) or submit a vector of colors
 #' @param viewer whether the plot should be displayed in the RStudio viewer (T) or
@@ -119,24 +140,8 @@ PlotDistributions <- function(inputData,viewer=T,
 #' PlotPCA(mydata,stype = "PBO_vs_Leukemia")
 #' @export
 PlotPCA <- function(inputData,viewer=T,stype=NULL,
-        palette = c("#C71585", "#00E5EE")) {
+        palette = "Set1") {
 
-    if ( viewer == TRUE ){
-      if (length(palette) == 2) {
-        cols <- c(palette)
-      }
-      else if (length(palette) == 1) {
-        cols <- RColorBrewer::brewer.pal(3, palette)[1:2]
-      }
-      else {
-        stop("palette must either be an RColorBrewer palette or a vector of hex colors of size 2")
-      }
-    }
-    else{
-      if(!is.null(palette)){
-        cols <- RColorBrewer::brewer.pal(3, palette)[1:2]
-      }
-    }
     categ <- c("Genes","Metabolites")
     
         if(is.null(stype)) {
@@ -145,15 +150,41 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,
         } else if (length(intersect(colnames(Biobase::pData(inputData[["metabolite"]])),stype))!=1) {
 		stop(paste0("You provided ",stype, "as your stype variable but it does not exist in your data"))}
         else {
-        	mytype <- Biobase::pData(inputData[["metabolite"]])[,stype]
-	}
+        	mytype <- as.character(Biobase::pData(inputData[["metabolite"]])[,stype])
+                numcateg <- length(unique(mytype))
+                if(length(palette) >= 2) {
+                           cols <- palette 
+                } else {
+                if(numcateg == 1) {
+                       if(length(palette)==1) {cols <- RColorBrewer::brewer.pal(3, palette)[1]
+                       } else {stop("palette should be an RColorBrewer palette or a vector of colors")}
+                } else if (numcateg == 2) {
+                      if(length(palette)==1) {cols <- RColorBrewer::brewer.pal(numcateg, palette)[1:2]
+                      } else {stop("palette should be an RColorBrewer palette or a vector of colors")}
+                } else if (numcateg > 2) {
+                      if(length(palette)==1) {cols <- RColorBrewer::brewer.pal(numcateg, palette)
+                      } else {stop("palette should be an RColorBrewer palette or a vector of colors")}
+                } else {stop("There are no values in your 'stype' column")}
+               }
+        }      
+
         mygene <- as.data.frame(Biobase::assayDataElement(inputData[["expression"]],'exprs'))
         gpca <- stats::prcomp(t(mygene),center=F,scale=T)
 	percvar=round((gpca$sdev)^2 / sum(gpca$sdev^2)*100,2)
+        uniqtypes <- unique(mytype)
         mycols <- as.character(mytype)
-	mycols[which(mytype==unique(mytype)[1])] <- cols[1]
-	mycols[which(mytype==unique(mytype)[2])] <- cols[2]
- 
+        for (i in 1:numcateg) {
+		mycols[which(mytype==uniqtypes[i])] <- cols[i]
+        }
+        # Deal with missing values or ""
+        if(length(which(mytype==""))>0) {
+		mycols[which(mytype=="")]="grey"
+                mytype[which(mytype=="")]="NA"
+        }
+        if(length(which(is.na(mytype)))>0) {
+                mycols[which(is.na(mytype))]="grey"
+        }
+
 	if(is.null(mytype)) {
 		toplot=data.frame(x=gpca$x[,1],y=gpca$x[,2],z=rownames(gpca$x),color=rep("blue",nrow(gpca$x)))
 	} else {
@@ -222,7 +253,7 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,
 #' }
 #' @export
 DistPvalues<- function(IntLimResults) {
-    y<-as.numeric(IntLimResults)
+    y<-as.numeric(IntLimResults@interaction.pvalues)
     hchart(y)
 }
 

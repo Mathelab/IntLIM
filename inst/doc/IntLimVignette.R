@@ -22,11 +22,14 @@ IntLim::PlotPCA(inputData,stype = "PBO_vs_Leukemia")
 
 ## ------------------------------------------------------------------------
 myres <- IntLim::RunIntLim(inputData,stype="PBO_vs_Leukemia")
-IntLim::DistPvalues(myres)
+IntLim::DistPvalues(myres@interaction.adj.pvalues)
 
 ## ------------------------------------------------------------------------
 myres <- IntLim::ProcessResults(myres,inputData)
 IntLim::CorrHeatmap(myres)
+
+## ------------------------------------------------------------------------
+IntLim::PlotGMPair(inputData,stype="PBO_vs_Leukemia","DLG4","(p-Hydroxyphenyl)lactic acid")
 
 ## ------------------------------------------------------------------------
 sessionInfo()

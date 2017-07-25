@@ -4,7 +4,7 @@
 \alias{PlotDistributions}
 \title{Get some stats after reading in data}
 \usage{
-PlotDistributions(inputData, viewer = T, palette = c("#C71585", "#00E5EE"))
+PlotDistributions(inputData, viewer = T, palette = "Set1")
 }
 \arguments{
 \item{inputData}{IntLimObject output of ReadData()}
