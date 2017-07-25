@@ -253,7 +253,7 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,
 #' }
 #' @export
 DistPvalues<- function(IntLimResults) {
-    y<-as.numeric(IntLimResults)
+    y<-as.numeric(IntLimResults@interaction.pvalues)
     hchart(y)
 }
 
