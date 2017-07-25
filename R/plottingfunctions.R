@@ -148,8 +148,8 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,
 		warning("The resulting PCA plot is not color-coded because you did not provide a category in 'stype'")
 		mytype <- NULL
         } else if (length(intersect(colnames(Biobase::pData(inputData[["metabolite"]])),stype))!=1) {
-		stop(paste0("You provided ",stype, "as your stype variable but it does not exist in your data"))}
-        else {
+		stop(paste0("You provided ",stype, "as your stype variable but it does not exist in your data"))
+        } else {
         	mytype <- as.character(Biobase::pData(inputData[["metabolite"]])[,stype])
                 numcateg <- length(unique(mytype))
                 if(length(palette) >= 2) {
@@ -379,9 +379,8 @@ type <- cor <- c()
 #' 
 #' }
 #' @export
-PlotGMPair<- function(inputData,stype,geneName,metabName,palette = c("#C71585", "#00E5EE"),
+PlotGMPair<- function(inputData,stype,geneName,metabName,palette = "Set1",
 	viewer=T) {
-   if ( viewer == TRUE ){
       if (length(palette) == 2) {
         cols <- c(palette)
       }
@@ -391,47 +390,46 @@ PlotGMPair<- function(inputData,stype,geneName,metabName,palette = c("#C71585", 
       else {
         stop("palette must either be an RColorBrewer palette or a vector of hex colors of size 2")
       }
-    }
-    else{
-      if(!is.null(palette)){
-        cols <- RColorBrewer::brewer.pal(3, palette)[1:2]
-      }
-    }
-    if (class(inputData) != "MultiDataSet") {
+   
+   if (class(inputData) != "MultiDataSet") {
         stop("input data is not a MultiDataSet class")
     }
+
+    incommon <- getCommon(inputData,stype)
 
 	if(is.null(stype)) {
                 stop("A category to colorcode by (e.g. stype) must be provided")
         } else if (length(intersect(colnames(Biobase::pData(inputData[["metabolite"]])),stype))!=1) {
                 stop(paste0("You provided ",stype, "as your stype variable but it does not exist in your data"))}
         else {
-                mytypes <- Biobase::pData(inputData[["metabolite"]])[,stype]
+                mytypes <- incommon$p
         }
 
-    incommon <- MultiDataSet::commonSamples(inputData)
-
-    gene<-Biobase::exprs(incommon[["expression"]])
+    gene<-incommon$gene
     if(length(which(rownames(gene)==geneName))>0) {
 	    sGene<-gene[geneName,]
     } else {
 	stop(paste0("The gene ",geneName," was not found in your data"))
     }
     
-    metab<-Biobase::assayDataElement(incommon[["metabolite"]], 'metabData')
+    metab<-incommon$metab
     if(length(which(rownames(metab)==metabName))>0) {
     	sMetab<-as.numeric(metab[metabName,])
     } else {
 	stop(paste0("The metabolite ",metabName," was not found in your data"))
     }
-    
+
+    if(length(unique(mytypes))!=2) {
+	stop(paste0("The group selected, '",stype,"', should only contain two different categories"))
+    }   
+ 
     mycols <- as.character(mytypes)
     mycols[which(mytypes==unique(mytypes)[1])] <- cols[1]
     mycols[which(mytypes==unique(mytypes)[2])] <- cols[2]
     
     data<-data.frame(x=sGene,y=sMetab,z=colnames(gene),label=mytypes,color=mycols)
 
-    data<-data[data$label!="",]
+#    data<-data[data$label!="",]
     #data$type <- factor(data$type)
 
     max<- max(data$x)
@@ -447,7 +445,7 @@ PlotGMPair<- function(inputData,stype,geneName,metabName,palette = c("#C71585", 
 		as.numeric(m2$coefficients[2])*min+as.numeric(m2$coefficients[1])))
 
     ds <- list_parse(data)
-    cols=c("blue","pink")
+    #cols=c("blue","pink")
 
         hc <- highcharter::highchart(width = 350, height = 350 ) %>%
                 highcharter::hc_title(text="Gene:metabolite scatterplot") %>%

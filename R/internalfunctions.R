@@ -1,4 +1,3 @@
-    
 #' Generic function to create constructor of MultiDataSet gene object
 #'
 #' @include MetaboliteSet_addMetabolite.R
@@ -109,6 +108,51 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
 	return(multi2)
 }
 
+
+#' Function that returns a list of all data for samples in common between metabolite and gene datasets
+#'
+##' @include AllClasses.R
+#'
+#' @param inputData MultiDataSet object (output of ReadData())
+#' @param stype category to color-code by (can be more than two categories)
+getCommon <- function(inputData,stype=NULL) {
+   incommon<-MultiDataSet::commonSamples(inputData)
+   mp <- Biobase::pData(incommon[["metabolite"]])
+   gp <- Biobase::pData(incommon[["expression"]])
+
+   gene <- Biobase::assayDataElement(inputData[["expression"]], 'exprs')
+   metab <- Biobase::assayDataElement(inputData[["metabolite"]], 'metabData')
+
+   # Force the order to be the same, in case it isn't
+   p <- mp[rownames(gp),]
+   metab <- metab[,colnames(gene)]
+
+   if(!is.null(stype)) {
+	p <- p[,stype]
+        uniqp <- unique(p)
+
+	uniqtypes <- unique(p)
+        # Deal with missing values or ""
+        if(length(which(p==""))>0) {
+                p <- p[which(p!="")]
+		metab <- metab[,which(p!="")]
+		gene <- gene[,which(p!="")]
+        }
+        if(length(which(is.na(p)))>0) {
+                p <- p[which(!is.na(p))]
+                metab <- metab[,which(!is.na(p))]
+                gene <- gene[,which(!is.na(p))]
+        }
+   }
+
+   # Check that everything is in right order
+   if(!all.equal(rownames(mp),rownames(gp)) || !all.equal(colnames(metab),colnames(gene))){ 
+	stop("Something went wrong with the merging!  Sample names of input files may not match.")
+   } else {
+   out <- list(p=p,gene=gene,metab=metab)
+   }
+   return(out)
+}
 
 #' Function that runs linear models and returns interaction p-values.
 #'
