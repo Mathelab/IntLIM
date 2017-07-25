@@ -4,8 +4,7 @@
 \alias{PlotPCA}
 \title{PCA plots of data for QC}
 \usage{
-PlotPCA(inputData, viewer = T, stype = NULL, palette = c("#C71585",
-  "#00E5EE"))
+PlotPCA(inputData, viewer = T, stype = NULL, palette = "Set1")
 }
 \arguments{
 \item{inputData}{IntLimObject output of ReadData()}
@@ -13,7 +12,7 @@ PlotPCA(inputData, viewer = T, stype = NULL, palette = c("#C71585",
 \item{viewer}{whether the plot should be displayed in the RStudio viewer (T) or
 in Shiny/Knittr (F)}
 
-\item{stype}{category to color-code by}
+\item{stype}{category to color-code by (can be more than two categories)}
 
 \item{palette}{choose an RColorBrewer palette ("Set1", "Set2", "Set3",
 "Pastel1", "Pastel2", "Paired", etc.) or submit a vector of colors}
