@@ -163,7 +163,7 @@ shinyServer(function(input, output, session) {
     })
     output$Pdist<-highcharter::renderHighchart({
         
-        IntLim::DistPvalues(myres()@interaction.adj.pvalues)
+        IntLim::DistPvalues(myres())
         
     })
     

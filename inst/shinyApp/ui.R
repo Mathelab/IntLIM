@@ -70,83 +70,95 @@ body <- shinydashboard::dashboardBody(
                     
                     shinydashboard::box(
                         title = strong("Load Data"),
-                        width = NULL,
+                        width = 8,
                         solidHeader = TRUE,
                         h5("This function takes a CSV file as input (see About) and performs the following:"),
                         tags$ul(
                              tags$li("Loads the CSV input file and checks that all files exist"),
                              tags$li("Reads in all files from the CSV input file and creates a MultiOmics object"),
                              tags$li("Outputs a statistic summary of the data loaded in")
+                        )
                         ),
-                        hr(),
-                        #tags$head(tags$style(HTML(
-                        #    ".fileinput_2 {
-                        #    width: 0.1px;
-                        #    height: 0.1px;
-                        #    opacity: 0;
-                        #    overflow: hidden;
-                        #    position: absolute;
-                        #    z-index: -1;
-                        #    }"
-                       #))),
+                    shinydashboard::box(
+                        width = 4,
+                        infoBoxOutput("statusbox1", width = NULL)
+                    )
+                ),#end of info flow
+                fluidRow(
+                    shinydashboard::box(
                         shinyFilesButton('file1',
-		                 'Select CSV File',
-		                 'Provide CSV File to Load Data',
-                                  FALSE),
+                                         'Select CSV File',
+                                         'Provide CSV File to Load Data',
+                                         FALSE),
                         verbatimTextOutput('filename'),
-		                uiOutput('idChooseM'),
-		                uiOutput('idChooseG'),
+                        uiOutput('idChooseM'),
+                        uiOutput('idChooseG'),
                         hr(),
                         actionButton("run", "Run"),
-                        hr(),
+                        
                         conditionalPanel(condition="$('html').hasClass('shiny-busy')",
-                                         tags$div("Loading...",id="loadmessage")),
+                                         tags$div("Loading...",id="loadmessage"))
+                    ),
+                    shinydashboard::box(
                         tags$b("Summary Statistics"),
                         #plot.new(),
-		                
+                        
                         pre(dataTableOutput('stats')),
-		                tags$style(type="text/css", '#stats tfoot {display:none;}'),
-                        hr(),
+                        tags$style(type="text/css", '#stats tfoot {display:none;}')
+                    )
+                ),#end of select file and stats flow
+                fluidRow(
+                    shinydashboard::box(
+                        width = 12,
                         tags$b("Distribution of Input Data"),
-                        htmlOutput("plot"),
-                        infoBoxOutput("statusbox1", width = NULL)
-                            )
-                        )
-                        ), # end tab loaddata
+                        pre(htmlOutput("plot"))
+                    )
+                       
+                )#end of plot flow
+                
+        ), # end tab loaddata
         
         
         shinydashboard::tabItem(tabName = "Filterdata",
                 fluidRow(
                     shinydashboard::box(
                         title = strong("Filter Data (optional)") ,
-                        width = NULL,
+                        width = 8,
                         solidHeader = TRUE,
                         h5("This step allows you to filter the metabolomics or gene expression data by a user-defined percentile cutoff."),
                         hr(),
                         numericInput("geneperc", "percentile cutoff for filtering genes:", 0, min = 0, max = 100),
                         numericInput("metabperc", "percentile cutoff for filtering metabolites:", 0, min = 0, max = 100),
-                        actionButton("run2", "Run"),
-                        
-                        hr(),
-                        verbatimTextOutput('FiltMessage'),
-                        tags$b("The statistic summary of origin data"),
-                        pre(dataTableOutput('Ostats')),
-                        tags$style(type="text/css", '#Ostats tfoot {display:none;}'),
-                        tags$b("The statistic summary of filtered data"),
-                        pre(dataTableOutput('Fstats')),
-                        tags$style(type="text/css", '#Fstats tfoot {display:none;}'),
-                       
-                        hr(),
-                        tags$b("The distribution of the origin data."),
-                        uiOutput('Oplot'),
-                        tags$b("Verify the distribution of the filtered data."),
-                        uiOutput('Fplot'),
-                        hr(),
+                        actionButton("run2", "Run")
+                    ),
+                    shinydashboard::box(
+                        width=4,
                         infoBoxOutput("statusbox2", width = NULL)
-                        
-                        
-                    ) # end box
-                )
+                    )
+                    ), # end filter option flow
+                fluidRow(
+                    shinydashboard::box(
+                        tags$b("The statistic summary of origin data"),
+                        dataTableOutput('Ostats'),
+                        tags$style(type="text/css", '#Ostats tfoot {display:none;}')
+                    ),
+                    shinydashboard::box(
+                        tags$b("The statistic summary of filtered data"),
+                        dataTableOutput('Fstats'),
+                        tags$style(type="text/css", '#Fstats tfoot {display:none;}')
+                    )
+                ),#end stats comparison flow    
+                fluidRow(
+                    shinydashboard::box(
+                        tags$b("The distribution of the origin data."),
+                        uiOutput('Oplot')
+                    ),
+                    shinydashboard::box(
+                        tags$b("Verify the distribution of the filtered data."),
+                        uiOutput('Fplot')
+                    )
+                )#end plot comparison flow
+                
         ),
         
         shinydashboard::tabItem(tabName = "RunLM",
@@ -154,7 +166,7 @@ body <- shinydashboard::dashboardBody(
                     
                     shinydashboard::box(
                         title = strong("Run IntLIM") ,
-                        width = NULL,
+                        width = 10,
                         solidHeader = TRUE,
                         h5("This step performs the linear models for all combinations of gene:metabolite pairs and then plots distribution of p-values.  "),
                         radioButtons("dataset", label = h3("Select whether the metabolite or gene should be the outcome:"),
@@ -182,7 +194,7 @@ body <- shinydashboard::dashboardBody(
                         conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                          tags$div("Loading...",id="loadmessage")),
                         #verbatimTextOutput("runintlimlog"),
-                        pre(highcharter::highchartOutput("Pdist")),
+                        highcharter::highchartOutput("Pdist"),
                         hr(),
                         infoBoxOutput("statusbox3", width = NULL)
                         
