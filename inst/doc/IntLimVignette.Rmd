@@ -70,6 +70,13 @@ myres <- IntLim::ProcessResults(myres,inputData)
 IntLim::CorrHeatmap(myres)
 ```
 
+Plot a pair of interest:
+```{r}
+IntLim::PlotGMPair(inputData,stype="PBO_vs_Leukemia","DLG4","(p-Hydroxyphenyl)lactic acid")
+```
+
+
+
 ```{r}
 sessionInfo()
 ```

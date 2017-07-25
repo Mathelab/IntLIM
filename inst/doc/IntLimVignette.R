@@ -29,5 +29,8 @@ myres <- IntLim::ProcessResults(myres,inputData)
 IntLim::CorrHeatmap(myres)
 
 ## ------------------------------------------------------------------------
+IntLim::PlotGMPair(inputData,stype="PBO_vs_Leukemia","DLG4","(p-Hydroxyphenyl)lactic acid")
+
+## ------------------------------------------------------------------------
 sessionInfo()
 

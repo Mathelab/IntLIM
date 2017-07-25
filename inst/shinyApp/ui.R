@@ -99,21 +99,6 @@ body <- shinydashboard::dashboardBody(
                         hr(),
                         actionButton("run", "Run"),
                         hr(),
-#                        tags$head(tags$style(type="text/css", "
-#                              loadmessage {
-#                                             position: fixed;
-#                                             top: 0px;
-#                                             left: 0px;
-#                                             width: 100%;
-#                                             padding: 5px 0px 5px 0px;
-#                                             text-align: center;
-#                                             font-weight: bold;
-#                                             font-size: 100%;
-#                                             color: #000000;
-#                                             background-color: #CCFF66;
-#                                             z-index: 105;
-#                                             }
-#                                             ")),
                         conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                          tags$div("Loading...",id="loadmessage")),
                         tags$b("Summary Statistics"),
@@ -168,17 +153,17 @@ body <- shinydashboard::dashboardBody(
                 fluidRow(
                     
                     shinydashboard::box(
-                        title = strong("Adjusted P value") ,
+                        title = strong("Run IntLIM") ,
                         width = NULL,
                         solidHeader = TRUE,
-                        h5("Run the linear models and plot distribution of p-values:"),
-                        radioButtons("dataset", label = h3("Data set"),
+                        h5("This step performs the linear models for all combinations of gene:metabolite pairs and then plots distribution of p-values.  "),
+                        radioButtons("dataset", label = h3("Select whether the metabolite or gene should be the outcome:"),
                                      choices = list("metabolite" = "metabolite", "gene" = "gene"), 
                                      selected = "metabolite"),
                         hr(),
                         uiOutput('choosestype'),
                         actionButton("run3", "Run"),
-                        
+                         
                         tags$head(tags$style(type="text/css", "
                         loadmessage {
                                              position: fixed;
@@ -196,7 +181,7 @@ body <- shinydashboard::dashboardBody(
                                              ")),
                         conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                          tags$div("Loading...",id="loadmessage")),
-                    
+                        #verbatimTextOutput("runintlimlog"),
                         pre(highcharter::highchartOutput("Pdist")),
                         hr()
                         
