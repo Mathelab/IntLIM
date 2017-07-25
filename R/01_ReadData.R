@@ -64,13 +64,23 @@ ReadData <- function(inputFile,metabid=NULL,geneid=NULL, logmetab=FALSE,loggene=
     temp <- paste0(mydir,"/",as.character(csvfile['metabData',]))
     if(!file.exists(temp)) {
 	stop(paste("File", temp, "does not exist"))} else {
-    MData<-utils::read.csv(temp,row.names = 1,check.names=F)}
+    ids <- utils::read.csv(temp,check.names=F)[,1]
+    if(length(ids) != length(unique(ids))) {
+	stop(paste("Error: your input file",temp,"contains has duplicate entries in column 1. Please make sure you have one row per metabolite"))
+    } else {
+    	MData<-utils::read.csv(temp,row.names = 1,check.names=F)
+    }
+    }
 
     temp <- paste0(mydir,"/",as.character(csvfile['geneData',]))
     if(!file.exists(temp)) {
         stop(paste("File", temp, "does not exist"))} else {
-    GData<-utils::read.csv(temp,row.names = 1,check.names=F)}
-
+    ids <- utils::read.csv(temp,check.names=F)[,1]
+    if(length(ids) != length(unique(ids))) {
+        stop(paste("Error: your input file",temp,"contains has duplicate entries in column 1. Please make sure you have one row per gene"))
+    } else {
+    	GData<-utils::read.csv(temp,row.names = 1,check.names=F)}
+    }
     temp <- paste0(mydir,"/",as.character(csvfile['metabMetaData',]))
     if(as.character(csvfile['metabMetaData',])=="") {
 	warning("No metadata provided for metabolites");MmetaData<-NULL;metabid=NULL; } else if
