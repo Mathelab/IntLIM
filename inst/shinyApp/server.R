@@ -1,12 +1,10 @@
-options(shiny.trace=FALSE)
+options(shiny.trace=F)
 
 
 shinyServer(function(input, output, session) {      
+    #file input==================================================================================================
+    rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
     
-#    rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
-   
-    rootVolumes <- c(Home="/Users/ewymathe/Downloads/IntLim/inst/extdata/",getVolumes()(),WD=".")
- 
     shinyFileChoose(input,'file1',
                     roots = rootVolumes,
                     session = session)
@@ -75,6 +73,8 @@ shinyServer(function(input, output, session) {
         
     })
     
+    
+    
     multiData <- eventReactive(input$run,{
         
         IntLim::ReadData(req(as.character(
@@ -94,22 +94,15 @@ shinyServer(function(input, output, session) {
         colnames(table)<-"value"
         cbind(names=rownames(table),table)
         
-    },options = list(dom = 'ft'))
+    },options = list(dom = 't'))
     
     
-<<<<<<< HEAD
     output$plot<-renderUI(
         IntLim::PlotDistributions(multiData())
     )
     
-    #filter data
+    #filter data==================================================================================================
   
-=======
-    output$distplot<-renderUI({
-        IntLim::PlotDistributions(req(multiData()),viewer=FALSE)
-    })
-    
->>>>>>> 1386b27e6d56feae1565dc02f01a562639878cbf
     FmultiData<-eventReactive(input$run2,{
         if(input$run2==0){
             FmultiData<-multiData()
@@ -127,7 +120,7 @@ shinyServer(function(input, output, session) {
         colnames(table)<-"value"
         cbind(names=rownames(table),table)
         
-    },options = list(dom = 'ft'))
+    },options = list(dom = 't'))
     
     
     output$Oplot<-renderUI({
@@ -141,7 +134,7 @@ shinyServer(function(input, output, session) {
         colnames(table)<-"value"
         cbind(names=rownames(table),table)
         
-    },options = list(dom = 'ft'))
+    },options = list(dom = 't'))
     
     
     output$Fplot<-renderUI({
@@ -151,7 +144,7 @@ shinyServer(function(input, output, session) {
     )
     
     
-    #adjusted p values
+    #adjusted p values==================================================================================================
     output$choosestype <- renderUI({
         
         choice<-reactive({
@@ -159,7 +152,7 @@ shinyServer(function(input, output, session) {
         })
         
         selectInput("stype", "Sample Type:", 
-                    choices=choice())
+                    c(Choose='',choice()),selected = NULL)
     })
     
     
@@ -168,18 +161,14 @@ shinyServer(function(input, output, session) {
         IntLim::RunIntLim(FmultiData(),stype=input$stype,outcome=input$dataset)
         
     })
-#    output$runintlimlog <- renderPrint({
-#         print(capture.output(req(myres())))
-#    })
-         
     output$Pdist<-highcharter::renderHighchart({
         
-        IntLim::DistPvalues(myres())
+        IntLim::DistPvalues(myres()@interaction.adj.pvalues)
         
     })
     
     
-    #heatmap
+    #heatmap==================================================================================================
     
     myres2 <- eventReactive(input$run4,{
         IntLim::ProcessResults(myres(),FmultiData())
@@ -189,7 +178,7 @@ shinyServer(function(input, output, session) {
     }
     )
     
-    #scatter plot
+    #scatter plot=============================================================================================
     
     pairTable<-reactive({
         a<-myres2()@corr
@@ -201,25 +190,159 @@ shinyServer(function(input, output, session) {
         table
     })
     output$table<-DT::renderDataTable(pairTable(),selection = 'single')
-   
     
-    # stypeList<-eventReactive(input$run5,{
-    #     s2<-input$stype
-    #     expression<-FmultiData()[["expression"]]
-    #     expression[[s2]]
-    #     
-    # })
-    
-    
-    
+    rows<-eventReactive(input$run5,{
+        input$table_rows_selected
+    })
     output$scatterPlot<-highcharter::renderHighchart({
-        rows<-input$table_rows_selected
-        pair<-as.matrix(pairTable()[rows,])
+        
+        pair<-as.matrix(pairTable()[rows(),])
         geneName<-pair[,"gene"]
         metabName<-pair[,"metab"]
         IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName,metabName=metabName)
     })
     
+    #infobox
+    output$statusbox1 <- renderInfoBox({
+        if (is.null(input$file1)) {
+            infoBox(
+                "Status",
+                "File Not Loaded Yet!",
+                icon = icon("import", lib = "glyphicon"),
+                color = "aqua",
+                fill = TRUE
+            )}
+        else if (!is.null(input$file1)&&input$run==0) {
+            infoBox(
+                "Status",
+                "Step 1 is Not Complete Yet!",
+                "Please Run button to see the data summry!",
+                icon = icon("warning-sign", lib = "glyphicon"),
+                color = "aqua",
+                fill = TRUE
+            )}
+        else if (!input$run==0) {
+            infoBox(
+                "Status",
+                HTML(paste("Object analyze Complete.",
+                           "You can proceed to step2 (optional) or proceed to step3.",
+                           sep = "<br/>")),
+                icon = icon("thumbs-up", lib = "glyphicon"),
+                color = "green", fill = TRUE)
+        }
+    })
+    
+    output$statusbox2 <- renderInfoBox({
+        if (input$geneperc==0&&input$metabperc==0) {
+            infoBox(
+                "Status",
+                "Please input your cutoff percentage",
+                icon = icon("flag", lib = "glyphicon"),
+                color = "aqua",
+                fill = TRUE
+            )}
+        else if (input$run2==0) {
+            infoBox(
+                "Status",
+                "Press run button to filter data",
+                icon = icon("flag", lib = "glyphicon"),
+                color = "aqua",
+                fill = TRUE
+            )}
+        else if (!input$run2==0) {
+            infoBox(
+                "Status",
+                HTML(paste("Data filter complete.",
+                           "You can proceed to step3",
+                           sep = "<br/>")),
+                icon = icon("thumbs-up", lib = "glyphicon"),
+                color = "green", fill = TRUE)
+        }
+    })
+    
+    output$statusbox3 <- renderInfoBox({
+        if (input$stype=="") {
+            infoBox(
+                "Status",
+                "Please select your sample type",
+                icon = icon("flag", lib = "glyphicon"),
+                color = "aqua",
+                fill = TRUE
+            )}
+        else if (input$run3==0) {
+            infoBox(
+                "Status",
+                "Step 3 is Not Complete Yet!",
+                "Please Run button to see the distribution",
+                icon = icon("warning-sign", lib = "glyphicon"),
+                color = "aqua",
+                fill = TRUE
+            )}
+        else if (!is.null(myres())) {
+            infoBox(
+                "Status",
+                HTML(paste("InltLim running complete.",
+                           "You can proceed to step4",
+                           sep = "<br/>")),
+                icon = icon("thumbs-up", lib = "glyphicon"),
+                color = "green", fill = TRUE)
+        }
+    })
+    
+    output$statusbox4 <- renderInfoBox({
+        if (input$run4==0) {
+            infoBox(
+                "Status",
+                "Please press Run button to see the heatmap",
+                icon = icon("flag", lib = "glyphicon"),
+                color = "aqua",
+                fill = TRUE
+            )}
+        
+        else if (!is.null(myres2())) {
+            infoBox(
+                "Status",
+                HTML(paste("Heatmap running complete.",
+                           "You can proceed to step5",
+                           sep = "<br/>")),
+                icon = icon("thumbs-up", lib = "glyphicon"),
+                color = "green", fill = TRUE)
+        }
+        
+        
+    })
+    output$statusbox5 <- renderInfoBox({
+        if (is.null(input$table_rows_selected)) {
+            infoBox(
+                "Status",
+                "Please choose a pair of gene and metab by clicking the table",
+                icon = icon("flag", lib = "glyphicon"),
+                color = "aqua",
+                fill = TRUE
+            )}
+        else if (input$run5==0) {
+            infoBox(
+                "Status",
+                "Please Press Run button to run scatter plot",
+                icon = icon("flag", lib = "glyphicon"),
+                color = "aqua",
+                fill = TRUE
+            )}
+        
+        else if (!is.null(rows())) {
+            infoBox(
+                "Status",
+                HTML(paste("Scatter plot running complete!",
+                           
+                           sep = "<br/>")),
+                icon = icon("thumbs-up", lib = "glyphicon"),
+                color = "green", fill = TRUE)
+        }
+        
+        
+    })
+    
     
     
 })
+

@@ -108,9 +108,8 @@ body <- shinydashboard::dashboardBody(
 		                tags$style(type="text/css", '#stats tfoot {display:none;}'),
                         hr(),
                         tags$b("Distribution of Input Data"),
-                        #plot.new(),
-#                        uiOutput("distplot")
-                        htmlOutput("distplot")
+                        htmlOutput("plot"),
+                        infoBoxOutput("statusbox1", width = NULL)
                             )
                         )
                         ), # end tab loaddata
@@ -132,7 +131,7 @@ body <- shinydashboard::dashboardBody(
                         verbatimTextOutput('FiltMessage'),
                         tags$b("The statistic summary of origin data"),
                         pre(dataTableOutput('Ostats')),
-                        tags$style(type="text/css", '#stats tfoot {display:none;}'),
+                        tags$style(type="text/css", '#Ostats tfoot {display:none;}'),
                         tags$b("The statistic summary of filtered data"),
                         pre(dataTableOutput('Fstats')),
                         tags$style(type="text/css", '#Fstats tfoot {display:none;}'),
@@ -142,7 +141,8 @@ body <- shinydashboard::dashboardBody(
                         uiOutput('Oplot'),
                         tags$b("Verify the distribution of the filtered data."),
                         uiOutput('Fplot'),
-                        hr()
+                        hr(),
+                        infoBoxOutput("statusbox2", width = NULL)
                         
                         
                     ) # end box
@@ -183,7 +183,8 @@ body <- shinydashboard::dashboardBody(
                                          tags$div("Loading...",id="loadmessage")),
                         #verbatimTextOutput("runintlimlog"),
                         pre(highcharter::highchartOutput("Pdist")),
-                        hr()
+                        hr(),
+                        infoBoxOutput("statusbox3", width = NULL)
                         
                     )
                 )
@@ -219,7 +220,8 @@ body <- shinydashboard::dashboardBody(
                         conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                          tags$div("Loading...",id="loadmessage")),
                         highcharter::highchartOutput("heatmap"),
-                        hr()
+                        hr(),
+                        infoBoxOutput("statusbox4", width = NULL)
                         
                         )
                     )
@@ -259,7 +261,8 @@ body <- shinydashboard::dashboardBody(
                                         conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                                          tags$div("Loading...",id="loadmessage")),
                                         highcharter::highchartOutput("scatterPlot"),
-                                        hr()
+                                        hr(),
+                                        infoBoxOutput("statusbox5", width = NULL)
                                         
                                         )
                                     )
