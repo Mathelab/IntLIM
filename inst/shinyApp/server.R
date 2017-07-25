@@ -97,10 +97,19 @@ shinyServer(function(input, output, session) {
     },options = list(dom = 'ft'))
     
     
+<<<<<<< HEAD
+    output$plot<-renderUI(
+        IntLim::PlotDistributions(multiData())
+    )
+    
+    #filter data
+  
+=======
     output$distplot<-renderUI({
         IntLim::PlotDistributions(req(multiData()),viewer=FALSE)
     })
     
+>>>>>>> 1386b27e6d56feae1565dc02f01a562639878cbf
     FmultiData<-eventReactive(input$run2,{
         if(input$run2==0){
             FmultiData<-multiData()
@@ -111,8 +120,9 @@ shinyServer(function(input, output, session) {
         
         FmultiData
     },ignoreNULL=FALSE)
+    
     output$Ostats<-renderDataTable({
-        
+        if(input$run2==0) return()
         table<- as.data.frame(t(IntLim::OutputStats(multiData())))
         colnames(table)<-"value"
         cbind(names=rownames(table),table)
@@ -120,10 +130,13 @@ shinyServer(function(input, output, session) {
     },options = list(dom = 'ft'))
     
     
-    output$Oplot<-renderUI(
+    output$Oplot<-renderUI({
+        if(input$run2==0) return()
         IntLim::PlotDistributions(multiData())
+    }
     )
     output$Fstats<-renderDataTable({
+        if(input$run2==0) return()
         table<- as.data.frame(t(IntLim::OutputStats(FmultiData())))
         colnames(table)<-"value"
         cbind(names=rownames(table),table)
@@ -131,9 +144,10 @@ shinyServer(function(input, output, session) {
     },options = list(dom = 'ft'))
     
     
-    output$Fplot<-renderUI(
+    output$Fplot<-renderUI({
+        if(input$run2==0) return()
         IntLim::PlotDistributions(FmultiData())
-        
+    }
     )
     
     
@@ -189,12 +203,12 @@ shinyServer(function(input, output, session) {
     output$table<-DT::renderDataTable(pairTable(),selection = 'single')
    
     
-    stypeList<-eventReactive(input$run5,{
-        s2<-input$stype
-        expression<-FmultiData()[["expression"]]
-        expression[[s2]]
-        
-    })
+    # stypeList<-eventReactive(input$run5,{
+    #     s2<-input$stype
+    #     expression<-FmultiData()[["expression"]]
+    #     expression[[s2]]
+    #     
+    # })
     
     
     
@@ -203,7 +217,7 @@ shinyServer(function(input, output, session) {
         pair<-as.matrix(pairTable()[rows,])
         geneName<-pair[,"gene"]
         metabName<-pair[,"metab"]
-        IntLim::PlotGMPair(FmultiData(),stypeList(),geneName=geneName,metabName=metabName)
+        IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName,metabName=metabName)
     })
     
     
