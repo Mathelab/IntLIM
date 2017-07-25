@@ -16,13 +16,13 @@ The CSV file is expecected to have the following 2 columns and 6 rows:
 6. sampleMetaData,myfilename"
 
 Note also that the input data files should be in a specific format:
-- metabData: rows are metabolites, columns are samples
-- geneData: rows are genes, columns are samples
+- metabData: rows are metabolites, columns are samples; the first column is assumed to have sample ids and these ids should be unique.
+- geneData: rows are genes, columns are samples; the first column is assumed to have sample ids and these ids should be unique.
 - metabMetaData: rows are metabolites, features are columns
 - geneMetaData: rows are genes, features are columns
 - sampleMetaData: rows are samples, features are columns
 
-*NOTE*: The first column of the sampleMetaData file is assumed to be the sample id, and those sample ids should match the columns of metabData and geneData (e.g. it is required that all sample ids in the metabData and geneData are also in the sampleMetaDatafile).
+*NOTE*: The first column of the sampleMetaData file is assumed to be the sample id, and those sample ids should match the *first column* of metabData and geneData (e.g. it is required that all sample ids in the metabData and geneData are also in the sampleMetaDatafile).
 
 ## Test data
 The package includes a reduced set of the original NCI-60 dataset.  The CSV input file location for this test dataset can be located by typing the following in the R console:

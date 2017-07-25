@@ -22,7 +22,7 @@ IntLim::PlotPCA(inputData,stype = "PBO_vs_Leukemia")
 
 ## ------------------------------------------------------------------------
 myres <- IntLim::RunIntLim(inputData,stype="PBO_vs_Leukemia")
-IntLim::DistPvalues(myres@interaction.adj.pvalues)
+IntLim::DistPvalues(myres)
 
 ## ------------------------------------------------------------------------
 myres <- IntLim::ProcessResults(myres,inputData)
