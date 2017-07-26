@@ -72,7 +72,7 @@ body <- shinydashboard::dashboardBody(
                         title = strong("Load Data"),
                         width = 8,
                         solidHeader = TRUE,
-                        h5("This function takes a CSV file as input (see About) and performs the following:"),
+                        h5("This step takes a CSV file as input (see About) and performs the following:"),
                         tags$ul(
                              tags$li("Loads the CSV input file and checks that all files exist"),
                              tags$li("Reads in all files from the CSV input file and creates a MultiOmics object"),
@@ -255,9 +255,9 @@ body <- shinydashboard::dashboardBody(
                                         title = strong("Scatter plot") ,
                                         width = 8,
                                         solidHeader = TRUE,
-                                        h5("some introduction of scatter plot
-                                           
-                                           ")
+                                        h5("This step present the table of gene-metabolite pairs and the absolute value of their 
+                                           correlation differece"),
+                                        h5("You can plot the scatter plot of prefered gene-metabolite pairs by clicking table")
                                         ),
                                     shinydashboard::box(
                                         width = 4,
