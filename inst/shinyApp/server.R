@@ -184,11 +184,12 @@ shinyServer(function(input, output, session) {
     
     pairTable<-reactive({
         a<-myres2()@corr
-        b<-abs(a[,3]-a[,4])
+        b<-round(abs(a[,3]-a[,4]),3)
         a$diff<-b
-        a<-a[,-3]
-        a<-a[,-3]
-        table<-a[order(a[,3],decreasing = TRUE),]
+        a$PBO<-round(a$PBO,2)
+        a$Leukemia<-round(a$Leukemia,2)
+       
+        table<-a[order(a[,5],decreasing = TRUE),]
         table
     })
     output$table<-DT::renderDataTable(pairTable(),selection = 'single')
