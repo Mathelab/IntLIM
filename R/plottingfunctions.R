@@ -119,7 +119,7 @@ PlotDistributions <- function(inputData,viewer=T,
   return(p)
 }
 
-#' PCA plots of data for QC 
+#' PCA plots of data for QC
 #'
 #' @import magrittr
 #'
@@ -131,6 +131,7 @@ PlotDistributions <- function(inputData,viewer=T,
 #' "Pastel1", "Pastel2", "Paired", etc.) or submit a vector of colors
 #' @param viewer whether the plot should be displayed in the RStudio viewer (T) or
 #' in Shiny/Knittr (F)
+#' @param common whether or not samples that are in common between the metabolite and gene expression datasets should be plotted (T/F); default is TRUE
 #' @return a highcharter object
 #'
 #' @examples
@@ -139,7 +140,7 @@ PlotDistributions <- function(inputData,viewer=T,
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' PlotPCA(mydata,stype = "PBO_vs_Leukemia")
 #' @export
-PlotPCA <- function(inputData,viewer=T,stype=NULL,
+PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
         palette = "Set1") {
 
     categ <- c("Genes","Metabolites")
@@ -168,58 +169,93 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,
                }
         }      
 
-        mygene <- as.data.frame(Biobase::assayDataElement(inputData[["expression"]],'exprs'))
-        gpca <- stats::prcomp(t(mygene),center=F,scale=T)
-	percvar=round((gpca$sdev)^2 / sum(gpca$sdev^2)*100,2)
-        uniqtypes <- unique(mytype)
-        mycols <- as.character(mytype)
-        for (i in 1:numcateg) {
-		mycols[which(mytype==uniqtypes[i])] <- cols[i]
-        }
-        # Deal with missing values or ""
-        if(length(which(mytype==""))>0) {
-		mycols[which(mytype=="")]="grey"
-                mytype[which(mytype=="")]="NA"
-        }
-        if(length(which(is.na(mytype)))>0) {
-                mycols[which(is.na(mytype))]="grey"
-        }
 
-	if(is.null(mytype)) {
-		toplot=data.frame(x=gpca$x[,1],y=gpca$x[,2],z=rownames(gpca$x),color=rep("blue",nrow(gpca$x)))
-	} else {
-		toplot=data.frame(x=gpca$x[,1],y=gpca$x[,2],z=rownames(gpca$x),label=mytype,color=mycols)
-	}
-	ds <- list_parse(toplot)
+	if(common==T) {
+		if(is.null(stype)) {
+			incommon <- getCommon(inputData)
+			mygene <- incommon$gene
+			gpca <- stats::prcomp(t(mygene),center=F,scale=T)
+			mymetab <- incommon$metab
+			mpca <- stats::prcomp(t(mymetab),center=F,scale=T)
+			gtoplot=data.frame(x=gpca$x[,1],y=gpca$x[,2],z=rownames(gpca$x),color=rep("blue",nrow(gpca$x)))
+			mtoplot=data.frame(x=mpca$x[,1],y=mpca$x[,2],z=rownames(mpca$x),color=rep("blue",nrow(mpca$x)))
+		} else {
+			incommon <- getCommon(inputData,stype)
+			mygene <- incommon$gene
+			mymetab <- incommon$metab
+			mytype <- incommon$p
+			uniqtypes <- unique(mytype)
+			mycols <- as.character(mytype)	
+			for (i in 1:numcateg) {
+				mycols[which(mytype==uniqtypes[i])] <- cols[i]
+			}
+			gpca <- stats::prcomp(t(mygene),center=F,scale=T)
+			mpca <- stats::prcomp(t(mymetab),center=F,scale=T)
+			gtoplot=data.frame(x=gpca$x[,1],y=gpca$x[,2],z=rownames(gpca$x),label=mytype,color=mycols)
+			mtoplot=data.frame(x=mpca$x[,1],y=mpca$x[,2],z=rownames(mpca$x),label=mytype,color=mycols)
+		}
+	} else { # common == F
+		mygene <- as.data.frame(Biobase::assayDataElement(inputData[["expression"]],'exprs'))
+		mymetab <- Biobase::assayDataElement(inputData[["metabolite"]],'metabData')
+        	gpca <- stats::prcomp(t(mygene),center=F,scale=T)
+		mpca <- stats::prcomp(t(mymetab),center=F,scale=T)
+#		percvar=round((gpca$sdev)^2 / sum(gpca$sdev^2)*100,2)
+		if(!is.null(stype)) {
+			gtypes <- as.character(Biobase::pData(inputData[["expression"]])[,stype])
+			mtypes <- as.character(Biobase::pData(inputData[["metabolite"]])[,stype])
+        		uniqtypes <- unique(c(mtypes,gtypes))
+        		gcols <- as.character(gtypes)
+			mcols <- as.character(mtypes)
+        		for (i in 1:numcateg) {
+				gcols[which(gtypes==uniqtypes[i])] <- cols[i]
+				mcols[which(mtypes==uniqtypes[i])] <- cols[i]
+        		}
+		        # Deal with missing values or ""
+		        if(length(which(gtypes==""))>0) {
+				gcols[which(gtypes=="")]="grey"
+        		        gtypes[which(gtypes=="")]="NA"
+        		}
+			if (length(which(mtypes==""))>0) {
+                                mcols[which(mtypes=="")]="grey"
+                                mtypes[which(mtypes=="")]="NA"
+			}
+		        if(length(which(is.na(gtypes)))>0) {
+                		gcols[which(is.na(gtypes))]="grey"
+			}        
+                        if(length(which(is.na(mtypes)))>0) {
+                                mcols[which(is.na(mtypes))]="grey"
+                        }
+
+			gtoplot=data.frame(x=gpca$x[,1],y=gpca$x[,2],z=rownames(gpca$x),label=gtypes,color=gcols)
+                        mtoplot=data.frame(x=mpca$x[,1],y=mpca$x[,2],z=rownames(mpca$x),label=mtypes,color=mcols)
+		} else { #stype is null
+			gtoplot=data.frame(x=gpca$x[,1],y=gpca$x[,2],z=rownames(gpca$x),color=rep("blue",nrow(gpca$x)))
+                        mtoplot=data.frame(x=mpca$x[,1],y=mpca$x[,2],z=rownames(mpca$x),color=rep("blue",nrow(mpca$x)))
+		}
+	} # end common == F
+
+        mds <- list_parse(mtoplot)
+	gds <- list_parse(gtoplot)
+	mpercvar=round((mpca$sdev)^2 / sum(mpca$sdev^2)*100,2)
+	gpercvar=round((gpca$sdev)^2 / sum(gpca$sdev^2)*100,2)
 
 	pg <- highcharter::highchart(width = 350, height = 350 ) %>%
 		highcharter::hc_title(text="PCA of genes") %>%
-		highcharter::hc_xAxis(title=list(text=paste0("PC1:",round(percvar[1],1),"%"))) %>%
-		highcharter::hc_yAxis(title=list(text=paste0("PC2:",round(percvar[2],2),"%"))) %>%
+		highcharter::hc_xAxis(title=list(text=paste0("PC1:",round(gpercvar[1],1),"%"))) %>%
+		highcharter::hc_yAxis(title=list(text=paste0("PC2:",round(gpercvar[2],2),"%"))) %>%
 		hc_chart(zoomType = "xy") %>% 
-		highcharter::hc_add_series(data=ds,type="scatter",col=cols[1],
+		highcharter::hc_add_series(data=gds,type="scatter",col=cols[1],
 			tooltip = list(headerFormat="", 
 			  pointFormat=paste("{point.label}","{point.z}")),
 			showInLegend=FALSE)
 #		dataLabels= list(enabled = TRUE, format = "{point.label}"),
 
-        mymetab <- Biobase::assayDataElement(inputData[["metabolite"]],'metabData')
-        mpca <- stats::prcomp(t(mymetab),center=F,scale=T)
-	percvar=round((mpca$sdev)^2 / sum(mpca$sdev^2)*100,2)
-
-	if(is.null(mytype)) {
-                toplot=data.frame(x=mpca$x[,1],y=mpca$x[,2],z=rownames(mpca$x),color=rep("blue",nrow(mpca$x)))
-        } else {
-                toplot=data.frame(x=mpca$x[,1],y=mpca$x[,2],z=rownames(mpca$x),label=mytype,color=mycols)
-        }
-        ds <- list_parse(toplot)
-
         pm <- highcharter::highchart(width = 350, height = 350 ) %>%
                 highcharter::hc_title(text="PCA of metabolites") %>%
-                highcharter::hc_xAxis(title=list(text=paste0("PC1:",round(percvar[1],1),"%"))) %>%
-                highcharter::hc_yAxis(title=list(text=paste0("PC2:",round(percvar[2],2),"%"))) %>%
+                highcharter::hc_xAxis(title=list(text=paste0("PC1:",round(mpercvar[1],1),"%"))) %>%
+                highcharter::hc_yAxis(title=list(text=paste0("PC2:",round(mpercvar[2],2),"%"))) %>%
                 hc_chart(zoomType = "xy") %>%
-                highcharter::hc_add_series(data=ds,type="scatter",col=cols[1],
+                highcharter::hc_add_series(data=mds,type="scatter",col=cols[1],
                         tooltip = list(headerFormat="",
                           pointFormat=paste("{point.label}","{point.z}")),
                         showInLegend=FALSE)
