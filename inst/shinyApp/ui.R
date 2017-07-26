@@ -72,7 +72,7 @@ body <- shinydashboard::dashboardBody(
                         title = strong("Load Data"),
                         width = 8,
                         solidHeader = TRUE,
-                        h5("This function takes a CSV file as input (see About) and performs the following:"),
+                        h5("This step takes a CSV file as input (see About) and performs the following:"),
                         tags$ul(
                              tags$li("Loads the CSV input file and checks that all files exist"),
                              tags$li("Reads in all files from the CSV input file and creates a MultiOmics object"),
@@ -167,7 +167,7 @@ body <- shinydashboard::dashboardBody(
                     
                     shinydashboard::box(
                         title = strong("Run IntLIM") ,
-                        width = 10,
+                        width = 8,
                         solidHeader = TRUE,
                         h5("This step performs the linear models for all combinations of gene:metabolite pairs and then plots distribution of p-values.  "),
                         radioButtons("dataset", label = h5("Select the outcome set:"),
@@ -175,90 +175,107 @@ body <- shinydashboard::dashboardBody(
                                      selected = "metabolite"),
                         hr(),
                         uiOutput('choosestype'),
-                        actionButton("run3", "Run"),
-                         
-                        tags$head(tags$style(type="text/css", "
-                        loadmessage {
-                                             position: fixed;
-                                             top: 0px;
-                                             left: 0px;
-                                             width: 100%;
-                                             padding: 5px 0px 5px 0px;
-                                             text-align: center;
-                                             font-weight: bold;
-                                             font-size: 100%;
-                                             color: #000000;
-                                             background-color: #CCFF66;
-                                             z-index: 105;
-                                             }
-                                             ")),
-                        conditionalPanel(condition="$('html').hasClass('shiny-busy')",
-                                         tags$div("Loading...",id="loadmessage")),
-                        #verbatimTextOutput("runintlimlog"),
-                        tags$b("Histogram of p-values."),
-                        highcharter::highchartOutput("Pdist"),
-                        hr(),
-                        infoBoxOutput("statusbox3", width = NULL)
+                        actionButton("run3", "Run")
                         
+                    ),
+                    shinydashboard::box(
+                        width = 4,
+                        infoBoxOutput("statusbox3", width = NULL)
                     )
+                ),
+                fluidRow(
+                    shinydashboard::box(
+                        width = NULL,
+                    tags$head(tags$style(type="text/css", "
+                     loadmessage {
+                                         position: fixed;
+                                         top: 0px;
+                                         left: 0px;
+                                         width: 100%;
+                                         padding: 5px 0px 5px 0px;
+                                         text-align: center;
+                                         font-weight: bold;
+                                         font-size: 100%;
+                                         color: #000000;
+                                         background-color: #CCFF66;
+                                         z-index: 105;
+                                         }
+                                         ")),
+                    conditionalPanel(condition="$('html').hasClass('shiny-busy')",
+                                     tags$div("Loading...(It might takes lone time,please wait paitiently)",id="loadmessage")),
+                    tags$b("Histogram of p-values."),
+                    highcharter::highchartOutput("Pdist")
+                )
                 )
         ),
         shinydashboard::tabItem(tabName = "processresult",
                 fluidRow(
                     shinydashboard::box(
                         title = strong("Process the result") ,
-                        width = NULL,
+                        width = 8,
                         solidHeader = TRUE,
                         h5("Process the results and filter pairs of genes-metabolites based on 
                            adjusted p-values and differences in correlation coefficients between groups 1 and 2.
                            Then plot heatmap of significant gene-metabolite pairs
                            
                            "),
-                        actionButton("run4", "Run"),
-                        hr(),
-                        tags$head(tags$style(type="text/css", "
-                        loadmessage {
-                                             position: fixed;
-                                             top: 0px;
-                                             left: 0px;
-                                             width: 100%;
-                                             padding: 5px 0px 5px 0px;
-                                             text-align: center;
-                                             font-weight: bold;
-                                             font-size: 100%;
-                                             color: #000000;
-                                             background-color: #CCFF66;
-                                             z-index: 105;
-                                             }
-                                             ")),
-                        conditionalPanel(condition="$('html').hasClass('shiny-busy')",
-                                         tags$div("Loading...",id="loadmessage")),
-                        highcharter::highchartOutput("heatmap"),
-                        hr(),
+                        actionButton("run4", "Run")
+                        ),
+                    shinydashboard::box(
+                        width = 4,
                         infoBoxOutput("statusbox4", width = NULL)
-                        
-                        )
                     )
+                    ),#end of info floww
+                fluidRow(
+                    shinydashboard::box(
+                        width = NULL,
+                    tags$head(tags$style(type="text/css", "
+                     loadmessage {
+                                         position: fixed;
+                                         top: 0px;
+                                         left: 0px;
+                                         width: 100%;
+                                         padding: 5px 0px 5px 0px;
+                                         text-align: center;
+                                         font-weight: bold;
+                                         font-size: 100%;
+                                         color: #000000;
+                                         background-color: #CCFF66;
+                                         z-index: 105;
+                                         }
+                                         ")),
+                    conditionalPanel(condition="$('html').hasClass('shiny-busy')",
+                                     tags$div("Loading...",id="loadmessage")),
+                    highcharter::highchartOutput("heatmap")
+                    )
+                )
                 ),
         shinydashboard::tabItem(tabName = "scatterplot",
                                 fluidRow(
                                     shinydashboard::box(
                                         title = strong("Scatter plot") ,
-                                        width = NULL,
+                                        width = 8,
                                         solidHeader = TRUE,
-                                        h5("some introduction of scatter plot
-                                           
-                                           "),
-                                        uiOutput('choosesampletype'),
-                                        hr(),
+                                        h5("This step present the table of gene-metabolite pairs and the absolute value of their 
+                                           correlation differece"),
+                                        h5("You can plot the scatter plot of prefered gene-metabolite pairs by clicking table")
+                                        ),
+                                    shinydashboard::box(
+                                        width = 4,
+                                        infoBoxOutput("statusbox5", width = NULL)
+                                    )
+                                ),# end of info flow
+                                fluidRow(
+                                    shinydashboard::box(
+                                        width = NULL,
                                         tags$b("Pairs of difference of correlation "),
                                         pre(DT::dataTableOutput('table')),
-                                      
+                                        
                                         hr(),
                                         actionButton("run5", "Run"),
                                         
                                         tags$head(tags$style(type="text/css", "
-                        loadmessage {
+                                                             loadmessage {
                                                              position: fixed;
                                                              top: 0px;
                                                              left: 0px;
@@ -274,12 +291,9 @@ body <- shinydashboard::dashboardBody(
                                                              ")),
                                         conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                                          tags$div("Loading...",id="loadmessage")),
-                                        highcharter::highchartOutput("scatterPlot"),
-                                        hr(),
-                                        infoBoxOutput("statusbox5", width = NULL)
-                                        
-                                        )
+                                        highcharter::highchartOutput("scatterPlot")
                                     )
+                                )
                                 )
         
         
