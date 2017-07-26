@@ -169,7 +169,7 @@ body <- shinydashboard::dashboardBody(
                         width = 10,
                         solidHeader = TRUE,
                         h5("This step performs the linear models for all combinations of gene:metabolite pairs and then plots distribution of p-values.  "),
-                        radioButtons("dataset", label = h3("Select whether the metabolite or gene should be the outcome:"),
+                        radioButtons("dataset", label = h5("Select the outcome set:"),
                                      choices = list("metabolite" = "metabolite", "gene" = "gene"), 
                                      selected = "metabolite"),
                         hr(),
@@ -194,6 +194,7 @@ body <- shinydashboard::dashboardBody(
                         conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                          tags$div("Loading...",id="loadmessage")),
                         #verbatimTextOutput("runintlimlog"),
+                        tags$b("Histogram of p-values."),
                         highcharter::highchartOutput("Pdist"),
                         hr(),
                         infoBoxOutput("statusbox3", width = NULL)
