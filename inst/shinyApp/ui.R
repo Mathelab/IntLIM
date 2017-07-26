@@ -129,7 +129,7 @@ body <- shinydashboard::dashboardBody(
                         hr(),
                         numericInput("geneperc", "percentile cutoff for filtering genes (0-1):", 0, min = 0, max = 1),
                         numericInput("metabperc", "percentile cutoff for filtering metabolites (0-1):", 0, min = 0, max = 1),
-                        numericInput("metabmiss', "missing value percent cutoff for filtering metabolites (0-1)", 0,min=0,max=1)
+                        numericInput("metabmiss", "missing value percent cutoff for filtering metabolites (0-1)", 0,min=0,max=1),
                         actionButton("run2", "Run")
                     ),
                     shinydashboard::box(
@@ -202,9 +202,9 @@ body <- shinydashboard::dashboardBody(
                                          }
                                          ")),
                     conditionalPanel(condition="$('html').hasClass('shiny-busy')",
-                                     tags$div("Loading...(It might takes lone time,please wait paitiently)",id="loadmessage")),
+                                     tags$div("Loading...(It might takes long time,please wait patiently)",id="loadmessage")),
                     tags$b("Histogram of p-values."),
-                    highcharter::highchartOutput("Pdist")
+                    plotOutput("Pdist")
                 )
                 )
         ),

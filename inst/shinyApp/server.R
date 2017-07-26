@@ -3,8 +3,8 @@ options(shiny.trace=F)
 
 shinyServer(function(input, output, session) {      
     #file input==================================================================================================
-#    rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
-     rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLim/vignettes/NCI-60", getVolumes()(), WD = '.')   
+   rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
+ #    rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLim/vignettes/NCI-60", getVolumes()(), WD = '.')   
     shinyFileChoose(input,'file1',
                     roots = rootVolumes,
                     session = session)
@@ -161,7 +161,7 @@ shinyServer(function(input, output, session) {
         IntLim::RunIntLim(FmultiData(),stype=input$stype,outcome=input$dataset)
         
     })
-    output$Pdist<-highcharter::renderHighchart({
+    output$Pdist<-renderPlot({
         
         IntLim::DistPvalues(myres())
         
@@ -216,7 +216,7 @@ shinyServer(function(input, output, session) {
             infoBox(
                 "Status",
                 "Step 1 is Not Complete Yet!",
-                "Please Run button to see the data summry!",
+                "Please Run ",
                 icon = icon("warning-sign", lib = "glyphicon"),
                 color = "aqua",
                 fill = TRUE
@@ -274,8 +274,8 @@ shinyServer(function(input, output, session) {
             infoBox(
                 "Status",
                 "Step 3 is Not Complete Yet!",
-                "Please Run button to see the distribution",
-                "IntLim running may take long time, please wait paitiently",
+                "Press Run ",
+               
                 icon = icon("warning-sign", lib = "glyphicon"),
                 color = "aqua",
                 fill = TRUE
@@ -295,7 +295,7 @@ shinyServer(function(input, output, session) {
         if (input$run4==0) {
             infoBox(
                 "Status",
-                "Please press Run button to see the heatmap",
+                "Press Run to see the heatmap",
                 icon = icon("flag", lib = "glyphicon"),
                 color = "aqua",
                 fill = TRUE
