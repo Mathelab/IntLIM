@@ -31,6 +31,7 @@ devtools::install_github("mathelab/IntLIM")
 The package functions can be run direclty in the R console.  
 Alternatively, to launch the web app, type th following in your R console:
 
+```
 library(IntLim)
 runIntLIMApp()
 ```

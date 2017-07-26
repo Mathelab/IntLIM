@@ -29,7 +29,9 @@ Imports:
     BiocGenerics,
     tidyr,
     dplyr,
-    purrr
+    purrr,
+    heatmaply,
+    plotly
 Suggests:
     knitr
 Encoding: UTF-8

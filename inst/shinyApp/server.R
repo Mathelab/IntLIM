@@ -3,8 +3,10 @@ options(shiny.trace=F)
 
 shinyServer(function(input, output, session) {      
     #file input==================================================================================================
+
    rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
  #    rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLim/vignettes/NCI-60", getVolumes()(), WD = '.')   
+
     shinyFileChoose(input,'file1',
                     roots = rootVolumes,
                     session = session)
@@ -173,7 +175,7 @@ shinyServer(function(input, output, session) {
     myres2 <- eventReactive(input$run4,{
         IntLim::ProcessResults(myres(),FmultiData())
     })
-    output$heatmap<-highcharter::renderHighchart({
+    output$heatmap<-plotly::renderPlotly({
         IntLim::CorrHeatmap(myres2())
     }
     )
@@ -216,7 +218,9 @@ shinyServer(function(input, output, session) {
             infoBox(
                 "Status",
                 "Step 1 is Not Complete Yet!",
-                "Please Run ",
+
+                "Press Run button",
+
                 icon = icon("warning-sign", lib = "glyphicon"),
                 color = "aqua",
                 fill = TRUE
@@ -236,7 +240,7 @@ shinyServer(function(input, output, session) {
         if (input$geneperc==0&&input$metabperc==0) {
             infoBox(
                 "Status",
-                "Please input your cutoff percentage",
+                "Please provide input",
                 icon = icon("flag", lib = "glyphicon"),
                 color = "aqua",
                 fill = TRUE
@@ -244,7 +248,7 @@ shinyServer(function(input, output, session) {
         else if (input$run2==0) {
             infoBox(
                 "Status",
-                "Press run button to filter data",
+                "Press Run button",
                 icon = icon("flag", lib = "glyphicon"),
                 color = "aqua",
                 fill = TRUE
@@ -274,8 +278,11 @@ shinyServer(function(input, output, session) {
             infoBox(
                 "Status",
                 "Step 3 is Not Complete Yet!",
-                "Press Run ",
+
                
+
+                "Press Run button",
+                "This function can take several minutes, please be patient",
                 icon = icon("warning-sign", lib = "glyphicon"),
                 color = "aqua",
                 fill = TRUE
@@ -283,7 +290,7 @@ shinyServer(function(input, output, session) {
         else if (!is.null(myres())) {
             infoBox(
                 "Status",
-                HTML(paste("InltLim running complete.",
+                HTML(paste("IntLim models are calculated.",
                            "You can proceed to step4",
                            sep = "<br/>")),
                 icon = icon("thumbs-up", lib = "glyphicon"),
