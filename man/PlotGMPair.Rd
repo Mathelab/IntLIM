@@ -4,7 +4,7 @@
 \alias{PlotGMPair}
 \title{scatter plot of gene-metabolite pairs (based on user selection)}
 \usage{
-PlotGMPair(inputData, stype, geneName, metabName, palette = "Set1",
+PlotGMPair(inputData, stype = NULL, geneName, metabName, palette = "Set1",
   viewer = T)
 }
 \arguments{

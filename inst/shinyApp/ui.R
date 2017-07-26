@@ -127,8 +127,9 @@ body <- shinydashboard::dashboardBody(
                         solidHeader = TRUE,
                         h5("This step allows you to filter the metabolomics or gene expression data by a user-defined percentile cutoff."),
                         hr(),
-                        numericInput("geneperc", "percentile cutoff for filtering genes:", 0, min = 0, max = 100),
-                        numericInput("metabperc", "percentile cutoff for filtering metabolites:", 0, min = 0, max = 100),
+                        numericInput("geneperc", "percentile cutoff for filtering genes (0-1):", 0, min = 0, max = 1),
+                        numericInput("metabperc", "percentile cutoff for filtering metabolites (0-1):", 0, min = 0, max = 1),
+                        numericInput("metabmiss', "missing value percent cutoff for filtering metabolites (0-1)", 0,min=0,max=1)
                         actionButton("run2", "Run")
                     ),
                     shinydashboard::box(

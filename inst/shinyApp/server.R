@@ -3,8 +3,8 @@ options(shiny.trace=F)
 
 shinyServer(function(input, output, session) {      
     #file input==================================================================================================
-    rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
-    
+#    rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
+     rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLim/vignettes/NCI-60", getVolumes()(), WD = '.')   
     shinyFileChoose(input,'file1',
                     roots = rootVolumes,
                     session = session)
@@ -108,7 +108,7 @@ shinyServer(function(input, output, session) {
             FmultiData<-multiData()
         }
         if(input$run2!=0){
-            FmultiData<-IntLim::FilterData(multiData(),geneperc=input$geneperc,metabperc=input$metabperc)
+            FmultiData<-IntLim::FilterData(multiData(),geneperc=input$geneperc,metabperc=input$metabperc,metabmiss=input$metabmiss)
         }
         
         FmultiData

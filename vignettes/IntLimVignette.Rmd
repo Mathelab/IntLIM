@@ -44,7 +44,7 @@ IntLim::OutputStats(inputData)
 
 Optionally, the features (genes or metabolites) can be filtered out based on their mean values. Users should input a percentile cutoff and any feature with a mean value below that cutoff will be removed.
 ```{r}
-inputDatafilt <- IntLim::FilterData(inputData,geneperc=15)
+inputDatafilt <- IntLim::FilterData(inputData,geneperc = 0.15)
 IntLim::OutputStats(inputDatafilt)
 ```
 
