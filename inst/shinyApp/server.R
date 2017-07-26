@@ -265,6 +265,7 @@ shinyServer(function(input, output, session) {
             infoBox(
                 "Status",
                 "Please select your sample type",
+                
                 icon = icon("flag", lib = "glyphicon"),
                 color = "aqua",
                 fill = TRUE
@@ -274,6 +275,7 @@ shinyServer(function(input, output, session) {
                 "Status",
                 "Step 3 is Not Complete Yet!",
                 "Please Run button to see the distribution",
+                "IntLim running may take long time, please wait paitiently",
                 icon = icon("warning-sign", lib = "glyphicon"),
                 color = "aqua",
                 fill = TRUE
