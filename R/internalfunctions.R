@@ -164,17 +164,13 @@ getCommon <- function(inputData,stype=NULL) {
 #' @include MetaboliteSet_addMetabolite.R
 #' @include AllClasses.R
 #'
-#' @param inputData MultiDataSet object (output of ReadData()) with gene
+#' @param incommon MultiDataSet object (output of ReadData()) with gene
 #' @param outcome 'metabolite' or 'gene' must be set as outcome/independent variable 
 #' (default is 'metabolite')
 #' @param type vector of sample type (by default, it will be used in the interaction term).
 #' Only 2 categories are currently supported.
-RunLM <- function(inputData, outcome="metabolite", type=NULL) { 
-    #call <- match.call()			# how did i get here?
+RunLM <- function(incommon, outcome="metabolite", type=NULL) { 
 
-    #gene <- Biobase::assayDataElement(inputData[["expression"]], 'exprs')
-    #metab <- Biobase::assayDataElement(inputData[["metabolite"]], 'metabData')
-  
     gene <- incommon$gene
     metab <- incommon$metab
  

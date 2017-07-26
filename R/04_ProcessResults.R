@@ -37,23 +37,13 @@ ProcessResults <- function(inputResults,
 
 	keepers <- which(mydat$value <= pvalcutoff)
 
-	# Calculate correlations for significant pairs
-#	incommon<-MultiDataSet::commonSamples(inputData)
-#	mp <- Biobase::pData(incommon[["metabolite"]])[,inputResults@stype]
-#	gp <- Biobase::pData(incommon[["expression"]])[,inputResults@stype]
-#	if(all.equal(mp,gp)[1] != TRUE) {
- #       	stop(paste("The column", inputResults@stype,"for the samples in common between the metabolite and gene datasets are not equal.  Please check your input."))
- #   	}
-
-	incommon <- getCommon(inputData,stype)
+	incommon <- getCommon(inputData,inputResults@stype)
 	p <- incommon$p
 	gene <- incommon$gene
 	metab <- incommon$metab
 	if(length(unique(p)) !=2) {
- 		stop(paste("IntLim currently requires only two categories.  Make sure the column",stype,"only has two unique values"))
+ 		stop(paste("IntLim currently requires only two categories.  Make sure the column",inputResults@stype,"only has two unique values"))
     }
-#	gene <- Biobase::assayDataElement(incommon[["expression"]], 'exprs')
-#	metab <- Biobase::assayDataElement(incommon[["metabolite"]], 'metabData')
 
 	gp1 <- which(p == unique(p)[1])
 	cor1 <- as.numeric(apply(mydat[keepers,],1,function(x) {
@@ -72,7 +62,7 @@ ProcessResults <- function(inputResults,
 	inputResults@corr <- data.frame(metab=as.character(mydat[keepers[keepers2],2]), 
 		gene=as.character(mydat[keepers[keepers2],1]))
 	inputResults@corr <- cbind(inputResults@corr,cor1[keepers2],cor2[keepers2])
-	colnames(inputResults@corr)[3:4]=setdiff(as.character(unlist(unique(mp))),"")
+	colnames(inputResults@corr)[3:4]=setdiff(as.character(unlist(unique(p))),"")
 
 return(inputResults)
 }
