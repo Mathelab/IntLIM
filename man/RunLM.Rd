@@ -4,10 +4,10 @@
 \alias{RunLM}
 \title{Function that runs linear models and returns interaction p-values.}
 \usage{
-RunLM(inputData, outcome = "metabolite", type = NULL)
+RunLM(incommon, outcome = "metabolite", type = NULL)
 }
 \arguments{
-\item{inputData}{MultiDataSet object (output of ReadData()) with gene}
+\item{incommon}{MultiDataSet object (output of ReadData()) with gene}
 
 \item{outcome}{'metabolite' or 'gene' must be set as outcome/independent variable 
 (default is 'metabolite')}
