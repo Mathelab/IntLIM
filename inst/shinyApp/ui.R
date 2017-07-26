@@ -201,7 +201,7 @@ body <- shinydashboard::dashboardBody(
                                          }
                                          ")),
                     conditionalPanel(condition="$('html').hasClass('shiny-busy')",
-                                     tags$div("Loading...",id="loadmessage")),
+                                     tags$div("Loading...(It might takes lone time,please wait paitiently)",id="loadmessage")),
                     tags$b("Histogram of p-values."),
                     highcharter::highchartOutput("Pdist")
                 )
