@@ -297,9 +297,10 @@ DistPvalues<- function(IntLimResults) {
 #' Plot correlation heatmap
 #'
 #' @import magrittr
-#' @import highcharter
+#' @import heatmaply 
 #'
 #' @param inputResults IntLimResults object (output of ProcessResults())
+#' @param top_pairs cutoff of the top pairs, sorted by adjusted p-values, to be plotted (plotting more than 1200 can take some time) (default: 1200)
 #' @param viewer whether the plot should be displayed in the RStudio viewer (T) or
 #' in Shiny/Knittr (F)
 #' @return a highcharter object
@@ -314,81 +315,60 @@ DistPvalues<- function(IntLimResults) {
 #' CorrHeatmap(myres)
 #' }
 #' @export
-CorrHeatmap <- function(inputResults,viewer=T) {
+CorrHeatmap <- function(inputResults,viewer=T,top_pairs=1200) {
 type <- cor <- c()
 
 	if(nrow(inputResults@corr)==0) {
 		stop("Make sure you run ProcessResults before making the heatmap")
 	}
-		temp <- inputResults@corr
-		toplot <- data.frame(name=paste(temp[,1],temp[,2],sep=" vs "),
-			temp[,3:4])
-		suppressMessages(
-			meltedtoplot <- tidyr::gather(
-				toplot,
-				type,cor,colnames(toplot)[2],colnames(toplot)[3]))
 
-		#all possible values of X (type) and Y (name)
-  		theXAxis <- as.character(meltedtoplot[, "type"])
-		theYAxis <- as.character(meltedtoplot[, "name"])
+		allres <- inputResults@corr
+		if(nrow(allres)>top_pairs) {
+			allp <- inputResults@interaction.adj.pvalues
+			myp <- as.numeric(apply(allres,1,function(x) allp[which(rownames(allp)==as.character(x["gene"])),which(colnames(allp)==as.character(x["metab"]))]))
+			allres <- allres[order(myp,decreasing=F)[1:top_pairs],]
+		}
 
-		  #unique values of X and Y
-		  theUniqueY <- as.character(unique(theYAxis))
-		  theUniqueX <- as.character(unique(theXAxis))
+                toplot <- data.frame(name=paste(allres[,1],allres[,2],sep=" vs "),
+                        allres[,3:4])
+                suppressMessages(
+                        meltedtoplot <- tidyr::gather(
+                                toplot,
+                                type,cor,colnames(toplot)[2],colnames(toplot)[3]))
 
-		  # Substitute words with position on the meatrix
-		  for (i in 1:length(theUniqueY)){
-		    num <- which(theYAxis == theUniqueY[i])
-		    theYAxis[num] <- i
-		  }
-		  for (i in 1:length(theUniqueX)) {
-		    num <- which(theXAxis == theUniqueX[i])
-		    theXAxis[num] <- i
-		  }
+                #all possible values of X (type) and Y (name)
+                theXAxis <- as.character(meltedtoplot[, "type"])
+                theYAxis <- as.character(meltedtoplot[, "name"])
 
-		  #create final formatting
-		  dataforHeatmap <- as.data.frame(cbind(
-		    as.numeric(theXAxis),
-		    as.numeric(theYAxis),
-		    as.numeric(meltedtoplot$cor)
-		#as.numeric(format(meltedtoplot$cor,scientific=T,digits=2))
-		  ))
+                  #unique values of X and Y
+                  theUniqueY <- as.character(unique(theYAxis))
+                  theUniqueX <- as.character(unique(theXAxis))
 
-		  formattedHeatmapData <- list_parse2(dataforHeatmap)
+                  # Substitute words with position on the meatrix
+                  for (i in 1:length(theUniqueY)){
+                    num <- which(theYAxis == theUniqueY[i])
+                    theYAxis[num] <- i
+                  }
+                  for (i in 1:length(theUniqueX)) {
+                    num <- which(theXAxis == theUniqueX[i])
+                    theXAxis[num] <- i
+                  }
+                  # New package heatmaply here
+                  type <- unique(meltedtoplot[,'type'])
+                  num <- nrow(meltedtoplot[meltedtoplot[,'type'] == type[1],])
+                  heat_data <- matrix(data = 0, nrow =num,ncol = 2)
+                  row.names(heat_data) <- meltedtoplot[1:num,1]
+                  colnames(heat_data) <- c(type[1],type[2])
+                  heat_data[,1] <- meltedtoplot[1:num,3]
 
-		  fntltp <- JS(
-		    "function(){
-		    return 'cor='+this.point.value;
-		    }")
+                  heat_data[,2] <- meltedtoplot[-1:-num,3]
 
-		p <- highchart(width = 800, height = 700) %>%
-		    hc_chart(type = "heatmap", spacingRight = 160) %>%
-		    hc_title(text = "Correlation Heatmap",
-		             style = list(color = '#2E1717',fontSize = '20px',
-		                          fontWeight = 'bold')) %>%
-		    hc_xAxis(categories = c("",unique(as.character(meltedtoplot[, "type"]))),
-		             labels = list(style = list(fontSize = '10px'))) %>%
-		    hc_yAxis(categories = c("",unique(as.character(meltedtoplot[, "name"]))), 
-				labels = list(style = list(fontSize = '10px'))) %>%
-		    hc_add_series(data = formattedHeatmapData) %>% 
-		    hc_tooltip(formatter = fntltp, valueDecimals = 2) %>%
-		    hc_colorAxis(stops = color_stops(2, colors = c("#5097D1", "#DEEFF5")),
-		                 min = min(as.numeric(dataforHeatmap[ , 3]), na.rm = T),
-		                 max = max(as.numeric(dataforHeatmap[ , 3]), na.rm = T)) %>%
-		    hc_legend(
-		      enabled = TRUE,
-		      layout = "vertical",
-		      align = "right",
-		      verticalAlign = "top",
-		      floating = FALSE,
-		      maxWidth = 200,
-		      x = -10, # 90
-		      y = 100, # 70
-		      padding = 2
-		      #title = list(text="p-value")
-		    ) %>%
-	 	      hc_exporting(enabled = TRUE)
-	return(p)	
+                  hm <- heatmaply::heatmaply(heat_data,k_row = 5,k_col = 2,
+                                 margins = c(80,5),
+                                 dendrogram = "row",
+                                 y_axis_font_size ="1px")
+
+                  hm
 }
 
 #' scatter plot of gene-metabolite pairs (based on user selection)

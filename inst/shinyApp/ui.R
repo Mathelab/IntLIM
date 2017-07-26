@@ -129,7 +129,7 @@ body <- shinydashboard::dashboardBody(
                         hr(),
                         numericInput("geneperc", "percentile cutoff for filtering genes (0-1):", 0, min = 0, max = 1),
                         numericInput("metabperc", "percentile cutoff for filtering metabolites (0-1):", 0, min = 0, max = 1),
-                        numericInput("metabmiss', "missing value percent cutoff for filtering metabolites (0-1)", 0,min=0,max=1)
+                        numericInput("metabmiss", "missing value percent cutoff for filtering metabolites (0-1)", 0,min=0,max=1),
                         actionButton("run2", "Run")
                     ),
                     shinydashboard::box(
@@ -202,7 +202,7 @@ body <- shinydashboard::dashboardBody(
                                          }
                                          ")),
                     conditionalPanel(condition="$('html').hasClass('shiny-busy')",
-                                     tags$div("Loading...(It might takes lone time,please wait paitiently)",id="loadmessage")),
+                                     tags$div("Loading...(It can take several minutes, please be patient)",id="loadmessage")),
                     tags$b("Histogram of p-values."),
                     highcharter::highchartOutput("Pdist")
                 )
@@ -225,7 +225,7 @@ body <- shinydashboard::dashboardBody(
                         width = 4,
                         infoBoxOutput("statusbox4", width = NULL)
                     )
-                    ),#end of info floww
+                    ),#end of info flow
                 fluidRow(
                     shinydashboard::box(
                         width = NULL,
@@ -246,7 +246,7 @@ body <- shinydashboard::dashboardBody(
                                          ")),
                     conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                      tags$div("Loading...",id="loadmessage")),
-                    highcharter::highchartOutput("heatmap")
+                    plotly::plotlyOutput("heatmap")
                     )
                 )
                 ),

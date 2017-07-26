@@ -4,13 +4,15 @@
 \alias{CorrHeatmap}
 \title{Plot correlation heatmap}
 \usage{
-CorrHeatmap(inputResults, viewer = T)
+CorrHeatmap(inputResults, viewer = T, top_pairs = 1200)
 }
 \arguments{
 \item{inputResults}{IntLimResults object (output of ProcessResults())}
 
 \item{viewer}{whether the plot should be displayed in the RStudio viewer (T) or
 in Shiny/Knittr (F)}
+
+\item{top_pairs}{cutoff of the top pairs, sorted by adjusted p-values, to be plotted (plotting more than 1200 can take some time) (default: 1200)}
 }
 \value{
 a highcharter object
