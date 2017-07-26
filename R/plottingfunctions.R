@@ -415,8 +415,12 @@ type <- cor <- c()
 #' 
 #' }
 #' @export
-PlotGMPair<- function(inputData,stype,geneName,metabName,palette = "Set1",
+PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
 	viewer=T) {
+
+      if(is.null(stype)) {
+	stop("Users must define stype which defines the categories to be compared (e.g. tumor vs non-tumor).  This could be the same parameter that was used to run RunIntLim()")
+	}
       if (length(palette) == 2) {
         cols <- c(palette)
       }
