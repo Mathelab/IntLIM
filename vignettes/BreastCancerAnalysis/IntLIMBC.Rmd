@@ -50,7 +50,7 @@ IntLim::PlotDistributions(inputDatafilt)
 
 A principal component analysis allows us to observe clustering between tumor and non-tumor samples.  
 ```{r}
-IntLim::PlotPCA(inputDatafilt,stype = "DIAG")
+IntLim::PlotPCA(MultiDataSet::commonSamples(inputDatafilt),stype = "DIAG")
 #Error will need to be corrected
 ```
 
@@ -60,7 +60,7 @@ IntLIM is used to run the model that will describe how patient sample type will 
 
 ```{r}
 myres <- IntLim::RunIntLim(inputDatafilt,stype="DIAG")
-IntLim::DistPvalues(myres)
+#IntLim::DistPvalues(myres)
 ```
 
 The next step is to filter the gene-metabolite relations for those with an FDR adjusted p-value of 0.10 or lower.  We find 9348 interactions with an FDR adjusted p-value of 0.10 or less and a correlation difference of 0.10 or less.  
@@ -91,5 +91,13 @@ for (i in 1:5){
 }
 
 group.entries
+```
+
+
+## Scatterplot Test
+
+```{r}
+IntLim::PlotGMPair(commonSamples(inputDatafilt), 'DIAG','GPT2', '2-hydroxyglutarate')
+
 ```
 
