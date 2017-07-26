@@ -120,6 +120,11 @@ getCommon <- function(inputData,stype=NULL) {
    mp <- Biobase::pData(incommon[["metabolite"]])
    gp <- Biobase::pData(incommon[["expression"]])
 
+   if(all.equal(mp[,stype],gp[,stype])[1] != TRUE) {
+        stop(paste("The column", stype,"for the samples in common between the metabolite and gene datasets are not equal.  Please check your input."))
+    }
+
+
    gene <- Biobase::assayDataElement(inputData[["expression"]], 'exprs')
    metab <- Biobase::assayDataElement(inputData[["metabolite"]], 'metabData')
 
@@ -149,7 +154,7 @@ getCommon <- function(inputData,stype=NULL) {
    if(!all.equal(rownames(mp),rownames(gp)) || !all.equal(colnames(metab),colnames(gene))){ 
 	stop("Something went wrong with the merging!  Sample names of input files may not match.")
    } else {
-   out <- list(p=p,gene=gene,metab=metab)
+   out <- list(p=as.factor(as.character(p)),gene=gene,metab=metab)
    }
    return(out)
 }
@@ -167,9 +172,12 @@ getCommon <- function(inputData,stype=NULL) {
 RunLM <- function(inputData, outcome="metabolite", type=NULL) { 
     #call <- match.call()			# how did i get here?
 
-    gene <- Biobase::assayDataElement(inputData[["expression"]], 'exprs')
-    metab <- Biobase::assayDataElement(inputData[["metabolite"]], 'metabData')
-   
+    #gene <- Biobase::assayDataElement(inputData[["expression"]], 'exprs')
+    #metab <- Biobase::assayDataElement(inputData[["metabolite"]], 'metabData')
+  
+    gene <- incommon$gene
+    metab <- incommon$metab
+ 
     uniqtypes <- unique(type)
     if(length(uniqtypes)!=2) {
 	stop("The number of unique categores is not 2.")

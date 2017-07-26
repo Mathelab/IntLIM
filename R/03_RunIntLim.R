@@ -30,29 +30,21 @@ RunIntLim <- function(inputData,stype=NULL,outcome="metabolite"){
     }
     if (is.null(stype)) {stop("Please set the variable type (e.g. sample group)")}
 
-    incommon<-MultiDataSet::commonSamples(inputData)
-    mp <- as.character(Biobase::pData(incommon[["metabolite"]])[,stype])
-    gp <- as.character(Biobase::pData(incommon[["expression"]])[,stype])
-    if(all.equal(mp,gp)[1] != TRUE) {
-	stop(paste("The column", stype,"for the samples in common between the metabolite and gene datasets are not equal.  Please check your input."))
-    }
-    mp[which(mp=="")]=NA
-    if(length(unique(stats::na.omit(mp))) > 2) {
+#    incommon<-MultiDataSet::commonSamples(inputData)
+#    mp <- as.character(Biobase::pData(incommon[["metabolite"]])[,stype])
+#    gp <- as.character(Biobase::pData(incommon[["expression"]])[,stype])
+
+    incommon <- getCommon(inputData,stype)
+
+    if(length(unique(stats::na.omit(incommon$p))) != 2) {
 	stop(paste("IntLim currently requires only two categories.  Make sure the column",stype,"only has two unique values"))
-    }
-    # Get the samples where the outcome has a non-missing value
-    if(any(is.na(mp))) {
-	keepers <- which(!is.na(mp))
-        namestokeep <- rownames(Biobase::pData(incommon[["metabolite"]]))[keepers]
-    	incommon <- incommon[namestokeep]
-	mp <- mp[keepers]
     }
 
     print("Running the analysis on")
-    print(table(mp))
+    print(table(incommon$p))
 
     ptm <- proc.time()
-    myres <- RunLM(incommon,outcome=outcome,type=mp)
+    myres <- RunLM(incommon,outcome=outcome,type=incommon$p)
     print(proc.time() - ptm)
     myres@stype=stype
     myres@outcome=outcome

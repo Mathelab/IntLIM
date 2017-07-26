@@ -38,22 +38,29 @@ ProcessResults <- function(inputResults,
 	keepers <- which(mydat$value <= pvalcutoff)
 
 	# Calculate correlations for significant pairs
-	incommon<-MultiDataSet::commonSamples(inputData)
-	mp <- Biobase::pData(incommon[["metabolite"]])[,inputResults@stype]
-	gp <- Biobase::pData(incommon[["expression"]])[,inputResults@stype]
-	if(all.equal(mp,gp)[1] != TRUE) {
-        	stop(paste("The column", inputResults@stype,"for the samples in common between the metabolite and gene datasets are not equal.  Please check your input."))
-    	}
+#	incommon<-MultiDataSet::commonSamples(inputData)
+#	mp <- Biobase::pData(incommon[["metabolite"]])[,inputResults@stype]
+#	gp <- Biobase::pData(incommon[["expression"]])[,inputResults@stype]
+#	if(all.equal(mp,gp)[1] != TRUE) {
+ #       	stop(paste("The column", inputResults@stype,"for the samples in common between the metabolite and gene datasets are not equal.  Please check your input."))
+ #   	}
 
-	gene <- Biobase::assayDataElement(incommon[["expression"]], 'exprs')
-	metab <- Biobase::assayDataElement(incommon[["metabolite"]], 'metabData')
+	incommon <- getCommon(inputData,stype)
+	p <- incommon$p
+	gene <- incommon$gene
+	metab <- incommon$metab
+	if(length(unique(p)) !=2) {
+ 		stop(paste("IntLim currently requires only two categories.  Make sure the column",stype,"only has two unique values"))
+    }
+#	gene <- Biobase::assayDataElement(incommon[["expression"]], 'exprs')
+#	metab <- Biobase::assayDataElement(incommon[["metabolite"]], 'metabData')
 
-	gp1 <- which(mp == unique(mp)[1])
+	gp1 <- which(p == unique(p)[1])
 	cor1 <- as.numeric(apply(mydat[keepers,],1,function(x) {
 		stats::cor(as.numeric(gene[as.character(unlist(x[1])),gp1]),
 			as.numeric(metab[as.character(unlist(x[2])),gp1]),method=corrtype)}))
 
-	gp2 <- which(mp == unique(mp)[2])
+	gp2 <- which(p == unique(p)[2])
         cor2 <- as.numeric(apply(mydat[keepers,],1,function(x) {
 	         stats::cor(as.numeric(gene[as.character(unlist(x[1])),gp2]),
                         as.numeric(metab[as.character(unlist(x[2])),gp2]),method=corrtype)}))
