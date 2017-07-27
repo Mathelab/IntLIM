@@ -192,29 +192,77 @@ shinyServer(function(input, output, session) {
         table<-a[order(a[,5],decreasing = TRUE),]
         table
     })
-    output$table<-DT::renderDataTable(pairTable())
+    # reset <- reactiveValues(sel = "")
+    # output$table<-DT::renderDataTable({
+    #     input$table_rows_selected
+    #     DT::datatable(as.matrix(pairTable()),selection = list(mode = 'multiple', selected = reset$sel))
+    #     observe({
+    #         if(length(input$table_rows_selected) > 2){
+    #             reset$sel <- setdiff(input$table_rows_selected, input$table_row_last_clicked)
+    #         }else{
+    #             reset$sel <- input$table_rows_selected
+    #         }
+    #     })
+    # 
+    #     })
     
+    output$table<-DT::renderDataTable(
+        pairTable()
+    )
     rows<-eventReactive(input$run5,{
         input$table_rows_selected
     })
     output$temp<-renderPrint(as.matrix(rows()))
     
-    output$scatterPlot1<-highcharter::renderHighchart({
-        a<-as.matrix(rows())
-        pair<-as.matrix(pairTable()[a[1,],])
-        geneName<-pair[,"gene"]
-        metabName<-pair[,"metab"]
-        IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName,metabName=metabName)
+    output$scatterplot<-renderUI({
+        
+            a<-as.matrix(rows())
+            pair1<-as.matrix(pairTable()[a[1,],])
+            geneName1<-pair1[,"gene"]
+            metabName1<-pair1[,"metab"]
+            splot1<-IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName1,metabName=metabName1)
+            
+            
+                if(length(input$table_rows_selected) > 1){
+                    pair2<-as.matrix(pairTable()[a[2,],])
+                    geneName2<-pair2[,"gene"]
+                    metabName2<-pair2[,"metab"]
+                    splot2<-IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName2,metabName=metabName2)
+            
+                     p <-htmltools::browsable(highcharter::hw_grid(splot1, splot2, ncol = 2, rowheight = 550))
+                }
+                else{
+                    p<-htmltools::browsable(highcharter::hw_grid(splot1, ncol = 1, rowheight = 550))
+                }
+                
+        
+            return(p)    
+        
+            
+            
         
     })
-    output$scatterPlot2<-highcharter::renderHighchart({
-        a<-as.matrix(rows())
-        pair<-as.matrix(pairTable()[a[2,],])
-        geneName<-pair[,"gene"]
-        metabName<-pair[,"metab"]
-        IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName,metabName=metabName)
-        
-    })
+    # output$scatterPlot1<-highcharter::renderHighchart({
+    #     a<-as.matrix(rows())
+    #     pair<-as.matrix(pairTable()[a[1,],])
+    #     geneName<-pair[,"gene"]
+    #     metabName<-pair[,"metab"]
+    #     IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName,metabName=metabName)
+    #     
+    # })
+    # output$scatterPlot2<-highcharter::renderHighchart({
+    #     a<-as.matrix(rows())
+    #     if(length(rows())>1){
+    #     pair<-as.matrix(pairTable()[a[2,],])
+    #     geneName<-pair[,"gene"]
+    #     metabName<-pair[,"metab"]
+    #     IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName,metabName=metabName)
+    #     }else{
+    #         highcharter::chart.renderer.text('You could see the second scatter plot by clicking another row')
+    #     }
+    #     
+    #     
+    # })
     
     #infobox
     output$statusbox1 <- renderInfoBox({

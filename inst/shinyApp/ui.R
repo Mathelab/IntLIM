@@ -291,12 +291,26 @@ body <- shinydashboard::dashboardBody(
                                                              }
                                                              ")),
                                         conditionalPanel(condition="$('html').hasClass('shiny-busy')",
-                                                         tags$div("Loading...",id="loadmessage")),
-                                        highcharter::highchartOutput("scatterPlot1"),
-                                        highcharter::highchartOutput("scatterPlot2")
+                                                         tags$div("Loading...",id="loadmessage"))
+                                        
                                         
                                     )
-                                )
+                                ),#end of table flow
+                                    fluidRow(
+                                    shinydashboard::box(
+                                        width = NULL,
+                                        pre(uiOutput("scatterplot"))
+                                    #     width = 6,
+                                    #     highcharter::highchartOutput("scatterPlot1")
+                                    #     
+                                    # ),
+                                    # shinydashboard::box(
+                                    #     width = 6,
+                                    #     
+                                    #     highcharter::highchartOutput("scatterPlot2")
+                                    )
+                                    )#end of scatterplot flow
+        
                                 )
         
         
