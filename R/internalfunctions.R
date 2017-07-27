@@ -139,14 +139,16 @@ getCommon <- function(inputData,stype=NULL) {
 	uniqtypes <- unique(p)
         # Deal with missing values or ""
         if(length(which(p==""))>0) {
-                p <- p[which(p!="")]
+                new.p <- p[which(p!="")]
 		metab <- metab[,which(p!="")]
 		gene <- gene[,which(p!="")]
+		p <- new.p
         }
         if(length(which(is.na(p)))>0) {
-                p <- p[which(!is.na(p))]
+                new.p <- p[which(!is.na(p))]
                 metab <- metab[,which(!is.na(p))]
                 gene <- gene[,which(!is.na(p))]
+		p <- new.p
         }
    }
 
