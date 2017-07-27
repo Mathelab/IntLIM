@@ -339,20 +339,20 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL) {
 	p <- padj <- c()
 	if(inputResults@outcome=="metabolite") {
         	for (i in 1:nrow(a)) {
-			g <- which(rownames(myres@interaction.pvalues) == a$gene[i])
-			m <- which(colnames(myres@interaction.pvalues) == a$metab[i])
+			g <- which(rownames(inputResults@interaction.pvalues) == a$gene[i])
+			m <- which(colnames(inputResults@interaction.pvalues) == a$metab[i])
 			if(length(g)==0 || length(m)==0) {p<-c(p,NA);padj<-c(padj,NA)} else {
-				p <- c(p,myres@interaction.pvalues[g,m])
-				padj <- c(padj,myres@interaction.adj.pvalues[a$gene[i],a$metab[i]])
+				p <- c(p,inputResults@interaction.pvalues[g,m])
+				padj <- c(padj,inputResults@interaction.adj.pvalues[a$gene[i],a$metab[i]])
 			}
 		}
 	} else if (inputResults@outcome=="gene") {
                for (i in 1:nrow(a)) {
-                        g <- which(rownames(myres@interaction.pvalues) == a$gene[i])
-                        m <- which(colnames(myres@interaction.pvalues) == a$metab[i])
+                        g <- which(rownames(inputResults@interaction.pvalues) == a$gene[i])
+                        m <- which(colnames(inputResults@interaction.pvalues) == a$metab[i])
 			if(length(g)==0 || length(m)==0) {p<-c(p,NA)} else {
-                        	p <- c(p,myres@interaction.pvalues[a$metab[i],a$gene[i]])
-                        	padj <- c(padj,myres@interaction.adj.pvalues[m,g])
+                        	p <- c(p,inputResults@interaction.pvalues[a$metab[i],a$gene[i]])
+                        	padj <- c(padj,inputResults@interaction.adj.pvalues[m,g])
 			}
 		}
 	}

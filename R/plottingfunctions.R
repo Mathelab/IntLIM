@@ -20,7 +20,7 @@
 PlotDistributions <- function(inputData,viewer=T,
 #	palette = c("#C71585", "#00E5EE")) {
         palette="Set1"){
-
+      . <- c()
       if (length(palette) == 2) {
         cols <- c(palette)
       }
