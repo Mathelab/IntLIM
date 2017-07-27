@@ -246,7 +246,7 @@ body <- shinydashboard::dashboardBody(
                                          ")),
                     conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                      tags$div("Loading...",id="loadmessage")),
-                    highcharter::highchartOutput("heatmap")
+                    plotly::plotlyOutput("heatmap")
                     )
                 )
                 ),
