@@ -326,3 +326,39 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL) {
          )
         }
 
+
+#' Create results table
+#'
+#' @include AllClasses.R
+#' @param inputResults IntLimResults object with model results (output of ProcessResults())
+   CreateResultsTable <- function(inputResults) {
+	a<-inputResults@corr
+        a$cordiff<-round(abs(a[,3]-a[,4]),3)
+        a[,3]<-round(a[,3],2)
+        a[,4]<-round(a[,4],2)
+	p <- padj <- c()
+	if(inputResults@outcome=="metabolite") {
+        	for (i in 1:nrow(a)) {
+			g <- which(rownames(myres@interaction.pvalues) == a$gene[i])
+			m <- which(colnames(myres@interaction.pvalues) == a$metab[i])
+			if(length(g)==0 || length(m)==0) {p<-c(p,NA);padj<-c(padj,NA)} else {
+				p <- c(p,myres@interaction.pvalues[g,m])
+				padj <- c(padj,myres@interaction.adj.pvalues[a$gene[i],a$metab[i]])
+			}
+		}
+	} else if (inputResults@outcome=="gene") {
+               for (i in 1:nrow(a)) {
+                        g <- which(rownames(myres@interaction.pvalues) == a$gene[i])
+                        m <- which(colnames(myres@interaction.pvalues) == a$metab[i])
+			if(length(g)==0 || length(m)==0) {p<-c(p,NA)} else {
+                        	p <- c(p,myres@interaction.pvalues[a$metab[i],a$gene[i]])
+                        	padj <- c(padj,myres@interaction.adj.pvalues[m,g])
+			}
+		}
+	}
+	else {stop("Outcome should be either 'metabolite' or 'gene'")}
+	a$pval <- p
+	a$adjpval <- padj
+        table<-a[order(a$adjpval,decreasing = TRUE),]
+        return(table)
+   }

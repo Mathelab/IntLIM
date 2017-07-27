@@ -9,8 +9,8 @@
 #' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
-#' OutputStats(mydata)
+#' ShowStats(mydata)
 #' @export
-OutputStats <- function(IntLimObject) {
+ShowStats <- function(IntLimObject) {
         return(getStats(IntLimObject))
 }

@@ -12,9 +12,9 @@ methods::setMethod(
 		incommon<-MultiDataSet::commonSamples(IntLimObject)
 	       mystats <- data.frame(Num_Genes = nrow(Biobase::fData(IntLimObject[["expression"]])),
 		Num_Metabolites = nrow(Biobase::fData(IntLimObject[["metabolite"]])),
-		Num_Samples_withExpression = ncol(Biobase::assayDataElement(IntLimObject[["expression"]], 
+		Num_Samples_withGeneExpression = ncol(Biobase::assayDataElement(IntLimObject[["expression"]], 
 			'exprs')),
-		Num_Samples_withExpression = ncol(Biobase::assayDataElement(IntLimObject[["metabolite"]], 
+		Num_Samples_withMetabolomics = ncol(Biobase::assayDataElement(IntLimObject[["metabolite"]], 
 			'metabData')),
 		Num_Samples_inCommon = ncol(Biobase::assayDataElement(incommon[["expression"]], 'exprs'))
 		)

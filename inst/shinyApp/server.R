@@ -92,7 +92,7 @@ shinyServer(function(input, output, session) {
     
     output$stats<-renderDataTable({
         
-        table<- as.data.frame(t(IntLim::OutputStats(multiData())))
+        table<- as.data.frame(t(IntLim::ShowStats(multiData())))
         colnames(table)<-"value"
         cbind(names=rownames(table),table)
         
@@ -118,7 +118,7 @@ shinyServer(function(input, output, session) {
     
     output$Ostats<-renderDataTable({
         if(input$run2==0) return()
-        table<- as.data.frame(t(IntLim::OutputStats(multiData())))
+        table<- as.data.frame(t(IntLim::ShowStats(multiData())))
         colnames(table)<-"value"
         cbind(names=rownames(table),table)
         
@@ -132,7 +132,7 @@ shinyServer(function(input, output, session) {
     )
     output$Fstats<-renderDataTable({
         if(input$run2==0) return()
-        table<- as.data.frame(t(IntLim::OutputStats(FmultiData())))
+        table<- as.data.frame(t(IntLim::ShowStats(FmultiData())))
         colnames(table)<-"value"
         cbind(names=rownames(table),table)
         
@@ -183,14 +183,15 @@ shinyServer(function(input, output, session) {
     #scatter plot=============================================================================================
     
     pairTable<-reactive({
-        a<-myres2()@corr
-        b<-round(abs(a[,3]-a[,4]),3)
-        a$diff<-b
-        a$PBO<-round(a$PBO,2)
-        a$Leukemia<-round(a$Leukemia,2)
+	IntLim::CreateResultsTable(req(myres2))
+        #a<-myres2()@corr
+        #b<-round(abs(a[,3]-a[,4]),3)
+        #a$diff<-b
+        #a$PBO<-round(a$PBO,2)
+        #a$Leukemia<-round(a$Leukemia,2)
        
-        table<-a[order(a[,5],decreasing = TRUE),]
-        table
+        #table<-a[order(a[,5],decreasing = TRUE),]
+        #table
     })
     output$table<-DT::renderDataTable(pairTable(),selection = 'single')
     

@@ -39,13 +39,13 @@ A small data set is embedded in a package.  To access it:
 Read in the data and organize into a MultiDataset object, and print out some statistics:
 ```{r}
 inputData <- IntLim::ReadData(csvfile,metabid='id',geneid='id')
-IntLim::OutputStats(inputData)
+IntLim::ShowStats(inputData)
 ```
 
 Optionally, the features (genes or metabolites) can be filtered out based on their mean values. Users should input a percentile cutoff and any feature with a mean value below that cutoff will be removed.
 ```{r}
 inputDatafilt <- IntLim::FilterData(inputData,geneperc = 0.15)
-IntLim::OutputStats(inputDatafilt)
+IntLim::ShowStats(inputDatafilt)
 ```
 
 Verify the distribution of the input data:
@@ -75,6 +75,15 @@ Plot a pair of interest:
 IntLim::PlotGMPair(inputData,stype="PBO_vs_Leukemia","DLG4","(p-Hydroxyphenyl)lactic acid")
 ```
 
+Lastly, various writing functions are implemented.  One can write the output after data filtering using the following function (the file will be written to the home directory):
+```
+IntLim::OutputData(inputData=inputDatafilt,filename="~/FilteredData.zip")
+```
+
+Users can also write the results file:
+```
+OutputResults(inputData=myres,filename="~/MyResults.zip")
+```
 
 
 ```{r}

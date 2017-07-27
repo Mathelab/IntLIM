@@ -51,4 +51,5 @@ Collate:
     'plottingfunctions.R'
     'runShiny.R'
     'statsfunctions.R'
+    'writingfunctions.R'
 VignetteBuilder: knitr
