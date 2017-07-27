@@ -228,7 +228,7 @@ body <- shinydashboard::dashboardBody(
                     ),#end of info floww
                 fluidRow(
                     shinydashboard::box(
-                        width = NULL,
+                        width = 10,
                     tags$head(tags$style(type="text/css", "
                      loadmessage {
                                          position: fixed;
@@ -246,7 +246,7 @@ body <- shinydashboard::dashboardBody(
                                          ")),
                     conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                      tags$div("Loading...",id="loadmessage")),
-                    highcharter::highchartOutput("heatmap")
+                    plotly::plotlyOutput("heatmap")
                     )
                 )
                 ),
@@ -271,6 +271,7 @@ body <- shinydashboard::dashboardBody(
                                         tags$b("Pairs of difference of correlation "),
                                         pre(DT::dataTableOutput('table')),
                                         
+                                        pre(textOutput("temp")),
                                         hr(),
                                         actionButton("run5", "Run"),
                                         
@@ -290,10 +291,26 @@ body <- shinydashboard::dashboardBody(
                                                              }
                                                              ")),
                                         conditionalPanel(condition="$('html').hasClass('shiny-busy')",
-                                                         tags$div("Loading...",id="loadmessage")),
-                                        highcharter::highchartOutput("scatterPlot")
+                                                         tags$div("Loading...",id="loadmessage"))
+                                        
+                                        
                                     )
-                                )
+                                ),#end of table flow
+                                    fluidRow(
+                                    shinydashboard::box(
+                                        width = NULL,
+                                        pre(uiOutput("scatterplot"))
+                                    #     width = 6,
+                                    #     highcharter::highchartOutput("scatterPlot1")
+                                    #     
+                                    # ),
+                                    # shinydashboard::box(
+                                    #     width = 6,
+                                    #     
+                                    #     highcharter::highchartOutput("scatterPlot2")
+                                    )
+                                    )#end of scatterplot flow
+        
                                 )
         
         
