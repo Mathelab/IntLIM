@@ -228,7 +228,7 @@ body <- shinydashboard::dashboardBody(
                     ),#end of info floww
                 fluidRow(
                     shinydashboard::box(
-                        width = NULL,
+                        width = 10,
                     tags$head(tags$style(type="text/css", "
                      loadmessage {
                                          position: fixed;
@@ -271,6 +271,7 @@ body <- shinydashboard::dashboardBody(
                                         tags$b("Pairs of difference of correlation "),
                                         pre(DT::dataTableOutput('table')),
                                         
+                                        pre(textOutput("temp")),
                                         hr(),
                                         actionButton("run5", "Run"),
                                         
@@ -291,7 +292,9 @@ body <- shinydashboard::dashboardBody(
                                                              ")),
                                         conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                                          tags$div("Loading...",id="loadmessage")),
-                                        highcharter::highchartOutput("scatterPlot")
+                                        highcharter::highchartOutput("scatterPlot1"),
+                                        highcharter::highchartOutput("scatterPlot2")
+                                        
                                     )
                                 )
                                 )

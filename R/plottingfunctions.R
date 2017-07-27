@@ -364,7 +364,7 @@ type <- cor <- c()
 
                   heat_data[,2] <- meltedtoplot[-1:-num,3]
 
-                  hm <- heatmaply::heatmaply(heat_data,k_row = 5,k_col = 2,
+                  hm <- heatmaply::heatmaply(heat_data,main = "Correlation heatmap",k_row = 5,k_col = 2,
                                  margins = c(80,5),
                                  dendrogram = "row",
                                  y_axis_font_size ="1px")

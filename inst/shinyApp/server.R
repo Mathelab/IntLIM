@@ -192,17 +192,28 @@ shinyServer(function(input, output, session) {
         table<-a[order(a[,5],decreasing = TRUE),]
         table
     })
-    output$table<-DT::renderDataTable(pairTable(),selection = 'single')
+    output$table<-DT::renderDataTable(pairTable())
     
     rows<-eventReactive(input$run5,{
         input$table_rows_selected
     })
-    output$scatterPlot<-highcharter::renderHighchart({
-        
-        pair<-as.matrix(pairTable()[rows(),])
+    output$temp<-renderPrint(as.matrix(rows()))
+    
+    output$scatterPlot1<-highcharter::renderHighchart({
+        a<-as.matrix(rows())
+        pair<-as.matrix(pairTable()[a[1,],])
         geneName<-pair[,"gene"]
         metabName<-pair[,"metab"]
         IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName,metabName=metabName)
+        
+    })
+    output$scatterPlot2<-highcharter::renderHighchart({
+        a<-as.matrix(rows())
+        pair<-as.matrix(pairTable()[a[2,],])
+        geneName<-pair[,"gene"]
+        metabName<-pair[,"metab"]
+        IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName,metabName=metabName)
+        
     })
     
     #infobox
