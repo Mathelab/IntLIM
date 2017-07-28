@@ -134,7 +134,9 @@ body <- shinydashboard::dashboardBody(
                     ),
                     shinydashboard::box(
                         width=4,
-                        infoBoxOutput("statusbox2", width = NULL)
+                        infoBoxOutput("statusbox2", width = NULL),
+                        downloadButton('downloadFdata', 'Download')
+                        
                     )
                     ), # end filter option flow
                 fluidRow(
@@ -209,7 +211,7 @@ body <- shinydashboard::dashboardBody(
                                          ")),
                     conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                      tags$div("Loading...(It might take several minutes depending on the size of the dataset,please be patient!)",id="loadmessage")),
-                    tags$b("Distribution of unadjusted p-values (a peak close to zero suggests that there are significant gene:metabolite pairs that are found)."),
+                    textOutput("Ptext"),
                     plotOutput("Pdist")
                 )
                 )
@@ -233,8 +235,10 @@ body <- shinydashboard::dashboardBody(
                     )
                     ),#end of info floww
                 fluidRow(
+                    
                     shinydashboard::box(
-                        width = 10,
+                        width = 8,
+                        
                     tags$head(tags$style(type="text/css", "
                      loadmessage {
                                          position: fixed;
@@ -253,6 +257,13 @@ body <- shinydashboard::dashboardBody(
                     conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                      tags$div("Loading...",id="loadmessage")),
                     plotly::plotlyOutput("heatmap")
+                    ),
+                    shinydashboard::box(
+                        width = 4,
+                        numericInput("pvalcutoff","cutoff of FDR-adjusted p-value for filtering(0 - 1) :", 0.05, min = 0, max = 1),
+                        numericInput("diffcorr", "cutoff of differences in correlations for filtering (0-1):", 0.5, min = 0, max = 1),
+                        textInput("corrtype","spearman or pearson or other parameters allowed by cor() function","spearman"),
+                        downloadButton('downloadData', 'Download')
                     )
                 )
                 ),
@@ -306,14 +317,7 @@ body <- shinydashboard::dashboardBody(
                                     shinydashboard::box(
                                         width = NULL,
                                         pre(uiOutput("scatterplot"))
-                                    #     width = 6,
-                                    #     highcharter::highchartOutput("scatterPlot1")
-                                    #     
-                                    # ),
-                                    # shinydashboard::box(
-                                    #     width = 6,
-                                    #     
-                                    #     highcharter::highchartOutput("scatterPlot2")
+                                    
                                     )
                                     )#end of scatterplot flow
         

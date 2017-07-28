@@ -26,7 +26,7 @@
 #' @export
 ProcessResults <- function(inputResults,
 				inputData,
-				pvalcutoff=0.1,
+				pvalcutoff=0.05,
 				diffcorr=0.5,
 				corrtype="spearman"){
 

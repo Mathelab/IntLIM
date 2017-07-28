@@ -4,8 +4,8 @@ options(shiny.trace=F)
 shinyServer(function(input, output, session) {      
     #file input==================================================================================================
 
-#   rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
-   rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLim/inst/extdata", getVolumes()(), WD = '.')   
+  rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
+  # rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLim/inst/extdata", getVolumes()(), WD = '.')   
 
     shinyFileChoose(input,'file1',
                     roots = rootVolumes,
@@ -148,6 +148,12 @@ shinyServer(function(input, output, session) {
     }
     )
     
+    output$downloadFdata <- downloadHandler(
+        filename = "Filtered data.zip",
+        content = function(con) {
+            IntLim::OutputData(FmultiData(),con)
+        }
+    )
     
     #adjusted p values==================================================================================================
     output$choosestype <- renderUI({
@@ -172,15 +178,32 @@ shinyServer(function(input, output, session) {
         
     })
     
+    output$Ptext<-renderPrint(
+        
+            if(!is.null(myres())){
+                
+        ("Distribution of unadjusted p-values (a peak close to zero suggests that there are significant gene:metabolite pairs that are found).")
+            }
+        
+    )
+    
     
     #heatmap==================================================================================================
     
     myres2 <- eventReactive(input$run4,{
-        IntLim::ProcessResults(myres(),FmultiData())
+        IntLim::ProcessResults(myres(),FmultiData(),pvalcutoff=input$pvalcutoff,
+                               diffcorr=input$diffcorr,
+                               corrtype=input$corrtype)
     })
     output$heatmap<-plotly::renderPlotly({
         IntLim::CorrHeatmap(myres2())
     }
+    )
+    output$downloadData <- downloadHandler(
+        filename = "results.csv",
+        content = function(con) {
+            IntLim::OutputResults(req(myres2()),con)
+        }
     )
     
     #scatter plot=============================================================================================
