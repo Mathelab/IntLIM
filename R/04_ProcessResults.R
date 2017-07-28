@@ -66,3 +66,54 @@ ProcessResults <- function(inputResults,
 
 return(inputResults)
 }
+
+
+#' Create results table, which includes significant gene:metabolite pairs, associated p-values, 
+#' and correlations in each category evaluated.
+#'
+#' @param inputResults IntLimResults object with model results (output of ProcessResults())
+#'
+#' @examples
+#' \dontrun{
+#' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+#' csvfile <- file.path(dir, "NCItestinput.csv")
+#' mydata <- ReadData(csvfile,metabid='id',geneid='id')
+#' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
+#' myres <- ProcessResults(myres,mydata)
+#' mytable <- CreateResultsTable(myres)
+#' }
+#' @export
+   CreateResultsTable <- function(inputResults) {
+        a<-inputResults@corr
+        a$cordiff<-round(abs(a[,3]-a[,4]),3)
+        a[,3]<-round(a[,3],2)
+        a[,4]<-round(a[,4],2)
+        p <- padj <- c()
+        if(inputResults@outcome=="metabolite") {
+                for (i in 1:nrow(a)) {
+                        g <- which(rownames(inputResults@interaction.pvalues) == a$gene[i])
+                        m <- which(colnames(inputResults@interaction.pvalues) == a$metab[i])
+                        if(length(g)==0 || length(m)==0) {p<-c(p,NA);padj<-c(padj,NA)} else {
+                                p <- c(p,inputResults@interaction.pvalues[g,m])
+                                padj <- c(padj,inputResults@interaction.adj.pvalues[a$gene[i],a$metab[i]])
+                        }
+                }
+        } else if (inputResults@outcome=="gene") {
+               for (i in 1:nrow(a)) {
+                        g <- which(rownames(inputResults@interaction.pvalues) == a$gene[i])
+                        m <- which(colnames(inputResults@interaction.pvalues) == a$metab[i])
+                        if(length(g)==0 || length(m)==0) {p<-c(p,NA)} else {
+                                p <- c(p,inputResults@interaction.pvalues[a$metab[i],a$gene[i]])
+                                padj <- c(padj,inputResults@interaction.adj.pvalues[m,g])
+                        }
+                }
+        }
+        else {stop("Outcome should be either 'metabolite' or 'gene'")}
+        a$pval <- p
+        a$adjpval <- padj
+        table<-a[order(a$adjpval,decreasing = TRUE),]
+	rownames(table) <- NULL
+        return(table)
+   }
+
+

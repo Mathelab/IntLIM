@@ -171,10 +171,16 @@ body <- shinydashboard::dashboardBody(
                         title = strong("Run IntLIM") ,
                         width = 8,
                         solidHeader = TRUE,
-                        h5("This step performs the linear models for all combinations of gene:metabolite pairs and then plots distribution of p-values.  "),
-                        radioButtons("dataset", label = h5("Select the outcome set:"),
-                                     choices = list("metabolite" = "metabolite", "gene" = "gene"), 
-                                     selected = "metabolite"),
+                        h5("This step performs the linear models for all combinations of gene:metabolite pairs and then plots distribution of p-values."),
+			h5("The linear model performed is 'm ~ g + p + g:p' where "),
+			h5("'m' is the metabolite abundance"),
+			h5("‘g’ is the gene expression level"), 
+			h5("‘p’ is the phenotype (e.g. tumor vs non-tumor)"),
+			h5("‘g:p’ is the interaction between phenotype and gene expression"),
+			h5("A statistically significant p-value of the the interaction term ‘g:p’ indicates that the gene-metabolite relationship is phenotype-specific. Please see manuscript for more details."),
+#                        radioButtons("dataset", label = h5("Select column that has the categories that you wish to compare (e.g. tumor vs. non-tumor):"),
+#                                     choices = list("metabolite" = "metabolite", "gene" = "gene"), 
+#                                     selected = "metabolite"),
                         hr(),
                         uiOutput('choosestype'),
                         actionButton("run3", "Run")
@@ -204,8 +210,8 @@ body <- shinydashboard::dashboardBody(
                                          }
                                          ")),
                     conditionalPanel(condition="$('html').hasClass('shiny-busy')",
-                                     tags$div("Loading...(It might takes long time,please wait patiently)",id="loadmessage")),
-                    tags$b("Histogram of p-values."),
+                                     tags$div("Loading...(It might take several minutes depending on the size of the dataset,please be patient!)",id="loadmessage")),
+                    tags$b("Distribution of unadjusted p-values (a peak close to zero suggests that there are significant gene:metabolite pairs that are found)."),
                     plotOutput("Pdist")
                 )
                 )
