@@ -288,7 +288,7 @@ body <- shinydashboard::dashboardBody(
                                         tags$b("Pairs of difference of correlation "),
                                         pre(DT::dataTableOutput('table')),
                                         
-                                        pre(textOutput("temp")),
+                                        #pre(textOutput("temp")),
                                         hr(),
                                         actionButton("run5", "Run"),
                                         

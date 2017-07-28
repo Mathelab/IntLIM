@@ -231,7 +231,7 @@ shinyServer(function(input, output, session) {
     scatterrows<-eventReactive(input$run5,{
         input$table_rows_selected
     })
-    output$temp<-renderPrint(as.matrix(scatterrows()))
+    #output$temp<-renderPrint(as.matrix(scatterrows()))
     
     output$scatterplot<-renderUI({
             a<-as.matrix(scatterrows())
