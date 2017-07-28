@@ -145,6 +145,12 @@ shinyServer(function(input, output, session) {
     }
     )
     
+    output$downloadFdata <- downloadHandler(
+        filename = "Filtered data.zip",
+        content = function(con) {
+            IntLim::OutputData(FmultiData(),con)
+        }
+    )
     
     #adjusted p values==================================================================================================
     output$choosestype <- renderUI({
@@ -173,11 +179,19 @@ shinyServer(function(input, output, session) {
     #heatmap==================================================================================================
     
     myres2 <- eventReactive(input$run4,{
-        IntLim::ProcessResults(myres(),FmultiData())
+        IntLim::ProcessResults(myres(),FmultiData(),pvalcutoff=input$pvalcutoff,
+                               diffcorr=input$diffcorr,
+                               corrtype=input$corrtype)
     })
     output$heatmap<-plotly::renderPlotly({
         IntLim::CorrHeatmap(myres2())
     }
+    )
+    output$downloadData <- downloadHandler(
+        filename = "results.csv",
+        content = function(con) {
+            IntLim::OutputResults(req(myres2()),con)
+        }
     )
     
     #scatter plot=============================================================================================
