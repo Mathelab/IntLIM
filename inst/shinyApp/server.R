@@ -4,8 +4,8 @@ options(shiny.trace=F)
 shinyServer(function(input, output, session) {      
     #file input==================================================================================================
 
-   rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
- #    rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLim/vignettes/NCI-60", getVolumes()(), WD = '.')   
+#   rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
+   rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLim/inst/extdata", getVolumes()(), WD = '.')   
 
     shinyFileChoose(input,'file1',
                     roots = rootVolumes,
@@ -110,7 +110,10 @@ shinyServer(function(input, output, session) {
             FmultiData<-multiData()
         }
         if(input$run2!=0){
-            FmultiData<-IntLim::FilterData(multiData(),geneperc=input$geneperc,metabperc=input$metabperc,metabmiss=input$metabmiss)
+            FmultiData<-IntLim::FilterData(multiData(),
+		geneperc=input$geneperc,
+		metabperc=input$metabperc,
+		metabmiss=input$metabmiss)
         }
         
         FmultiData
@@ -160,7 +163,7 @@ shinyServer(function(input, output, session) {
     
     myres <- eventReactive(input$run3,{
         shinyjs::html("text", "")
-        IntLim::RunIntLim(FmultiData(),stype=input$stype,outcome=input$dataset)
+        IntLim::RunIntLim(FmultiData(),stype=input$stype,outcome='metabolite')
         
     })
     output$Pdist<-renderPlot({
@@ -183,15 +186,7 @@ shinyServer(function(input, output, session) {
     #scatter plot=============================================================================================
     
     pairTable<-reactive({
-	IntLim::CreateResultsTable(req(myres2))
-        #a<-myres2()@corr
-        #b<-round(abs(a[,3]-a[,4]),3)
-        #a$diff<-b
-        #a$PBO<-round(a$PBO,2)
-        #a$Leukemia<-round(a$Leukemia,2)
-       
-        #table<-a[order(a[,5],decreasing = TRUE),]
-        #table
+	IntLim::CreateResultsTable(req(myres2()))
     })
     # reset <- reactiveValues(sel = "")
     # output$table<-DT::renderDataTable({
@@ -210,60 +205,30 @@ shinyServer(function(input, output, session) {
     output$table<-DT::renderDataTable(
         pairTable()
     )
-    rows<-eventReactive(input$run5,{
+    scatterrows<-eventReactive(input$run5,{
         input$table_rows_selected
     })
-    output$temp<-renderPrint(as.matrix(rows()))
+    output$temp<-renderPrint(as.matrix(scatterrows()))
     
     output$scatterplot<-renderUI({
-        
-            a<-as.matrix(rows())
-            pair1<-as.matrix(pairTable()[a[1,],])
+            a<-as.matrix(scatterrows())
+            pair1<-pairTable()[a[1,],]
             geneName1<-pair1[,"gene"]
             metabName1<-pair1[,"metab"]
-            splot1<-IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName1,metabName=metabName1)
+            splot1<-IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName1,metabName=metabName1) 
+            if(length(input$table_rows_selected) > 1){
+                pair2<-as.matrix(pairTable()[a[2,],])
+                geneName2<-pair2[,"gene"]
+                metabName2<-pair2[,"metab"]
+                splot2<-IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName2,metabName=metabName2)
             
-            
-                if(length(input$table_rows_selected) > 1){
-                    pair2<-as.matrix(pairTable()[a[2,],])
-                    geneName2<-pair2[,"gene"]
-                    metabName2<-pair2[,"metab"]
-                    splot2<-IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName2,metabName=metabName2)
-            
-                     p <-htmltools::browsable(highcharter::hw_grid(splot1, splot2, ncol = 2, rowheight = 550))
-                }
-                else{
+                p <-htmltools::browsable(highcharter::hw_grid(splot1, splot2, ncol = 2, rowheight = 550))
+            }
+            else{
                     p<-htmltools::browsable(highcharter::hw_grid(splot1, ncol = 1, rowheight = 550))
-                }
-                
-        
+            }
             return(p)    
-        
-            
-            
-        
     })
-    # output$scatterPlot1<-highcharter::renderHighchart({
-    #     a<-as.matrix(rows())
-    #     pair<-as.matrix(pairTable()[a[1,],])
-    #     geneName<-pair[,"gene"]
-    #     metabName<-pair[,"metab"]
-    #     IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName,metabName=metabName)
-    #     
-    # })
-    # output$scatterPlot2<-highcharter::renderHighchart({
-    #     a<-as.matrix(rows())
-    #     if(length(rows())>1){
-    #     pair<-as.matrix(pairTable()[a[2,],])
-    #     geneName<-pair[,"gene"]
-    #     metabName<-pair[,"metab"]
-    #     IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName,metabName=metabName)
-    #     }else{
-    #         highcharter::chart.renderer.text('You could see the second scatter plot by clicking another row')
-    #     }
-    #     
-    #     
-    # })
     
     #infobox
     output$statusbox1 <- renderInfoBox({
@@ -399,7 +364,7 @@ shinyServer(function(input, output, session) {
                 fill = TRUE
             )}
         
-        else if (!is.null(rows())) {
+        else if (!is.null(scatterrows())) {
             infoBox(
                 "Status",
                 HTML(paste("Scatter plot running complete!",
