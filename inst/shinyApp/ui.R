@@ -211,7 +211,7 @@ body <- shinydashboard::dashboardBody(
                                          ")),
                     conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                      tags$div("Loading...(It might take several minutes depending on the size of the dataset,please be patient!)",id="loadmessage")),
-                    tags$b("Distribution of unadjusted p-values (a peak close to zero suggests that there are significant gene:metabolite pairs that are found)."),
+                    textOutput("Ptext"),
                     plotOutput("Pdist")
                 )
                 )

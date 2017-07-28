@@ -4,8 +4,8 @@ options(shiny.trace=F)
 shinyServer(function(input, output, session) {      
     #file input==================================================================================================
 
-#   rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
-   rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLim/inst/extdata", getVolumes()(), WD = '.')   
+  rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
+  # rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLim/inst/extdata", getVolumes()(), WD = '.')   
 
     shinyFileChoose(input,'file1',
                     roots = rootVolumes,
@@ -177,6 +177,15 @@ shinyServer(function(input, output, session) {
         IntLim::DistPvalues(myres())
         
     })
+    
+    output$Ptext<-renderPrint(
+        
+            if(!is.null(myres())){
+                
+        ("Distribution of unadjusted p-values (a peak close to zero suggests that there are significant gene:metabolite pairs that are found).")
+            }
+        
+    )
     
     
     #heatmap==================================================================================================
