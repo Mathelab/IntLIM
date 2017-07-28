@@ -82,7 +82,7 @@ IntLim::OutputData(inputData=inputDatafilt,filename="~/FilteredData.zip")
 
 Users can also write the results file:
 ```
-OutputResults(inputData=myres,filename="~/MyResults.zip")
+OutputResults(inputResults=myres,filename="~/MyResults.zip")
 ```
 
 
