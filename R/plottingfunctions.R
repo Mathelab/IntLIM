@@ -179,11 +179,23 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
 			mpca <- stats::prcomp(t(mymetab),center=F,scale=T)
 			gtoplot=data.frame(x=gpca$x[,1],y=gpca$x[,2],z=rownames(gpca$x),color=rep("blue",nrow(gpca$x)))
 			mtoplot=data.frame(x=mpca$x[,1],y=mpca$x[,2],z=rownames(mpca$x),color=rep("blue",nrow(mpca$x)))
+                        gds <- list_parse(gtoplot)
+                        pg <- highcharter::highchart(width = 350, height = 350 )
+                        pg <- pg %>% highcharter::hc_add_series(data=gds,type="scatter",
+                                tooltip = list(headerFormat="",
+                                pointFormat=paste("{point.label}","{point.z}")),
+                                showInLegend=FALSE)
+                        mds <- list_parse(mtoplot)
+                        pm <- highcharter::highchart(width = 350, height = 350)
+                        pm <- pm %>% highcharter::hc_add_series(data=mds,type="scatter",
+                                tooltip = list(headerFormat="",
+                                pointFormat=paste("{point.label}","{point.z}")),
+                                showInLegend=FALSE)
 		} else {
 			incommon <- getCommon(inputData,stype)
 			mygene <- incommon$gene
 			mymetab <- incommon$metab
-			mytype <- incommon$p
+			alltype <- incommon$p
 			uniqtypes <- unique(mytype)
 			mycols <- as.character(mytype)	
 			for (i in 1:numcateg) {
@@ -191,8 +203,25 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
 			}
 			gpca <- stats::prcomp(t(mygene),center=F,scale=T)
 			mpca <- stats::prcomp(t(mymetab),center=F,scale=T)
-			gtoplot=data.frame(x=gpca$x[,1],y=gpca$x[,2],z=rownames(gpca$x),label=mytype,color=mycols)
-			mtoplot=data.frame(x=mpca$x[,1],y=mpca$x[,2],z=rownames(mpca$x),label=mytype,color=mycols)
+			gtoplot=data.frame(x=gpca$x[,1],y=gpca$x[,2],z=rownames(gpca$x),label=alltype,color=mycols)
+			mtoplot=data.frame(x=mpca$x[,1],y=mpca$x[,2],z=rownames(mpca$x),label=alltype,color=mycols)
+			mds <- list_parse(mtoplot)
+                        gds <- list_parse(gtoplot)
+                        pg <- highcharter::highchart(width = 350, height = 350)
+			pm <- highcharter::highchart(width = 350, height = 350)
+                        for (i in 1:length(uniqtypes)) {
+                                mytype <- unique(alltype)[i]
+                                gds <- list_parse(gtoplot[which(gtoplot$label==mytype),])
+                                pg <- pg %>% highcharter::hc_add_series(data=gds,type="scatter",
+                                        name=mytype,color=cols[which(alltype==mytype)[1]],tooltip = list(headerFormat="",
+                                        pointFormat=paste("{point.label}","{point.z}")),
+                                        showInLegend=TRUE)
+                                mds <- list_parse(mtoplot[which(mtoplot$label==mytype),])
+                                pm <- pm %>% highcharter::hc_add_series(data=mds,type="scatter",
+                                        name=mytype,color=cols[which(alltype==mytype)[1]],tooltip = list(headerFormat="",
+                                        pointFormat=paste("{point.label}","{point.z}")),
+                                        showInLegend=TRUE)
+                        }
 		}
 	} else { # common == F
 		mygene <- as.data.frame(Biobase::assayDataElement(inputData[["expression"]],'exprs'))
@@ -225,40 +254,60 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
                         if(length(which(is.na(mtypes)))>0) {
                                 mcols[which(is.na(mtypes))]="grey"
                         }
-
 			gtoplot=data.frame(x=gpca$x[,1],y=gpca$x[,2],z=rownames(gpca$x),label=gtypes,color=gcols)
                         mtoplot=data.frame(x=mpca$x[,1],y=mpca$x[,2],z=rownames(mpca$x),label=mtypes,color=mcols)
+			mds <- list_parse(mtoplot)
+			gds <- list_parse(gtoplot)
+			pg <- highcharter::highchart(width = 350, height = 350 )
+			for (i in 1:length(unique(gtypes))) {
+				mytype <- unique(gtypes)[i]
+				gds <- list_parse(gtoplot[which(gtoplot$label==mytype),])
+				pg <- pg %>% highcharter::hc_add_series(data=gds,type="scatter",
+					name=mytype,color=cols[which(gtypes==mytype)[1]],tooltip = list(headerFormat="",
+		                        pointFormat=paste("{point.label}","{point.z}")),
+                		        showInLegend=TRUE)
+			}
+			pm <- highcharter::highchart(width = 350, height = 350 )
+                        for (i in 1:length(unique(mtypes))) {
+                                mytype <- unique(mtypes)[i]
+                                mds <- list_parse(mtoplot[which(mtoplot$label==mytype),])
+                                pm <- pm %>% highcharter::hc_add_series(data=mds,type="scatter",
+                                        name=mytype,color=cols[which(mtypes==mytype)[1]],tooltip = list(headerFormat="",
+                                        pointFormat=paste("{point.label}","{point.z}")),
+                                        showInLegend=TRUE)
+                        }
+
 		} else { #stype is null
-			gtoplot=data.frame(x=gpca$x[,1],y=gpca$x[,2],z=rownames(gpca$x),color=rep("blue",nrow(gpca$x)))
-                        mtoplot=data.frame(x=mpca$x[,1],y=mpca$x[,2],z=rownames(mpca$x),color=rep("blue",nrow(mpca$x)))
+			gtoplot=data.frame(x=gpca$x[,1],y=gpca$x[,2],z=rownames(gpca$x),label="",color=rep("blue",nrow(gpca$x)))
+                        mtoplot=data.frame(x=mpca$x[,1],y=mpca$x[,2],z=rownames(mpca$x),label="",color=rep("blue",nrow(mpca$x)))
+			gds <- list_parse(gtoplot)
+			pg <- highcharter::highchart(width = 350, height = 350 )
+			pg <- pg %>% highcharter::hc_add_series(data=gds,type="scatter",
+				tooltip = list(headerFormat="",
+                                pointFormat=paste("{point.label}","{point.z}")),
+                                showInLegend=FALSE)
+			mds <- list_parse(mtoplot)
+			pm <- highcharter::highchart(width = 350, height = 350)
+			pm <- pm %>% highcharter::hc_add_series(data=mds,type="scatter",
+				tooltip = list(headerFormat="",
+				pointFormat=paste("{point.label}","{point.z}")),
+				showInLegend=FALSE)
 		}
 	} # end common == F
 
-        mds <- list_parse(mtoplot)
-	gds <- list_parse(gtoplot)
 	mpercvar=round((mpca$sdev)^2 / sum(mpca$sdev^2)*100,2)
 	gpercvar=round((gpca$sdev)^2 / sum(gpca$sdev^2)*100,2)
 
-	pg <- highcharter::highchart(width = 350, height = 350 ) %>%
-		highcharter::hc_title(text="PCA of genes") %>%
+		pg <- pg %>% highcharter::hc_title(text="PCA of genes") %>%
 		highcharter::hc_xAxis(title=list(text=paste0("PC1:",round(gpercvar[1],1),"%"))) %>%
 		highcharter::hc_yAxis(title=list(text=paste0("PC2:",round(gpercvar[2],2),"%"))) %>%
-		hc_chart(zoomType = "xy") %>% 
-		highcharter::hc_add_series(data=gds,type="scatter",col=cols[1],
-			tooltip = list(headerFormat="", 
-			  pointFormat=paste("{point.label}","{point.z}")),
-			showInLegend=FALSE)
+		hc_chart(zoomType = "xy") 
 #		dataLabels= list(enabled = TRUE, format = "{point.label}"),
 
-        pm <- highcharter::highchart(width = 350, height = 350 ) %>%
-                highcharter::hc_title(text="PCA of metabolites") %>%
+                pm <- pm %>% highcharter::hc_title(text="PCA of metabolites") %>%
                 highcharter::hc_xAxis(title=list(text=paste0("PC1:",round(mpercvar[1],1),"%"))) %>%
                 highcharter::hc_yAxis(title=list(text=paste0("PC2:",round(mpercvar[2],2),"%"))) %>%
-                hc_chart(zoomType = "xy") %>%
-                highcharter::hc_add_series(data=mds,type="scatter",col=cols[1],
-                        tooltip = list(headerFormat="",
-                          pointFormat=paste("{point.label}","{point.z}")),
-                        showInLegend=FALSE)
+                hc_chart(zoomType = "xy") 
 
 
          if (viewer == TRUE) {
