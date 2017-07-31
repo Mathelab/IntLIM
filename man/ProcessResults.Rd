@@ -8,7 +8,7 @@ correlation within group1 (e.g. cancer) and the correlation within group2 (e.g.
 non-cancer).  Users can then remove pairs with a difference in correlations between
 groups 1 and 2 less than a user-defined threshold.}
 \usage{
-ProcessResults(inputResults, inputData, pvalcutoff = 0.1, diffcorr = 0.5,
+ProcessResults(inputResults, inputData, pvalcutoff = 0.05, diffcorr = 0.5,
   corrtype = "spearman")
 }
 \arguments{

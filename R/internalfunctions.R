@@ -112,6 +112,7 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
 #'
 ##' @include AllClasses.R
 #'
+#' @import MultiDataSet
 #' @param inputData MultiDataSet object (output of ReadData())
 #' @param stype category to color-code by (can be more than two categories)
 getCommon <- function(inputData,stype=NULL) {
