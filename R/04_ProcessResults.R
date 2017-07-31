@@ -36,6 +36,7 @@ ProcessResults <- function(inputResults,
                 mydat <- reshape2::melt(t(inputResults@interaction.adj.pvalues))}
 
 	keepers <- which(mydat$value <= pvalcutoff)
+	print(length(keepers))
 
 	incommon <- getCommon(inputData,inputResults@stype)
 	p <- incommon$p
@@ -45,23 +46,49 @@ ProcessResults <- function(inputResults,
  		stop(paste("IntLim currently requires only two categories.  Make sure the column",inputResults@stype,"only has two unique values"))
     }
 
+	print("Processing gp1")
+	if(pvalcutoff == 1)
 	gp1 <- which(p == unique(p)[1])
-	cor1 <- as.numeric(apply(mydat[keepers,],1,function(x) {
-		stats::cor(as.numeric(gene[as.character(unlist(x[1])),gp1]),
-			as.numeric(metab[as.character(unlist(x[2])),gp1]),method=corrtype)}))
+	cor1.m <- cor(t(gene),t(metab),method=corrtype)
+	if(pvalcutoff == 1) {temp <- reshape::melt(cor1.m); fincor1 <- temp$value
+		} else {
+		fincor1 <- as.numeric(lapply(keepers,function(x) 
+			cor1.m[as.character(mydat$Var1[x]),as.character(mydat$Var2[x])]))
+		}
 
-	gp2 <- which(p == unique(p)[2])
-        cor2 <- as.numeric(apply(mydat[keepers,],1,function(x) {
-	         stats::cor(as.numeric(gene[as.character(unlist(x[1])),gp2]),
-                        as.numeric(metab[as.character(unlist(x[2])),gp2]),method=corrtype)}))
+#	cor1 <- reshape::melt(cor1.m)
+#	myind <- as.numeric(lapply(keepers,function(x) 
+#		intersect(which(as.character(cor1$X1)==as.character(mydat$Var1[x])),
+#			which(as.character(cor1$X2)==as.character(mydat$Var2[x])))))
+#	fincor1 <- cor1[myind,]
 
-        mydiffcor = abs(cor1-cor2)
+	print("Processing gp2")
+	gp2 <- which(p == unique(p)[1])
+        cor2.m <- cor(t(gene),t(metab),method=corrtype)
+        if(pvalcutoff == 1) {temp <- reshape::melt(cor2.m); fincor2 <- temp$value
+                } else {
+			fincor2 <- as.numeric(lapply(keepers,function(x)
+                	cor2.m[as.character(mydat$Var1[x]),as.character(mydat$Var2[x])]))
+	}
+
+	#gp1 <- which(p == unique(p)[1])
+	#cor1 <- as.numeric(apply(mydat[keepers,],1,function(x) {
+	#	stats::cor(as.numeric(gene[as.character(unlist(x[1])),gp1]),
+	#		as.numeric(metab[as.character(unlist(x[2])),gp1]),method=corrtype)}))
+
+	#gp2 <- which(p == unique(p)[2])
+        #cor2 <- as.numeric(apply(mydat[keepers,],1,function(x) {
+	#         stats::cor(as.numeric(gene[as.character(unlist(x[1])),gp2]),
+        #                as.numeric(metab[as.character(unlist(x[2])),gp2]),method=corrtype)}))
+
+
+        mydiffcor = abs(fincor1-fincor2)
 
 	keepers2 <- which(mydiffcor > diffcorr)
 
 	inputResults@corr <- data.frame(metab=as.character(mydat[keepers[keepers2],2]), 
 		gene=as.character(mydat[keepers[keepers2],1]))
-	inputResults@corr <- cbind(inputResults@corr,cor1[keepers2],cor2[keepers2])
+	inputResults@corr <- cbind(inputResults@corr,fincor1[keepers2],fincor2[keepers2])
 	colnames(inputResults@corr)[3:4]=setdiff(as.character(unlist(unique(p))),"")
 
 return(inputResults)
