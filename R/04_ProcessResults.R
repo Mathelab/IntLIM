@@ -31,11 +31,13 @@ ProcessResults <- function(inputResults,
 				corrtype="spearman"){
 
 	if(inputResults@outcome == "metabolite") {
-		mydat <- reshape2::melt(inputResults@interaction.adj.pvalues)}
+		mydat <-inputResults@interaction.adj.pvalues}
+		#mydat <- reshape2::melt(inputResults@interaction.adj.pvalues)}
 	else if (inputResults@outcome == "gene") {
-                mydat <- reshape2::melt(t(inputResults@interaction.adj.pvalues))}
+		mydat <-t(inputResults@interaction.adj.pvalues)}
+                #mydat <- reshape2::melt(t(inputResults@interaction.adj.pvalues))}
 
-	keepers <- which(mydat$value <= pvalcutoff)
+#	keepers <- which(mydat$value <= pvalcutoff)
 	print(length(keepers))
 
 	incommon <- getCommon(inputData,inputResults@stype)
@@ -47,41 +49,21 @@ ProcessResults <- function(inputResults,
     }
 
 	print("Processing gp1")
-	if(pvalcutoff == 1)
 	gp1 <- which(p == unique(p)[1])
-	cor1.m <- cor(t(gene),t(metab),method=corrtype)
-	if(pvalcutoff == 1) {temp <- reshape::melt(cor1.m); fincor1 <- temp$value
+	cor1.m <- cor(t(gene[rownames(mydat),gp1]),t(metab[colnames(mydat),gp1]),method=corrtype)
+        print("Processing gp2")
+        gp2 <- which(p == unique(p)[2])
+        cor2.m <- cor(t(gene[rownames(mydat),gp2]),t(metab[colnames(mydat),gp2]),method=corrtype)
+
+	if(pvalcutoff == 1) { #(no filtering)
+		temp <- reshape::melt(cor1.m); fincor1 <- temp$value
 		} else {
-		fincor1 <- as.numeric(lapply(keepers,function(x) 
-			cor1.m[as.character(mydat$Var1[x]),as.character(mydat$Var2[x])]))
+		keepers <- which(mydat <= pvalcutoff, arr.ind=T)
+		fincor1 <- as.numeric(apply(keepers,1,function(x) 
+			cor1.m[x[1],x[2]]))
+                fincor2 <- as.numeric(apply(keepers,1,function(x)
+                        cor2.m[x[1],x[2]]))
 		}
-
-#	cor1 <- reshape::melt(cor1.m)
-#	myind <- as.numeric(lapply(keepers,function(x) 
-#		intersect(which(as.character(cor1$X1)==as.character(mydat$Var1[x])),
-#			which(as.character(cor1$X2)==as.character(mydat$Var2[x])))))
-#	fincor1 <- cor1[myind,]
-
-	print("Processing gp2")
-	gp2 <- which(p == unique(p)[1])
-        cor2.m <- cor(t(gene),t(metab),method=corrtype)
-        if(pvalcutoff == 1) {temp <- reshape::melt(cor2.m); fincor2 <- temp$value
-                } else {
-			fincor2 <- as.numeric(lapply(keepers,function(x)
-                	cor2.m[as.character(mydat$Var1[x]),as.character(mydat$Var2[x])]))
-	}
-
-	#gp1 <- which(p == unique(p)[1])
-	#cor1 <- as.numeric(apply(mydat[keepers,],1,function(x) {
-	#	stats::cor(as.numeric(gene[as.character(unlist(x[1])),gp1]),
-	#		as.numeric(metab[as.character(unlist(x[2])),gp1]),method=corrtype)}))
-
-	#gp2 <- which(p == unique(p)[2])
-        #cor2 <- as.numeric(apply(mydat[keepers,],1,function(x) {
-	#         stats::cor(as.numeric(gene[as.character(unlist(x[1])),gp2]),
-        #                as.numeric(metab[as.character(unlist(x[2])),gp2]),method=corrtype)}))
-
-
         mydiffcor = abs(fincor1-fincor2)
 
 	keepers2 <- which(mydiffcor > diffcorr)
