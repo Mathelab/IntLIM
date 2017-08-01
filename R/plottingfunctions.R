@@ -497,17 +497,16 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
     
     data<-data.frame(x=sGene,y=sMetab,z=colnames(gene),label=mytypes,color=mycols)
 
-#    data<-data[data$label!="",]
-    #data$type <- factor(data$type)
-
     max<- max(data$x)
     min<-min(data$x)
 
-    m1<-stats::glm(data$y[which(data$label==mytypes[1])]~data$x[which(data$label==mytypes[1])])
+    uniqtypes=as.character(unique(mytypes))
+
+    m1<-stats::glm(data$y[which(data$label==uniqtypes[1])]~data$x[which(data$label==uniqtypes[1])])
     line1<-data.frame(x=c(max,min),
 	y=c(as.numeric(m1$coefficients[2])*max+as.numeric(m1$coefficients[1]),
 		as.numeric(m1$coefficients[2])*min+as.numeric(m1$coefficients[1])))
-    m2<-stats::glm(data$y[which(data$label==mytypes[2])]~data$x[which(data$label==mytypes[2])])
+    m2<-stats::glm(data$y[which(data$label==uniqtypes[2])]~data$x[which(data$label==uniqtypes[2])])
     line2<-data.frame(x=c(max,min),
 	y=c(as.numeric(m2$coefficients[2])*max+as.numeric(m2$coefficients[1]),
 		as.numeric(m2$coefficients[2])*min+as.numeric(m2$coefficients[1])))
@@ -525,11 +524,12 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
                           pointFormat=paste("{point.label}","{point.z}")),
                         showInLegend=FALSE)
 
+
     hc <- hc %>%
-        highcharter::hc_add_series(name = mytypes[1],
+        highcharter::hc_add_series(name = uniqtypes[1],
 		data=line1,type='line',#name=sprintf("regression line %s",type1),
 		color = cols[1],enableMouseTracking=FALSE,marker=FALSE) %>%
-        highcharter::hc_add_series(name = mytypes[2],
+        highcharter::hc_add_series(name = uniqtypes[2],
 		data=line2,type='line',#name=sprintf("regression line %s",type2),
 		color = cols[2],enableMouseTracking=FALSE,marker=FALSE)
     
