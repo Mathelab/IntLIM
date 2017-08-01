@@ -367,15 +367,14 @@ DistPvalues<- function(IntLimResults) {
 CorrHeatmap <- function(inputResults,viewer=T,top_pairs=1200) {
 type <- cor <- c()
 
-	if(nrow(inputResults@corr)==0) {
+	if(nrow(inputResults@filt.results)==0) {
 		stop("Make sure you run ProcessResults before making the heatmap")
 	}
 
-		allres <- inputResults@corr
+		allres <- inputResults@filt.results
 		if(nrow(allres)>top_pairs) {
-			allp <- inputResults@interaction.adj.pvalues
-			myp <- as.numeric(apply(allres,1,function(x) allp[which(rownames(allp)==as.character(x["gene"])),which(colnames(allp)==as.character(x["metab"]))]))
-			allres <- allres[order(myp,decreasing=F)[1:top_pairs],]
+			allp <- inputResults@filt.results[,"FDRadjPval"]
+			allres <- allres[order(allp,decreasing=F)[1:top_pairs],]
 		}
 
                 toplot <- data.frame(name=paste(allres[,1],allres[,2],sep=" vs "),
@@ -462,7 +461,7 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
    
    if (class(inputData) != "MultiDataSet") {
         stop("input data is not a MultiDataSet class")
-    }
+}
 
     incommon <- getCommon(inputData,stype)
 
@@ -536,3 +535,35 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
     
     hc
 }
+
+
+#' 'volcano' plot (difference in correlations vs p-values) 
+#' of all gene-metabolite pairs 
+#'
+#' @param inputResults IntLimResults object with model results (output of RunIntLim())
+#' @param inputData MultiDataSet object (output of ReadData()) with gene expression,
+#' @return a smoothScatter plot
+#'
+#' @examples
+#' \dontrun{
+#' csvfile <- file.path(dir, "NCItestinput.csv")
+#' mydata <- ReadData(csvfile,metabid='id',geneid='id')
+#' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
+#' pvalCorrVolcano(myres,mydata)
+#' }
+#' @export
+
+
+pvalCorrVolcano <- function(inputResults, inputData){
+   if (class(inputData) != "MultiDataSet") {
+        stop("input data is not a MultiDataSet class")
+	}
+    volc.results <- IntLim::ProcessResults(myres,  inputData, diffcorr = 0, pvalcutoff = 1)
+    volc.table <- volc.results@filt.results
+    Corrdiff <- volc.table[,4] - volc.table[,3]
+    pval <- volc.table$FDRadjPval
+    graphics::smoothScatter(x = Corrdiff, pval, xlab = 'Correlation difference', 
+		ylab = 'Adjusted p-value', 
+                main = 'Volcano plot of correlation differences vs. FDR-adjusted p-values')
+}
+

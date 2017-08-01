@@ -33,6 +33,7 @@ methods::setClass(
 	representation(interaction.pvalues="matrix", 
 		interaction.adj.pvalues="matrix",
 		corr="data.frame",
+		filt.results="data.frame",
 		warnings="character",
 		stype="character",
 		outcome="character"))

@@ -37,9 +37,6 @@ ProcessResults <- function(inputResults,
 		mydat <-t(inputResults@interaction.adj.pvalues)}
                 #mydat <- reshape2::melt(t(inputResults@interaction.adj.pvalues))}
 
-#	keepers <- which(mydat[,"value"] <= pvalcutoff)
-#	print(length(keepers))
-
 	incommon <- getCommon(inputData,inputResults@stype)
 	p <- incommon$p
 	gene <- incommon$gene
@@ -48,16 +45,19 @@ ProcessResults <- function(inputResults,
  		stop(paste("IntLim currently requires only two categories.  Make sure the column",inputResults@stype,"only has two unique values"))
     }
 
-#	print("Processing gp1")
 	gp1 <- which(p == unique(p)[1])
-	cor1.m <- cor(t(gene[rownames(mydat),gp1]),t(metab[colnames(mydat),gp1]),method=corrtype)
-#        print("Processing gp2")
+	cor1.m <- stats::cor(t(gene[rownames(mydat),gp1]),t(metab[colnames(mydat),gp1]),method=corrtype)
         gp2 <- which(p == unique(p)[2])
-        cor2.m <- cor(t(gene[rownames(mydat),gp2]),t(metab[colnames(mydat),gp2]),method=corrtype)
+        cor2.m <- stats::cor(t(gene[rownames(mydat),gp2]),t(metab[colnames(mydat),gp2]),method=corrtype)
 
 	if(pvalcutoff == 1) { #(no filtering)
-		temp <- reshape::melt(cor1.m); fincor1 <- temp$value
-		} else {
+		temp <- reshape::melt(cor1.m)
+		fincor1 <- as.numeric(temp[,"value"])
+		temp <- reshape::melt(cor2.m)
+		fincor2 <- as.numeric(temp[,"value"])
+		genenames <- as.character(temp[,1])
+		metabnames <- as.character(temp[,2])
+	} else {
 		keepers <- which(mydat <= pvalcutoff, arr.ind=T)
 		fincor1 <- as.numeric(apply(keepers,1,function(x) 
 			cor1.m[x[1],x[2]]))
@@ -65,15 +65,33 @@ ProcessResults <- function(inputResults,
                         cor2.m[x[1],x[2]]))
 		genenames <- as.character(rownames(cor1.m)[keepers[,1]])
 		metabnames <- as.character(colnames(cor1.m)[keepers[,2]])
-		}
+	}
+
         mydiffcor = abs(fincor1-fincor2)
 
-	keepers2 <- which(mydiffcor > diffcorr)
+	keepers2 <- which(mydiffcor >= diffcorr)
 
-	inputResults@corr <- data.frame(metab=metabnames[keepers2], 
+	inputResults@filt.results <- data.frame(metab=metabnames[keepers2], 
 		gene=genenames[keepers2])
-	inputResults@corr <- cbind(inputResults@corr,fincor1[keepers2],fincor2[keepers2])
-	colnames(inputResults@corr)[3:4]=setdiff(as.character(unlist(unique(p))),"")
+	inputResults@filt.results <- cbind(inputResults@filt.results,fincor1[keepers2],fincor2[keepers2])
+	colnames(inputResults@filt.results)[3:4]=paste0(setdiff(as.character(unlist(unique(p))),""),"_cor")
+
+	if(inputResults@outcome == "metabolite") {
+                adjp <- reshape2::melt(inputResults@interaction.adj.pvalues)
+		p <-  reshape2::melt(inputResults@interaction.pvalues)
+	} else if (inputResults@outcome == "gene") {
+                adjp <- reshape2::melt(t(inputResults@interaction.adj.pvalues))
+		p <- reshape2::melt(t(inputResults@interaction.pvalues))
+	}
+
+	cornames <- paste(as.character(inputResults@filt.results[,"metab"]),as.character(inputResults@filt.results[,"gene"]))
+	rownames(p) <- paste(as.character(p[,2]),as.character(p[,1]))
+	rownames(adjp) <- paste(as.character(adjp[,2]),as.character(adjp[,1]))
+	outp <- p[cornames,]
+	outpadj <- adjp[cornames,]
+
+	inputResults@filt.results = cbind(inputResults@filt.results,outp$value, outpadj$value)
+	colnames(inputResults@filt.results)[5:6]=c("Pval","FDRadjPval")
 
 return(inputResults)
 }
