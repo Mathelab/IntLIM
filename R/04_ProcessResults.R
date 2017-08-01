@@ -37,8 +37,8 @@ ProcessResults <- function(inputResults,
 		mydat <-t(inputResults@interaction.adj.pvalues)}
                 #mydat <- reshape2::melt(t(inputResults@interaction.adj.pvalues))}
 
-#	keepers <- which(mydat$value <= pvalcutoff)
-	print(length(keepers))
+#	keepers <- which(mydat[,"value"] <= pvalcutoff)
+#	print(length(keepers))
 
 	incommon <- getCommon(inputData,inputResults@stype)
 	p <- incommon$p
@@ -48,10 +48,10 @@ ProcessResults <- function(inputResults,
  		stop(paste("IntLim currently requires only two categories.  Make sure the column",inputResults@stype,"only has two unique values"))
     }
 
-	print("Processing gp1")
+#	print("Processing gp1")
 	gp1 <- which(p == unique(p)[1])
 	cor1.m <- cor(t(gene[rownames(mydat),gp1]),t(metab[colnames(mydat),gp1]),method=corrtype)
-        print("Processing gp2")
+#        print("Processing gp2")
         gp2 <- which(p == unique(p)[2])
         cor2.m <- cor(t(gene[rownames(mydat),gp2]),t(metab[colnames(mydat),gp2]),method=corrtype)
 
@@ -63,13 +63,15 @@ ProcessResults <- function(inputResults,
 			cor1.m[x[1],x[2]]))
                 fincor2 <- as.numeric(apply(keepers,1,function(x)
                         cor2.m[x[1],x[2]]))
+		genenames <- as.character(rownames(cor1.m)[keepers[,1]])
+		metabnames <- as.character(colnames(cor1.m)[keepers[,2]])
 		}
         mydiffcor = abs(fincor1-fincor2)
 
 	keepers2 <- which(mydiffcor > diffcorr)
 
-	inputResults@corr <- data.frame(metab=as.character(mydat[keepers[keepers2],2]), 
-		gene=as.character(mydat[keepers[keepers2],1]))
+	inputResults@corr <- data.frame(metab=metabnames[keepers2], 
+		gene=genenames[keepers2])
 	inputResults@corr <- cbind(inputResults@corr,fincor1[keepers2],fincor2[keepers2])
 	colnames(inputResults@corr)[3:4]=setdiff(as.character(unlist(unique(p))),"")
 

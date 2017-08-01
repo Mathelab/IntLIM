@@ -8,11 +8,11 @@
 
 ## ------------------------------------------------------------------------
 inputData <- IntLim::ReadData(csvfile,metabid='id',geneid='id')
-IntLim::OutputStats(inputData)
+IntLim::ShowStats(inputData)
 
 ## ------------------------------------------------------------------------
-inputDatafilt <- IntLim::FilterData(inputData,geneperc=15)
-IntLim::OutputStats(inputDatafilt)
+inputDatafilt <- IntLim::FilterData(inputData,geneperc = 0.15)
+IntLim::ShowStats(inputDatafilt)
 
 ## ------------------------------------------------------------------------
 IntLim::PlotDistributions(inputData)
@@ -25,8 +25,8 @@ myres <- IntLim::RunIntLim(inputData,stype="PBO_vs_Leukemia")
 IntLim::DistPvalues(myres)
 
 ## ------------------------------------------------------------------------
-myres <- IntLim::ProcessResults(myres,inputData)
-IntLim::CorrHeatmap(myres)
+myres2 <- IntLim::ProcessResults(myres,inputData)
+IntLim::CorrHeatmap(myres2)
 
 ## ------------------------------------------------------------------------
 IntLim::PlotGMPair(inputData,stype="PBO_vs_Leukemia","DLG4","(p-Hydroxyphenyl)lactic acid")
