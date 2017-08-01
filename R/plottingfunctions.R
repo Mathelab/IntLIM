@@ -160,7 +160,7 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
                        if(length(palette)==1) {cols <- RColorBrewer::brewer.pal(3, palette)[1]
                        } else {stop("palette should be an RColorBrewer palette or a vector of colors")}
                 } else if (numcateg == 2) {
-                      if(length(palette)==1) {cols <- RColorBrewer::brewer.pal(numcateg, palette)[1:2]
+                      if(length(palette)==1) {cols <- RColorBrewer::brewer.pal(3, palette)[1:2]
                       } else {stop("palette should be an RColorBrewer palette or a vector of colors")}
                 } else if (numcateg > 2) {
                       if(length(palette)==1) {cols <- RColorBrewer::brewer.pal(numcateg, palette)
@@ -174,9 +174,9 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
 		if(is.null(stype)) {
 			incommon <- getCommon(inputData)
 			mygene <- incommon$gene
-			gpca <- stats::prcomp(t(mygene),center=F,scale=T)
+			gpca <- stats::prcomp(t(mygene),center=T,scale=F)
 			mymetab <- incommon$metab
-			mpca <- stats::prcomp(t(mymetab),center=F,scale=T)
+			mpca <- stats::prcomp(t(mymetab),center=T,scale=F)
 			gtoplot=data.frame(x=gpca$x[,1],y=gpca$x[,2],z=rownames(gpca$x),color=rep("blue",nrow(gpca$x)))
 			mtoplot=data.frame(x=mpca$x[,1],y=mpca$x[,2],z=rownames(mpca$x),color=rep("blue",nrow(mpca$x)))
                         gds <- list_parse(gtoplot)
@@ -196,13 +196,13 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
 			mygene <- incommon$gene
 			mymetab <- incommon$metab
 			alltype <- incommon$p
-			uniqtypes <- unique(mytype)
-			mycols <- as.character(mytype)	
+			uniqtypes <- unique(alltype)
+			mycols <- as.character(alltype)	
 			for (i in 1:numcateg) {
-				mycols[which(mytype==uniqtypes[i])] <- cols[i]
+				mycols[which(alltype==uniqtypes[i])] <- cols[i]
 			}
-			gpca <- stats::prcomp(t(mygene),center=F,scale=T)
-			mpca <- stats::prcomp(t(mymetab),center=F,scale=T)
+			gpca <- stats::prcomp(t(mygene),center=T,scale=F)
+			mpca <- stats::prcomp(t(mymetab),center=T,scale=F)
 			gtoplot=data.frame(x=gpca$x[,1],y=gpca$x[,2],z=rownames(gpca$x),label=alltype,color=mycols)
 			mtoplot=data.frame(x=mpca$x[,1],y=mpca$x[,2],z=rownames(mpca$x),label=alltype,color=mycols)
 			mds <- list_parse(mtoplot)
@@ -226,8 +226,8 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
 	} else { # common == F
 		mygene <- as.data.frame(Biobase::assayDataElement(inputData[["expression"]],'exprs'))
 		mymetab <- Biobase::assayDataElement(inputData[["metabolite"]],'metabData')
-        	gpca <- stats::prcomp(t(mygene),center=F,scale=T)
-		mpca <- stats::prcomp(t(mymetab),center=F,scale=T)
+        	gpca <- stats::prcomp(t(mygene),center=T,scale=F)
+		mpca <- stats::prcomp(t(mymetab),center=T,scale=F)
 #		percvar=round((gpca$sdev)^2 / sum(gpca$sdev^2)*100,2)
 		if(!is.null(stype)) {
 			gtypes <- as.character(Biobase::pData(inputData[["expression"]])[,stype])
@@ -553,7 +553,7 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
 #' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
-#' pvalCorrVolcano(myres,mydata)
+#' pvalCorrVolcano(inputResults=myres,inputData=mydata)
 #' }
 #' @export
 
