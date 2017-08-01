@@ -337,9 +337,9 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
 #' DistPvalues(myres)
 #' }
 #' @export
-DistPvalues<- function(IntLimResults) {
+DistPvalues<- function(IntLimResults,breaks=100) {
     
-    hist(IntLimResults@interaction.pvalues)
+    hist(IntLimResults@interaction.pvalues,breaks=breaks)
 }
 
 

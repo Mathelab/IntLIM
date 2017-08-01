@@ -169,7 +169,7 @@ body <- shinydashboard::dashboardBody(
                     
                     shinydashboard::box(
                         title = strong("Run IntLIM") ,
-                        width = 8,
+                        width = 6,
                         solidHeader = TRUE,
                         h5("This step performs the linear models for all combinations of gene:metabolite pairs and then plots distribution of p-values."),
 			h5("The linear model performed is 'm ~ g + p + g:p' where "),
@@ -183,12 +183,17 @@ body <- shinydashboard::dashboardBody(
 #                                     selected = "metabolite"),
                         hr(),
                         uiOutput('choosestype'),
+                        numericInput("nrpoints", "number of points to be plotted in lowest density areas:", 10000, min = 0, max = 30000),
+                        numericInput("pvalcutoff1","cutoff of FDR-adjusted p-value for filtering(0 - 1) :", 0.05, min = 0, max = 1),
+                        numericInput("diffcorr1", "cutoff of differences in correlations for filtering (0-1):", 0.5, min = 0, max = 1),
                         actionButton("run3", "Run")
                         
                     ),
                     shinydashboard::box(
-                        width = 4,
-                        infoBoxOutput("statusbox3", width = NULL)
+                        width = 6,
+                        infoBoxOutput("statusbox3", width = NULL),
+                        plotOutput("Pdist")
+                        
                     )
                 ),
                 fluidRow(
@@ -212,7 +217,9 @@ body <- shinydashboard::dashboardBody(
                     conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                      tags$div("Loading...(It might take several minutes depending on the size of the dataset,please be patient!)",id="loadmessage")),
                     textOutput("Ptext"),
-                    plotOutput("Pdist")
+                    plotOutput("volcanoPlot")
+                    
+                    
                 )
                 )
         ),
@@ -260,8 +267,8 @@ body <- shinydashboard::dashboardBody(
                     ),
                     shinydashboard::box(
                         width = 4,
-                        numericInput("pvalcutoff","cutoff of FDR-adjusted p-value for filtering(0 - 1) :", 0.05, min = 0, max = 1),
-                        numericInput("diffcorr", "cutoff of differences in correlations for filtering (0-1):", 0.5, min = 0, max = 1),
+                        numericInput("pvalcutoff","cutoff of FDR-adjusted p-value for filtering(0 - 1) :",NA, min = 0, max = 1),
+                        numericInput("diffcorr", "cutoff of differences in correlations for filtering (0-1):",NA, min = 0, max = 1),
                         textInput("corrtype","spearman or pearson or other parameters allowed by cor() function","spearman"),
                         downloadButton('downloadData', 'Download')
                     )

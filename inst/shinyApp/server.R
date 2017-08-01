@@ -4,8 +4,8 @@ options(shiny.trace=F)
 shinyServer(function(input, output, session) {      
     #file input==================================================================================================
 
-  #rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
-   rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLim/inst/extdata", getVolumes()(), WD = '.')   
+  rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
+   #rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLim/inst/extdata", getVolumes()(), WD = '.')   
 
     shinyFileChoose(input,'file1',
                     roots = rootVolumes,
@@ -155,7 +155,7 @@ shinyServer(function(input, output, session) {
         }
     )
     
-    #adjusted p values==================================================================================================
+    #run Lntlim==================================================================================================
     output$choosestype <- renderUI({
         
         choice<-reactive({
@@ -172,6 +172,12 @@ shinyServer(function(input, output, session) {
         IntLim::RunIntLim(FmultiData(),stype=input$stype,outcome='metabolite')
         
     })
+    diffcorr<-reactive(input$diffcorr1)
+    pvalcutoff<-reactive(input$pvalcutoff1)
+    
+    output$volcanoPlot<-renderPlot(
+        {IntLim::pvalCorrVolcano(myres(),FmultiData(),input$nrpoints,diffcorr(),pvalcutoff())}
+    )
     output$Pdist<-renderPlot({
         
         IntLim::DistPvalues(myres())
@@ -189,12 +195,23 @@ shinyServer(function(input, output, session) {
     
     
     #heatmap==================================================================================================
-    
-    myres2 <- eventReactive(input$run4,{
-        IntLim::ProcessResults(myres(),FmultiData(),pvalcutoff=input$pvalcutoff,
-                               diffcorr=input$diffcorr,
-                               corrtype=input$corrtype)
+    observe({
+        if(!is.null(input$diffcorr)&&!is.null(input$pvalcutoff)){
+        diffcorr<-reactive(input$diffcorr)
+        pvalcutoff<-reactive(input$pvalcutoff)
+        }
     })
+    myres2 <- eventReactive(input$run4,{
+            
+                IntLim::ProcessResults(myres(),FmultiData(),pvalcutoff=pvalcutoff(),
+                               diffcorr=diffcorr(),
+                               corrtype=input$corrtype)
+           
+        
+        
+        
+    })
+        
     output$heatmap<-plotly::renderPlotly({
         IntLim::CorrHeatmap(myres2())
     }
