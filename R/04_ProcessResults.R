@@ -51,9 +51,9 @@ ProcessResults <- function(inputResults,
         cor2.m <- stats::cor(t(gene[rownames(mydat),gp2]),t(metab[colnames(mydat),gp2]),method=corrtype)
 
 	if(pvalcutoff == 1) { #(no filtering)
-		temp <- reshape::melt(cor1.m)
+		temp <- reshape2::melt(cor1.m)
 		fincor1 <- as.numeric(temp[,"value"])
-		temp <- reshape::melt(cor2.m)
+		temp <- reshape2::melt(cor2.m)
 		fincor2 <- as.numeric(temp[,"value"])
 		genenames <- as.character(temp[,1])
 		metabnames <- as.character(temp[,2])

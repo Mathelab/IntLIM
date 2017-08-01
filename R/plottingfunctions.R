@@ -558,7 +558,7 @@ pvalCorrVolcano <- function(inputResults, inputData){
    if (class(inputData) != "MultiDataSet") {
         stop("input data is not a MultiDataSet class")
 	}
-    volc.results <- IntLim::ProcessResults(myres,  inputData, diffcorr = 0, pvalcutoff = 1)
+    volc.results <- IntLim::ProcessResults(inputResults,  inputData, diffcorr = 0, pvalcutoff = 1)
     volc.table <- volc.results@filt.results
     Corrdiff <- volc.table[,4] - volc.table[,3]
     pval <- volc.table$FDRadjPval
