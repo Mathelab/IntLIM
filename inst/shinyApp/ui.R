@@ -127,9 +127,9 @@ body <- shinydashboard::dashboardBody(
                         solidHeader = TRUE,
                         h5("This step allows you to filter the metabolomics or gene expression data by a user-defined percentile cutoff."),
                         hr(),
-                        numericInput("geneperc", "percentile cutoff for filtering genes (0-1):", 0, min = 0, max = 1),
-                        numericInput("metabperc", "percentile cutoff for filtering metabolites (0-1):", 0, min = 0, max = 1),
-                        numericInput("metabmiss", "missing value percent cutoff for filtering metabolites (0-1)", 0,min=0,max=1),
+                        numericInput("geneperc", "percentile cutoff (0-1) for filtering genes (e.g. remove genes with mean values < cutoff):", 0, min = 0, max = 1),
+                        numericInput("metabperc", "percentile cutoff (0-1) for filtering metabolites (e.g. remove metabolites with mean values < cutoff):", 0, min = 0, max = 1),
+                        numericInput("metabmiss", "missing value percent cutoff (0-1) for filtering metabolites (e.g. metabolites with > % cutoff missing values will be removed)", 0,min=0,max=1),
                         actionButton("run2", "Run")
                     ),
                     shinydashboard::box(
@@ -173,10 +173,12 @@ body <- shinydashboard::dashboardBody(
                         solidHeader = TRUE,
                         h5("This step performs the linear models for all combinations of gene:metabolite pairs and then plots distribution of p-values."),
 			h5("The linear model performed is 'm ~ g + p + g:p' where "),
-			h5("'m' is the metabolite abundance"),
-			h5("‘g’ is the gene expression level"), 
-			h5("‘p’ is the phenotype (e.g. tumor vs non-tumor)"),
-			h5("‘g:p’ is the interaction between phenotype and gene expression"),
+			tags$ul(
+				tags$li("'m' is the metabolite abundance"),
+				tags$li("‘g’ is the gene expression level"), 
+				tags$li("‘p’ is the phenotype (e.g. tumor vs non-tumor)"),
+				tags$li("‘g:p’ is the interaction between phenotype and gene expression")
+			),
 			h5("A statistically significant p-value of the the interaction term ‘g:p’ indicates that the gene-metabolite relationship is phenotype-specific. Please see manuscript for more details."),
 #                        radioButtons("dataset", label = h5("Select column that has the categories that you wish to compare (e.g. tumor vs. non-tumor):"),
 #                                     choices = list("metabolite" = "metabolite", "gene" = "gene"), 

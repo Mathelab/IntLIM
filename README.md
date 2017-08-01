@@ -1,9 +1,9 @@
 # IntLIM:  Integration through LInear Modeling
-[![Build Status](https://travis-ci.com/mingrui-liu/IntLim.svg?token=Bq2KXMARaDh31C6yNoTF&branch=master)](https://travis-ci.com/mingrui-liu/IntLim)
+[![Build Status](https://travis-ci.com/mingrui-liu/IntLIM.svg?token=Bq2KXMARaDh31C6yNoTF&branch=master)](https://travis-ci.com/mingrui-liu/IntLim)
 
 ## IntLIM
 
-The goal of the IntLim R package is to identify gene:metabolite relationships that are specific to a given phenotype (e.g. cancer vs non-cancer). For example, a given gene:metabolite pair could show a strong correlation in one phenotype (e.g. cancer) and no correlation in the other (e.g. non-cancer).  Users are expected to provide normalized gene expression and metabolite abundance data, as well as associated meta-information on the samples (at the minimum, users need to provide a phenotype column).  Currently, IntLim requires the phenotype of interest to have 2 categories.  Optionally, users can also input meta-information on metabolites and genes (e.g. names, pathways).  
+The goal of the IntLIM R package is to identify gene:metabolite relationships that are specific to a given phenotype (e.g. cancer vs non-cancer). For example, a given gene:metabolite pair could show a strong correlation in one phenotype (e.g. cancer) and no correlation in the other (e.g. non-cancer).  Users are expected to provide normalized gene expression and metabolite abundance data, as well as associated meta-information on the samples (at the minimum, users need to provide a phenotype column).  Currently, IntLIM requires the phenotype of interest to have 2 categories.  Optionally, users can also input meta-information on metabolites and genes (e.g. names, pathways).  
 
 An example data set is provided within the package, and is a subset of the NCI-60 gene expression and metabolomics data (https://wiki.nci.nih.gov/display/NCIDTPdata/Molecular+Target+Data).  
 
@@ -16,7 +16,7 @@ RStudio (an interface to R than can make R easier to use) can be download here (
 
 ## Contact
 
-If you have any questions, comments, or concerns on how to use IntLim please contact Ewy Mathe at ewy.mathe@osumc.edu or Jalal Siddiqui at jalal.siddiqui@osumc.edu.
+If you encounter any problems running on the software, or find installation problems or bugs, please start an issue on the Issues tab or email Ewy Mathe at Ewy.Mathe@osumc.edu or Jalal Siddiqui at jalal.siddiqui@osumc.edu.  We are also very open to any comments, including how we can ameliorate the package.
 
 ## Installation from Github
 
@@ -32,7 +32,7 @@ The package functions can be run direclty in the R console.
 Alternatively, to launch the web app, type th following in your R console:
 
 ```
-library(IntLim)
+library(IntLIM)
 runIntLIMApp()
 ```
 ## Vignette
