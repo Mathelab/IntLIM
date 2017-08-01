@@ -562,7 +562,7 @@ pvalCorrVolcano <- function(inputResults, inputData,nrpoints=10000,diffcorr=0.5,
    if (class(inputData) != "MultiDataSet") {
         stop("input data is not a MultiDataSet class")
 	}
-    if(class(myres) != "IntLimResults") {
+    if(class(inputResults) != "IntLimResults") {
 	stop("input data is not a IntLim class")
         }
     volc.results <- IntLim::ProcessResults(inputResults,  inputData, diffcorr = 0, pvalcutoff = 1)
