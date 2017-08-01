@@ -57,8 +57,8 @@ OutputData <- function (inputData=NULL,filename="~/output.zip"){
 
 OutputResults <- function (inputResults=NULL,filename="~/results.csv"){
 	if(is.null(inputResults)) {stop("Input results from ProcessResults()")}
-	myout <- CreateResultsTable(inputResults)	
-	utils::write.csv(myout,filename,quote=T,row.names=F)
+	if(is.null(inputResults@filt.results)) {stop("You must run ProcessResults() on results table first")}
+	utils::write.csv(inputResults@filt.results,filename,quote=T,row.names=F)
 }
 
 

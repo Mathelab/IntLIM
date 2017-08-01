@@ -112,39 +112,39 @@ return(inputResults)
 #' mytable <- CreateResultsTable(myres)
 #' }
 #' @export
-   CreateResultsTable <- function(inputResults) {
-        a<-inputResults@corr
-        a$cordiff<-round(abs(a[,3]-a[,4]),3)
-        a[,3]<-round(a[,3],2)
-        a[,4]<-round(a[,4],2)
-        p <- padj <- c()
-        if(inputResults@outcome=="metabolite") {
-                for (i in 1:nrow(a)) {
-                        g <- which(rownames(inputResults@interaction.pvalues) == a$gene[i])
-                        m <- which(colnames(inputResults@interaction.pvalues) == a$metab[i])
-                        if(length(g)==0 || length(m)==0) {p<-c(p,NA);padj<-c(padj,NA)} else {
-                                p <- c(p,inputResults@interaction.pvalues[g,m])
-				padj <- c(padj,inputResults@interaction.adj.pvalues[g,m]) 
+#   CreateResultsTable <- function(inputResults) {
+#        a<-inputResults@corr
+#        a$cordiff<-round(abs(a[,3]-a[,4]),3)
+#        a[,3]<-round(a[,3],2)
+#        a[,4]<-round(a[,4],2)
+#        p <- padj <- c()
+#        if(inputResults@outcome=="metabolite") {
+#                for (i in 1:nrow(a)) {
+#                        g <- which(rownames(inputResults@interaction.pvalues) == a$gene[i])
+#                        m <- which(colnames(inputResults@interaction.pvalues) == a$metab[i])
+#                        if(length(g)==0 || length(m)==0) {p<-c(p,NA);padj<-c(padj,NA)} else {
+#                                p <- c(p,inputResults@interaction.pvalues[g,m])
+#				padj <- c(padj,inputResults@interaction.adj.pvalues[g,m]) 
 #                              padj <- c(padj,inputResults@interaction.adj.pvalues[a$gene[i],a$metab[i]])
-                        }
-                }
-        } else if (inputResults@outcome=="gene") {
-               for (i in 1:nrow(a)) {
-                        g <- which(rownames(inputResults@interaction.pvalues) == a$gene[i])
-                        m <- which(colnames(inputResults@interaction.pvalues) == a$metab[i])
-                        if(length(g)==0 || length(m)==0) {p<-c(p,NA)} else {
+#                        }
+#                }
+#        } else if (inputResults@outcome=="gene") {
+#               for (i in 1:nrow(a)) {
+#                        g <- which(rownames(inputResults@interaction.pvalues) == a$gene[i])
+#                        m <- which(colnames(inputResults@interaction.pvalues) == a$metab[i])
+#                        if(length(g)==0 || length(m)==0) {p<-c(p,NA)} else {
  #                               p <- c(p,inputResults@interaction.pvalues[a$metab[i],a$gene[i]])
-				p <- c(p,inputResults@interaction.pvalues[g,m])
-                                padj <- c(padj,inputResults@interaction.adj.pvalues[m,g])
-                        }
-                }
-        }
-        else {stop("Outcome should be either 'metabolite' or 'gene'")}
-        a$pval <- p
-        a$adjpval <- padj
-        table<-a[order(a$adjpval,decreasing = TRUE),]
-	rownames(table) <- NULL
-        return(table)
-   }
-
-
+#				p <- c(p,inputResults@interaction.pvalues[g,m])
+#                                padj <- c(padj,inputResults@interaction.adj.pvalues[m,g])
+#                        }
+#                }
+#        }
+#        else {stop("Outcome should be either 'metabolite' or 'gene'")}
+#        a$pval <- p
+#        a$adjpval <- padj
+#        table<-a[order(a$adjpval,decreasing = TRUE),]
+#	rownames(table) <- NULL
+#        return(table)
+#   }
+#
+#

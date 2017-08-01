@@ -209,7 +209,8 @@ shinyServer(function(input, output, session) {
     #scatter plot=============================================================================================
     
     pairTable<-reactive({
-	IntLim::CreateResultsTable(req(myres2()))
+	mydat <- req(myres2())
+	mydat@filt.results
     })
     # reset <- reactiveValues(sel = "")
     # output$table<-DT::renderDataTable({
