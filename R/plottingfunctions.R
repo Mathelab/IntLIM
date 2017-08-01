@@ -542,10 +542,14 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
 #'
 #' @param inputResults IntLimResults object with model results (output of RunIntLim())
 #' @param inputData MultiDataSet object (output of ReadData()) with gene expression,
+#' @param nrpoints number of points to be plotted in lowest density areas (see 'smoothScatter' documentation for more detail)
+#' @param pvalcutoff cutoff of FDR-adjusted p-value for filtering (default 0.05)
+#' @param diffcorr cutoff of differences in correlations for filtering (default 0.5)
 #' @return a smoothScatter plot
 #'
 #' @examples
 #' \dontrun{
+#' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
@@ -554,16 +558,21 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
 #' @export
 
 
-pvalCorrVolcano <- function(inputResults, inputData){
+pvalCorrVolcano <- function(inputResults, inputData,nrpoints=10000,diffcorr=0.5,pvalcutoff=0.05){
    if (class(inputData) != "MultiDataSet") {
         stop("input data is not a MultiDataSet class")
 	}
+    if(class(myres) != "IntLimResults") {
+	stop("input data is not a IntLim class")
+        }
     volc.results <- IntLim::ProcessResults(inputResults,  inputData, diffcorr = 0, pvalcutoff = 1)
     volc.table <- volc.results@filt.results
     Corrdiff <- volc.table[,4] - volc.table[,3]
-    pval <- volc.table$FDRadjPval
-    graphics::smoothScatter(x = Corrdiff, pval, xlab = 'Correlation difference', 
-		ylab = 'Adjusted p-value', 
-                main = 'Volcano plot of correlation differences vs. FDR-adjusted p-values')
+    pval <- -log(volc.table$FDRadjPval)
+    graphics::smoothScatter(x = Corrdiff, pval, xlab = 'Different in Correlation between Phenotypes', 
+		ylab = '-log10(FDR-adjusted p-value)', nrpoints=nrpoints, 
+                main = 'Volcano Plot')
+    graphics::abline(h=-log(pvalcutoff),lty=2,col="blue")
+    graphics::abline(v=c(diffcorr,-diffcorr),lty=2,col="blue")
 }
 
