@@ -327,6 +327,7 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
 #' @include IntLimResults_extendedfunctions.R
 #'
 #' @param IntLimResults output of RunIntLim()
+#' @param breaks the number of breaks to use in histogram (see hist() documentation for more details)
 #'
 #' @examples
 #' \dontrun{
@@ -569,7 +570,7 @@ pvalCorrVolcano <- function(inputResults, inputData,nrpoints=10000,diffcorr=0.5,
     volc.table <- volc.results@filt.results
     Corrdiff <- volc.table[,4] - volc.table[,3]
     pval <- -log(volc.table$FDRadjPval)
-    graphics::smoothScatter(x = Corrdiff, pval, xlab = 'Different in Correlation between Phenotypes', 
+    graphics::smoothScatter(x = Corrdiff, pval, xlab = 'Difference in Correlation between Phenotypes', 
 		ylab = '-log10(FDR-adjusted p-value)', nrpoints=nrpoints, 
                 main = 'Volcano Plot')
     graphics::abline(h=-log(pvalcutoff),lty=2,col="blue")

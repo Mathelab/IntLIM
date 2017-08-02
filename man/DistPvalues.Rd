@@ -4,10 +4,12 @@
 \alias{DistPvalues}
 \title{Visualize the distribution of unadjusted p-values from linear models}
 \usage{
-DistPvalues(IntLimResults)
+DistPvalues(IntLimResults, breaks = 100)
 }
 \arguments{
 \item{IntLimResults}{output of RunIntLim()}
+
+\item{breaks}{the number of breaks to use in histogram (see hist() documentation for more details)}
 }
 \description{
 Visualize the distribution of unadjusted p-values from linear models
