@@ -170,6 +170,7 @@ body <- shinydashboard::dashboardBody(
                     shinydashboard::box(
                         title = strong("Run IntLIM") ,
                         width = 6,
+                        height =650,
                         solidHeader = TRUE,
                         h5("This step performs the linear models for all combinations of gene:metabolite pairs and then plots distribution of p-values."),
 			h5("The linear model performed is 'm ~ g + p + g:p' where "),
@@ -189,18 +190,27 @@ body <- shinydashboard::dashboardBody(
                         numericInput("pvalcutoff1","cutoff of FDR-adjusted p-value for filtering(0 - 1) :", 0.05, min = 0, max = 1),
                         numericInput("diffcorr1", "cutoff of differences in correlations for filtering (0-1):", 0.5, min = 0, max = 1),
                         actionButton("run3", "Run")
+
+                       
                         
                     ),
                     shinydashboard::box(
                         width = 6,
-                        infoBoxOutput("statusbox3", width = NULL),
-                        plotOutput("Pdist")
+                        height =650,
+                        
+                       
+                        
+                        numericInput("breaks","Breaks of histogram",100,min=10,max = 500),
+                        plotOutput("Pdist"),
+                        hr(),
+                        textOutput("Ptext")
                         
                     )
                 ),
                 fluidRow(
                     shinydashboard::box(
-                        width = NULL,
+                        width = 8,
+                        
                     tags$head(tags$style(type="text/css", "
                      loadmessage {
                                          position: fixed;
@@ -218,10 +228,16 @@ body <- shinydashboard::dashboardBody(
                                          ")),
                     conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                      tags$div("Loading...(It might take several minutes depending on the size of the dataset,please be patient!)",id="loadmessage")),
-                    textOutput("Ptext"),
+                    
                     plotOutput("volcanoPlot")
                     
                     
+                ),
+                shinydashboard::box(
+                    width = 4,
+                    infoBoxOutput("statusbox3", width = NULL)
+                    
+                
                 )
                 )
         ),
@@ -230,20 +246,30 @@ body <- shinydashboard::dashboardBody(
                     shinydashboard::box(
                         title = strong("Process the result") ,
                         width = 8,
+                        height = 200,
                         solidHeader = TRUE,
                         h5("Process the results and filter pairs of genes-metabolites based on 
                            adjusted p-values and differences in correlation coefficients between groups 1 and 2.
                            Then plot heatmap of significant gene-metabolite pairs
                            
-                           "),
-                        actionButton("run4", "Run")
+                           ")
+                        
                         ),
                     shinydashboard::box(
                         width = 4,
-                        infoBoxOutput("statusbox4", width = NULL)
+                        height = 200,
+                        infoBoxOutput("statusbox4", width = NULL),
+                        downloadButton('downloadData', 'Download')
                     )
                     ),#end of info floww
                 fluidRow(
+                    shinydashboard::box(
+                        width = 4,
+                        numericInput("pvalcutoff","cutoff of FDR-adjusted p-value for filtering(0 - 1) :",NA, min = 0, max = 1),
+                        numericInput("diffcorr", "cutoff of differences in correlations for filtering (0-1):",NA, min = 0, max = 1),
+                        textInput("corrtype","spearman or pearson or other parameters allowed by cor() function","spearman"),
+                        actionButton("run4", "Run")
+                    ),
                     
                     shinydashboard::box(
                         width = 8,
@@ -266,14 +292,8 @@ body <- shinydashboard::dashboardBody(
                     conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                      tags$div("Loading...",id="loadmessage")),
                     plotly::plotlyOutput("heatmap")
-                    ),
-                    shinydashboard::box(
-                        width = 4,
-                        numericInput("pvalcutoff","cutoff of FDR-adjusted p-value for filtering(0 - 1) :",NA, min = 0, max = 1),
-                        numericInput("diffcorr", "cutoff of differences in correlations for filtering (0-1):",NA, min = 0, max = 1),
-                        textInput("corrtype","spearman or pearson or other parameters allowed by cor() function","spearman"),
-                        downloadButton('downloadData', 'Download')
                     )
+                   
                 )
                 ),
         shinydashboard::tabItem(tabName = "scatterplot",
