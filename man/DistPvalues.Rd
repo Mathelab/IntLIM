@@ -4,7 +4,7 @@
 \alias{DistPvalues}
 \title{Visualize the distribution of unadjusted p-values from linear models}
 \usage{
-DistPvalues(IntLimResults)
+DistPvalues(IntLimResults, breaks = 100)
 }
 \arguments{
 \item{IntLimResults}{output of RunIntLim()}

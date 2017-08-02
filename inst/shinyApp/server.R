@@ -180,7 +180,7 @@ shinyServer(function(input, output, session) {
     )
     output$Pdist<-renderPlot({
         
-        IntLim::DistPvalues(myres())
+        IntLim::DistPvalues(myres(),breaks = input$breaks)
         
     })
     
