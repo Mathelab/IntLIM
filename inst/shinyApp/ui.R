@@ -265,8 +265,10 @@ body <- shinydashboard::dashboardBody(
                 fluidRow(
                     shinydashboard::box(
                         width = 4,
-                        numericInput("pvalcutoff","cutoff of FDR-adjusted p-value for filtering(0 - 1) :",NA, min = 0, max = 1),
-                        numericInput("diffcorr", "cutoff of differences in correlations for filtering (0-1):",NA, min = 0, max = 1),
+                        # numericInput("pvalcutoff","cutoff of FDR-adjusted p-value for filtering(0 - 1) :",NA, min = 0, max = 1),
+                        # numericInput("diffcorr", "cutoff of differences in correlations for filtering (0-1):",NA, min = 0, max = 1),
+                        uiOutput("numericChoice1"),
+                        uiOutput("numericChoice2"),
                         textInput("corrtype","spearman or pearson or other parameters allowed by cor() function","spearman"),
                         actionButton("run4", "Run")
                     ),

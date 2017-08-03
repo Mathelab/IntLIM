@@ -4,8 +4,8 @@ options(shiny.trace=F)
 shinyServer(function(input, output, session) {      
     #file input==================================================================================================
 
-  #rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
-   rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLim/inst/extdata", getVolumes()(), WD = '.')   
+  rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
+   #rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLim/inst/extdata", getVolumes()(), WD = '.')   
 
     shinyFileChoose(input,'file1',
                     roots = rootVolumes,
@@ -195,12 +195,19 @@ shinyServer(function(input, output, session) {
     
     
     #heatmap==================================================================================================
-    observe({
-        if(!is.null(input$diffcorr)&&!is.null(input$pvalcutoff)){
-        diffcorr<-reactive(input$diffcorr)
-        pvalcutoff<-reactive(input$pvalcutoff)
-        }
-    })
+    # observe({
+    #     if(!is.null(input$diffcorr)&&!is.null(input$pvalcutoff)){
+    #     diffcorr<-reactive(input$diffcorr)
+    #     pvalcutoff<-reactive(input$pvalcutoff)
+    #     }
+    # })
+    output$numericChoice1<-renderUI(
+        numericInput("pvalcutoff","cutoff of FDR-adjusted p-value for filtering(0 - 1) :",pvalcutoff(), min = 0, max = 1)
+    )
+    output$numericChoice2<-renderUI(
+        numericInput("diffcorr", "cutoff of differences in correlations for filtering (0-1):",diffcorr(), min = 0, max = 1)
+    )
+    
     myres2 <- eventReactive(input$run4,{
             
                 IntLim::ProcessResults(myres(),FmultiData(),pvalcutoff=pvalcutoff(),
