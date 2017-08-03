@@ -1,5 +1,5 @@
 # IntLIM:  Integration through LInear Modeling
-[![Build Status](https://travis-ci.com/mingrui-liu/IntLIM.svg?token=Bq2KXMARaDh31C6yNoTF&branch=master)](https://travis-ci.com/mingrui-liu/IntLim)
+[![Build Status](https://travis-ci.org/Mathelab/IntLIM.svg?branch=master)](https://travis-ci.org/Mathelab/IntLIM)
 
 ## IntLIM
 
