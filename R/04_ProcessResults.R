@@ -13,6 +13,7 @@
 #' @param diffcorr cutoff of differences in correlations for filtering (default 0.5)
 #' @param corrtype spearman or pearson or other parameters allowed by cor() function (default
 #' spearman)
+#' @param treecuts user-selected number of trees to cluster results into
 #' @return IntResults object with model results (now includes correlations)
 #'
 #' @examples
@@ -28,7 +29,9 @@ ProcessResults <- function(inputResults,
 				inputData,
 				pvalcutoff=0.05,
 				diffcorr=0.5,
-				corrtype="spearman"){
+				corrtype="spearman",
+				treecuts = 0
+			){
 
 	if(inputResults@outcome == "metabolite") {
 		mydat <-inputResults@interaction.adj.pvalues}
@@ -93,6 +96,16 @@ ProcessResults <- function(inputResults,
 	inputResults@filt.results = cbind(inputResults@filt.results,outp$value, outpadj$value)
 	colnames(inputResults@filt.results)[5:6]=c("Pval","FDRadjPval")
 
+
+	if (treecuts > 0){
+
+	hc.rows<- hclust(dist(inputResults@filt.results[,c(3,4)]))
+	tree.number <- cutree(hc.rows, k = treecuts)
+
+	inputResults@filt.results = cbind(inputResults@filt.results, tree.number)
+
+
+	}
 return(inputResults)
 }
 
