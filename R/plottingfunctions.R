@@ -353,6 +353,7 @@ DistPvalues<- function(IntLimResults,breaks=100) {
 #' @param top_pairs cutoff of the top pairs, sorted by adjusted p-values, to be plotted (plotting more than 1200 can take some time) (default: 1200)
 #' @param viewer whether the plot should be displayed in the RStudio viewer (T) or
 #' in Shiny/Knittr (F)
+#' @param treecuts number of clusters (of gene-metabolite pairs) to cut the tree into for color-coding
 #' @return a highcharter object
 #'
 #' @examples
@@ -365,7 +366,7 @@ DistPvalues<- function(IntLimResults,breaks=100) {
 #' CorrHeatmap(myres)
 #' }
 #' @export
-CorrHeatmap <- function(inputResults,viewer=T,top_pairs=1200) {
+CorrHeatmap <- function(inputResults,viewer=T,top_pairs=1200,treecuts=2) {
 type <- cor <- c()
 
 	if(nrow(inputResults@filt.results)==0) {
@@ -407,15 +408,16 @@ type <- cor <- c()
                   num <- nrow(meltedtoplot[meltedtoplot[,'type'] == type[1],])
                   heat_data <- matrix(data = 0, nrow =num,ncol = 2)
                   row.names(heat_data) <- meltedtoplot[1:num,1]
-                  colnames(heat_data) <- c(type[1],type[2])
+                  colnames(heat_data) <- gsub("_cor","",c(type[1],type[2]))
                   heat_data[,1] <- meltedtoplot[1:num,3]
 
                   heat_data[,2] <- meltedtoplot[-1:-num,3]
 
-                  hm <- heatmaply::heatmaply(heat_data,main = "Correlation heatmap",k_row = 5,k_col = 2,
-                                 margins = c(80,5),
-                                 dendrogram = "row",
-                                 y_axis_font_size ="1px")
+                  hm <- heatmaply::heatmaply(heat_data,main = "Correlation heatmap",
+			k_row = treecuts,#k_col = 2,
+                        margins = c(80,5),
+                        dendrogram = "row",
+                        y_axis_font_size ="1px")
 
                   hm
 }

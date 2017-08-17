@@ -22,7 +22,7 @@
 #' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
-#' myres <- ProcessResults(myres,mydata)
+#' myres <- ProcessResults(myres,mydata,treecuts=2)
 #' }
 #' @export
 ProcessResults <- function(inputResults,
@@ -100,9 +100,9 @@ ProcessResults <- function(inputResults,
 	if (treecuts > 0){
 
 	hc.rows<- stats::hclust(stats::dist(inputResults@filt.results[,c(3,4)]))
-	tree.number <- stats::cutree(hc.rows, k = treecuts)
+	cluster <- stats::cutree(hc.rows, k = treecuts)
 
-	inputResults@filt.results = cbind(inputResults@filt.results, tree.number)
+	inputResults@filt.results = cbind(inputResults@filt.results, cluster)
 
 
 	}

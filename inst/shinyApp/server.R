@@ -4,8 +4,8 @@ options(shiny.trace=F)
 shinyServer(function(input, output, session) {      
     #file input==================================================================================================
 
-  rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
-   #rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLim/inst/extdata", getVolumes()(), WD = '.')   
+  #rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
+   rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLim/inst/extdata", getVolumes()(), WD = '.')   
 
     shinyFileChoose(input,'file1',
                     roots = rootVolumes,
@@ -176,7 +176,8 @@ shinyServer(function(input, output, session) {
     pvalcutoff<-reactive(input$pvalcutoff1)
     
     output$volcanoPlot<-renderPlot(
-        {IntLim::pvalCorrVolcano(myres(),FmultiData(),input$nrpoints,diffcorr(),pvalcutoff())}
+        {IntLim::pvalCorrVolcano(myres(),FmultiData(),input$nrpoints,diffcorr(),pvalcutoff())},
+	height=500
     )
     output$Pdist<-renderPlot({
         
@@ -212,7 +213,8 @@ shinyServer(function(input, output, session) {
             
                 IntLim::ProcessResults(myres(),FmultiData(),pvalcutoff=pvalcutoff(),
                                diffcorr=diffcorr(),
-                               corrtype=input$corrtype)
+                               corrtype=input$corrtype,
+                               treecuts=input$treecuts)
            
         
         
@@ -220,7 +222,7 @@ shinyServer(function(input, output, session) {
     })
         
     output$heatmap<-plotly::renderPlotly({
-        IntLim::CorrHeatmap(myres2())
+        IntLim::CorrHeatmap(myres2(),treecuts=input$treecuts)
     }
     )
     output$downloadData <- downloadHandler(
@@ -302,8 +304,8 @@ shinyServer(function(input, output, session) {
         else if (!input$run==0) {
             infoBox(
                 "Status",
-                HTML(paste("Object analyze Complete.",
-                           "You can proceed to step2 (optional) or proceed to step3.",
+                HTML(paste("Data is loaded.",
+                           "You can proceed to Step 2 (optional) or Step 3.",
                            sep = "<br/>")),
                 icon = icon("thumbs-up", lib = "glyphicon"),
                 color = "green", fill = TRUE)
@@ -330,8 +332,8 @@ shinyServer(function(input, output, session) {
         else if (!input$run2==0) {
             infoBox(
                 "Status",
-                HTML(paste("Data filter complete.",
-                           "You can proceed to step3",
+                HTML(paste("Data filtering is complete.",
+                           "You can proceed to Step 3",
                            sep = "<br/>")),
                 icon = icon("thumbs-up", lib = "glyphicon"),
                 color = "green", fill = TRUE)
@@ -365,7 +367,7 @@ shinyServer(function(input, output, session) {
             infoBox(
                 "Status",
                 HTML(paste("IntLim models are calculated.",
-                           "You can proceed to step4",
+                           "You can proceed to Step 4",
                            sep = "<br/>")),
                 icon = icon("thumbs-up", lib = "glyphicon"),
                 color = "green", fill = TRUE)
@@ -376,7 +378,7 @@ shinyServer(function(input, output, session) {
         if (input$run4==0) {
             infoBox(
                 "Status",
-                "Press Run to see the heatmap",
+                "Press Run button",
                 icon = icon("flag", lib = "glyphicon"),
                 color = "aqua",
                 fill = TRUE
@@ -385,8 +387,8 @@ shinyServer(function(input, output, session) {
         else if (!is.null(myres2())) {
             infoBox(
                 "Status",
-                HTML(paste("Heatmap running complete.",
-                           "You can proceed to step5",
+                HTML(paste("Results processed.",
+                           "You can proceed to Step 5",
                            sep = "<br/>")),
                 icon = icon("thumbs-up", lib = "glyphicon"),
                 color = "green", fill = TRUE)
@@ -406,7 +408,7 @@ shinyServer(function(input, output, session) {
         else if (input$run5==0) {
             infoBox(
                 "Status",
-                "Please Press Run button to run scatter plot",
+                "Press Run",
                 icon = icon("flag", lib = "glyphicon"),
                 color = "aqua",
                 fill = TRUE

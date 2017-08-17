@@ -4,7 +4,7 @@
 \alias{CorrHeatmap}
 \title{Plot correlation heatmap}
 \usage{
-CorrHeatmap(inputResults, viewer = T, top_pairs = 1200)
+CorrHeatmap(inputResults, viewer = T, top_pairs = 1200, treecuts = 2)
 }
 \arguments{
 \item{inputResults}{IntLimResults object (output of ProcessResults())}
@@ -13,6 +13,8 @@ CorrHeatmap(inputResults, viewer = T, top_pairs = 1200)
 in Shiny/Knittr (F)}
 
 \item{top_pairs}{cutoff of the top pairs, sorted by adjusted p-values, to be plotted (plotting more than 1200 can take some time) (default: 1200)}
+
+\item{treecuts}{number of clusters (of gene-metabolite pairs) to cut the tree into for color-coding}
 }
 \value{
 a highcharter object

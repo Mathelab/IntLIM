@@ -42,6 +42,6 @@ dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
 csvfile <- file.path(dir, "NCItestinput.csv")
 mydata <- ReadData(csvfile,metabid='id',geneid='id')
 myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
-myres <- ProcessResults(myres,mydata)
+myres <- ProcessResults(myres,mydata,treecuts=2)
 }
 }

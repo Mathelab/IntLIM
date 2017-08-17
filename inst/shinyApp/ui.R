@@ -249,11 +249,8 @@ body <- shinydashboard::dashboardBody(
                         height = 200,
                         solidHeader = TRUE,
                         h5("Process the results and filter pairs of genes-metabolites based on 
-                           adjusted p-values and differences in correlation coefficients between groups 1 and 2.
-                           Then plot heatmap of significant gene-metabolite pairs
-                           
-                           ")
-                        
+                           adjusted p-values and differences in correlation coefficients between the two groups being compared."),  
+                        h5("Then plot heatmap of significant gene-metabolite pairs by filling out parameters below and clicking 'Run'.")
                         ),
                     shinydashboard::box(
                         width = 4,
@@ -270,6 +267,7 @@ body <- shinydashboard::dashboardBody(
                         uiOutput("numericChoice1"),
                         uiOutput("numericChoice2"),
                         textInput("corrtype","spearman or pearson or other parameters allowed by cor() function","spearman"),
+                        numericInput("treecuts", "number of clusters to cut the dendrogram/tree into (reflects color-code in heatmap)",0,min=0,max=20),
                         actionButton("run4", "Run")
                     ),
                     
