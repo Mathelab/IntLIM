@@ -13,7 +13,7 @@
 #' @param diffcorr cutoff of differences in correlations for filtering (default 0.5)
 #' @param corrtype spearman or pearson or other parameters allowed by cor() function (default
 #' spearman)
-#' @param treecuts user-selected number of trees to cluster results into
+#' @param treecuts user-selected number of clusters (of gene-metabolite pairs) to cut the tree into 
 #' @return IntResults object with model results (now includes correlations)
 #'
 #' @examples
@@ -99,8 +99,8 @@ ProcessResults <- function(inputResults,
 
 	if (treecuts > 0){
 
-	hc.rows<- hclust(dist(inputResults@filt.results[,c(3,4)]))
-	tree.number <- cutree(hc.rows, k = treecuts)
+	hc.rows<- stats::hclust(stats::dist(inputResults@filt.results[,c(3,4)]))
+	tree.number <- stats::cutree(hc.rows, k = treecuts)
 
 	inputResults@filt.results = cbind(inputResults@filt.results, tree.number)
 

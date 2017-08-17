@@ -9,7 +9,7 @@ non-cancer).  Users can then remove pairs with a difference in correlations betw
 groups 1 and 2 less than a user-defined threshold.}
 \usage{
 ProcessResults(inputResults, inputData, pvalcutoff = 0.05, diffcorr = 0.5,
-  corrtype = "spearman")
+  corrtype = "spearman", treecuts = 0)
 }
 \arguments{
 \item{inputResults}{IntLimResults object with model results (output of RunIntLim())}
@@ -23,6 +23,8 @@ metabolite abundances, and associated meta-data}
 
 \item{corrtype}{spearman or pearson or other parameters allowed by cor() function (default
 spearman)}
+
+\item{treecuts}{user-selected number of clusters (of gene-metabolite pairs) to cut the tree into}
 }
 \value{
 IntResults object with model results (now includes correlations)
