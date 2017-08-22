@@ -582,7 +582,7 @@ pvalCorrVolcano <- function(inputResults, inputData,nrpoints=10000,diffcorr=0.5,
     volc.results <- IntLim::ProcessResults(inputResults,  inputData, diffcorr = 0, pvalcutoff = 1)
     volc.table <- volc.results@filt.results
     Corrdiff <- volc.table[,4] - volc.table[,3]
-    pval <- -log(volc.table$FDRadjPval)
+    pval <- -log10(volc.table$FDRadjPval)
     graphics::smoothScatter(x = Corrdiff, pval, xlab = 'Difference in Correlation between Phenotypes', 
 		ylab = '-log10(FDR-adjusted p-value)', nrpoints=nrpoints, 
                 main = 'Volcano Plot')
