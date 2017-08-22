@@ -354,7 +354,7 @@ DistPvalues<- function(IntLimResults,breaks=100) {
 #' @param viewer whether the plot should be displayed in the RStudio viewer (T) or
 #' in Shiny/Knittr (F)
 #' @param treecuts number of clusters (of gene-metabolite pairs) to cut the tree into for color-coding
-#' @param col.palettes color palette generated through RColorBrewer, if null then default for heatmaply
+#' @param col.palettes color palette generated through RColorBrewer, if null then default is selected
 #' @return a highcharter object
 #'
 #' @examples
@@ -414,11 +414,15 @@ type <- cor <- c()
 
                   heat_data[,2] <- meltedtoplot[-1:-num,3]
                 if (is.null(col.palettes)){
-                  hm <- heatmaply::heatmaply(heat_data,main = "Correlation heatmap",
+                 
+
+			mycols=colorRampPalette(c("#D01C8B", "#F1B6DA", "#F7F7F7", "#B8E186", "#4DAC26")) (255)[255:1]
+			 hm <- heatmaply::heatmaply(heat_data,main = "Correlation heatmap",
 			k_row = treecuts,#k_col = 2,
                         margins = c(80,5),
                         dendrogram = "row",
-                        y_axis_font_size ="1px")
+                        y_axis_font_size ="1px",
+			colors = mycols)
 
                   hm
                 }else{
