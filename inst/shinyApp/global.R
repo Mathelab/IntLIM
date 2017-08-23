@@ -1,5 +1,5 @@
 suppressPackageStartupMessages({
-   library(ALTRE)
+   library(IntLIM)
    library(shiny)
    library(shinyFiles)
    library(shinydashboard)
