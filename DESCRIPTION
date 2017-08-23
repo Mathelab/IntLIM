@@ -1,4 +1,4 @@
-Package: IntLim
+Package: IntLIM
 Type: Package
 Title: Integration of Omics Data Using Linear Modeling
 Version: 0.1.0
