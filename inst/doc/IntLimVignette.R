@@ -2,34 +2,34 @@
 #  	runIntLimApp()
 
 ## ------------------------------------------------------------------------
-     dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+     dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
      csvfile <- file.path(dir, "NCItestinput.csv")
      csvfile
 
 ## ------------------------------------------------------------------------
-inputData <- IntLim::ReadData(csvfile,metabid='id',geneid='id')
-IntLim::ShowStats(inputData)
+inputData <- IntLIM::ReadData(csvfile,metabid='id',geneid='id')
+IntLIM::ShowStats(inputData)
 
 ## ------------------------------------------------------------------------
-inputDatafilt <- IntLim::FilterData(inputData,geneperc = 0.15)
-IntLim::ShowStats(inputDatafilt)
+inputDatafilt <- IntLIM::FilterData(inputData,geneperc = 0.15)
+IntLIM::ShowStats(inputDatafilt)
 
 ## ------------------------------------------------------------------------
-IntLim::PlotDistributions(inputData)
+IntLIM::PlotDistributions(inputData)
 
 ## ------------------------------------------------------------------------
-IntLim::PlotPCA(inputData,stype = "PBO_vs_Leukemia")
+IntLIM::PlotPCA(inputData,stype = "PBO_vs_Leukemia")
 
 ## ------------------------------------------------------------------------
-myres <- IntLim::RunIntLim(inputData,stype="PBO_vs_Leukemia")
-IntLim::DistPvalues(myres)
+myres <- IntLIM::RunIntLim(inputData,stype="PBO_vs_Leukemia")
+IntLIM::DistPvalues(myres)
 
 ## ------------------------------------------------------------------------
-myres <- IntLim::ProcessResults(myres,inputData)
-IntLim::CorrHeatmap(myres)
+myres <- IntLIM::ProcessResults(myres,inputData)
+IntLIM::CorrHeatmap(myres)
 
 ## ------------------------------------------------------------------------
-IntLim::PlotGMPair(inputData,stype="PBO_vs_Leukemia","DLG4","(p-Hydroxyphenyl)lactic acid")
+IntLIM::PlotGMPair(inputData,stype="PBO_vs_Leukemia","DLG4","(p-Hydroxyphenyl)lactic acid")
 
 ## ------------------------------------------------------------------------
 sessionInfo()

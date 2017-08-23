@@ -12,7 +12,7 @@
 #' @return a highcharter object
 #'
 #' @examples
-#' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+#' dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' PlotDistributions(mydata)
@@ -135,7 +135,7 @@ PlotDistributions <- function(inputData,viewer=T,
 #' @return a highcharter object
 #'
 #' @examples
-#' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+#' dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' PlotPCA(mydata,stype = "PBO_vs_Leukemia")
@@ -331,7 +331,7 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
 #'
 #' @examples
 #' \dontrun{
-#' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+#' dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
@@ -360,7 +360,7 @@ DistPvalues<- function(IntLimResults,breaks=100) {
 #'
 #' @examples
 #' \dontrun{
-#' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+#' dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
@@ -443,7 +443,7 @@ type <- cor <- c()
 #'
 #' @examples
 #' \dontrun{
-#' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+#' dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCIinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' PlotGMPair(mydata,stype="PBO_vs_Leukemia","DLG4","(p-Hydroxyphenyl)lactic acid")
@@ -556,7 +556,7 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
 #'
 #' @examples
 #' \dontrun{
-#' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+#' dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
@@ -572,7 +572,7 @@ pvalCorrVolcano <- function(inputResults, inputData,nrpoints=10000,diffcorr=0.5,
     if(class(inputResults) != "IntLimResults") {
 	stop("input data is not a IntLim class")
         }
-    volc.results <- IntLim::ProcessResults(inputResults,  inputData, diffcorr = 0, pvalcutoff = 1)
+    volc.results <- IntLIM::ProcessResults(inputResults,  inputData, diffcorr = 0, pvalcutoff = 1)
     volc.table <- volc.results@filt.results
     Corrdiff <- volc.table[,4] - volc.table[,3]
     pval <- -log10(volc.table$FDRadjPval)

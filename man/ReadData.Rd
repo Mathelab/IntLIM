@@ -47,7 +47,7 @@ and those sample ids should match the columns of metabData and geneData (e.g. it
 that all sample ids in the metabData and geneData are also in the sampleMetaDatafile).
 }
 \examples{
-dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
 csvfile <- file.path(dir, "NCItestinput.csv")
 mydata <- ReadData(csvfile,metabid='id',geneid='id')
 }

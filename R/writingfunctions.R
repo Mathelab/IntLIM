@@ -6,7 +6,7 @@
 #' @return the filename of the CSV file with results named with cohort
 #'
 #' @examples
-#' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+#' dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCItestinput.csv")
 #' inputData <- ReadData(csvfile,metabid='id',geneid='id')
 #' inputDatafilt <- FilterData(inputData,geneperc=0.5)
@@ -47,7 +47,7 @@ OutputData <- function (inputData=NULL,filename="~/output.zip"){
 #' @return the filename of the CSV file with results named with cohort
 #'
 #' @examples
-#' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+#' dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCItestinput.csv")
 #' inputData <- ReadData(csvfile,metabid='id',geneid='id')
 #' myres <- RunIntLim(inputData,stype="PBO_vs_Leukemia")

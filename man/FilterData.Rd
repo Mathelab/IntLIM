@@ -24,7 +24,7 @@ filtData MultiDataSet object with input data after filtering
 Filter data by abundance (with user-input percentile cutoff) of missing values (with user-input percent cutoff). Missing values are commonly found in metabolomics data so the parameter currently only applies to metabolomics data.
 }
 \examples{
-dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
 csvfile <- file.path(dir, "NCItestinput.csv")
 inputData <- ReadData(csvfile,metabid='id',geneid='id')
 inputDatafilt <- FilterData(inputData,geneperc=0.5)

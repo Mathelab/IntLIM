@@ -30,7 +30,7 @@ scatter plot of gene-metabolite pairs (based on user selection)
 }
 \examples{
 \dontrun{
-dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
 csvfile <- file.path(dir, "NCIinput.csv")
 mydata <- ReadData(csvfile,metabid='id',geneid='id')
 PlotGMPair(mydata,stype="PBO_vs_Leukemia","DLG4","(p-Hydroxyphenyl)lactic acid")

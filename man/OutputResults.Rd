@@ -18,7 +18,7 @@ the filename of the CSV file with results named with cohort
 Output results into a zipped CSV file.  Results include gene and metabolite pairs, along with model interaction p-values, and correlations in each group being evaluated.
 }
 \examples{
-dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
 csvfile <- file.path(dir, "NCItestinput.csv")
 inputData <- ReadData(csvfile,metabid='id',geneid='id')
 myres <- RunIntLim(inputData,stype="PBO_vs_Leukemia")

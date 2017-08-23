@@ -6,7 +6,7 @@
 #' @return data.frame with some # of samples, features, etc.
 #'
 #' @examples
-#' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+#' dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' ShowStats(mydata)

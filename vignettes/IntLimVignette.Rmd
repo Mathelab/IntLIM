@@ -1,5 +1,5 @@
 ---
-title: "IntLim vignette"
+title: "IntLIM vignette"
 author: "Mingrui Liu, Ewy Mathe, Jalal Siddiqui"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -31,53 +31,53 @@ To start up the app, simply type:
 ## Example Workflow
 A small data set is embedded in a package.  To access it:
 ```{r}
-     dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+     dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
      csvfile <- file.path(dir, "NCItestinput.csv")
      csvfile
 ```
 
 Read in the data and organize into a MultiDataset object, and print out some statistics:
 ```{r}
-inputData <- IntLim::ReadData(csvfile,metabid='id',geneid='id')
-IntLim::ShowStats(inputData)
+inputData <- IntLIM::ReadData(csvfile,metabid='id',geneid='id')
+IntLIM::ShowStats(inputData)
 ```
 
 Optionally, the features (genes or metabolites) can be filtered out based on their mean values. Users should input a percentile cutoff and any feature with a mean value below that cutoff will be removed.
 ```{r}
-inputDatafilt <- IntLim::FilterData(inputData,geneperc = 0.15)
-IntLim::ShowStats(inputDatafilt)
+inputDatafilt <- IntLIM::FilterData(inputData,geneperc = 0.15)
+IntLIM::ShowStats(inputDatafilt)
 ```
 
 Verify the distribution of the input data:
 ```{r}
-IntLim::PlotDistributions(inputData)
+IntLIM::PlotDistributions(inputData)
 ```
 
 Evaluate the clustering of the data via a Principal Components Analysis (unsupervised)
 ```{r}
-IntLim::PlotPCA(inputData,stype = "PBO_vs_Leukemia")
+IntLIM::PlotPCA(inputData,stype = "PBO_vs_Leukemia")
 ```
 
 Run the linear models and plot distribution of p-values:
 ```{r}
-myres <- IntLim::RunIntLim(inputData,stype="PBO_vs_Leukemia")
-IntLim::DistPvalues(myres)
+myres <- IntLIM::RunIntLim(inputData,stype="PBO_vs_Leukemia")
+IntLIM::DistPvalues(myres)
 ```
 
 Process the results and filter pairs of genes-metabolites based on adjusted p-values and differences in correlation coefficients between groups 1 and 2.  Then plot heatmap of significant gene-metabolite pairs
 ```{r}
-myres <- IntLim::ProcessResults(myres,inputData)
-IntLim::CorrHeatmap(myres)
+myres <- IntLIM::ProcessResults(myres,inputData)
+IntLIM::CorrHeatmap(myres)
 ```
 
 Plot a pair of interest:
 ```{r}
-IntLim::PlotGMPair(inputData,stype="PBO_vs_Leukemia","DLG4","(p-Hydroxyphenyl)lactic acid")
+IntLIM::PlotGMPair(inputData,stype="PBO_vs_Leukemia","DLG4","(p-Hydroxyphenyl)lactic acid")
 ```
 
 Lastly, various writing functions are implemented.  One can write the output after data filtering using the following function (the file will be written to the home directory):
 ```
-IntLim::OutputData(inputData=inputDatafilt,filename="~/FilteredData.zip")
+IntLIM::OutputData(inputData=inputDatafilt,filename="~/FilteredData.zip")
 ```
 
 Users can also write the results file:

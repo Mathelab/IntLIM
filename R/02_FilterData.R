@@ -11,7 +11,7 @@
 #' @return filtData MultiDataSet object with input data after filtering
 #'
 #' @examples
-#' dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+#' dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
 #' csvfile <- file.path(dir, "NCItestinput.csv")
 #' inputData <- ReadData(csvfile,metabid='id',geneid='id')
 #' inputDatafilt <- FilterData(inputData,geneperc=0.5)
