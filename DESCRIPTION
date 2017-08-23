@@ -31,7 +31,8 @@ Imports:
     dplyr,
     purrr,
     heatmaply,
-    plotly
+    plotly,
+    DT
 Suggests:
     knitr
 Encoding: UTF-8
