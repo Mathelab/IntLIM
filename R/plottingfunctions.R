@@ -340,7 +340,8 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
 #' @export
 DistPvalues<- function(IntLimResults,breaks=100) {
     
-    hist(IntLimResults@interaction.pvalues,breaks=breaks)
+    hist(IntLimResults@interaction.pvalues,breaks=breaks,
+	main="Histogram of Interaction P-values")
 }
 
 
