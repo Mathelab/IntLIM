@@ -40,11 +40,12 @@ The first step is importing in the gene expression and metabolite data.  To this
 The transcriptomic and metabolomic data and meta-data is stored in a series of comma-separated-values (.CSV) files.  The 5 files consist of normalized/log2-transformed metabolite abundance data, metabolite feature meta data, log2-transformed gene expression data, gene expression feature data, and sample meta data.  A meta-file lists the location of the other 5 fives.  This file is input into IntLIM.  These files should ideally be in the same folder.  
 SV files).  Of note, input data files should be in a specific format: 
 
-**metabData**: rows are metabolites, columns are samples 
-**geneData**: rows are genes, columns are samples 
-**metabMetaData**: rows are metabolites, features are columns 
-**geneMetaData**: rows are genes, features are columns
-**sampleMetaData**: rows are samples, features are columns 
+>**metabData**: rows are metabolites, columns are samples 
+>**geneData**: rows are genes, columns are samples 
+>**metabMetaData**: rows are metabolites, features are columns 
+>**geneMetaData**: rows are genes, features are columns
+>**sampleMetaData**: rows are samples, features are columns 
+
 
 For the sampleMetaData, the first column of the sampleMetaData file is assumed to be the sample id, and those sample ids should match the columns of metabData and geneData (e.g. it is required that all sample ids in the metabData and geneData are also in the sampleMetaDatafile).
 
