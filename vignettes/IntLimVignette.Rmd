@@ -25,7 +25,25 @@ Download (or upgrade) R here: https://cloud.r-project.org/
 
 RStudio (an interface to R than can make R easier to use) can be download here (not required): https://www.rstudio.com/products/rstudio/download3/
 
-The function install_github() from the “devtools” package (Wickham and Chang, 2015) installs IntLIM directly from: 
+Prior to installing IntLIM, it is necessary to have the current release of *Bioconductor* and the Bioconductor package *MultiDataSet* (Hernandez-Ferrer et al, 2017).  
+
+Biocondutor is installed with the following command.  
+
+```{r eval = FALSE}
+## try http:// if https:// URLs are not supported
+source("https://bioconductor.org/biocLite.R")
+biocLite()
+```
+
+The following command then installs *MultiDataSet*.  
+
+```{r eval = FALSE}
+## try http:// if https:// URLs are not supported
+source("https://bioconductor.org/biocLite.R")
+biocLite("MultiDataSet")
+```
+
+The function install_github() from the “devtools” package (Wickham and Chang, 2015) installs IntLIM directly from.  To install IntLIM, enter the following: 
 
 ```{r eval = FALSE}
 install.packages(devtools)
