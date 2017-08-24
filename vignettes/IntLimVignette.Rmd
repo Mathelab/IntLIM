@@ -19,6 +19,12 @@ Interpretation of metabolomics data is very challenging.  Yet it can be eased th
 
 ## Installation
 
+IntLIM is an R package and can be run on version >= 3.2.0. 
+
+Download (or upgrade) R here: https://cloud.r-project.org/
+
+RStudio (an interface to R than can make R easier to use) can be download here (not required): https://www.rstudio.com/products/rstudio/download3/
+
 The function install_github() from the “devtools” package (Wickham and Chang, 2015) installs IntLIM directly from: 
 
 ```{r eval = FALSE}

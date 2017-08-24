@@ -3,28 +3,30 @@
 
 ## IntLIM
 
-The goal of the IntLIM R package is to identify gene:metabolite relationships that are specific to a given phenotype (e.g. cancer vs non-cancer). For example, a given gene:metabolite pair could show a strong correlation in one phenotype (e.g. cancer) and no correlation in the other (e.g. non-cancer).  Users are expected to provide normalized gene expression and metabolite abundance data, as well as associated meta-information on the samples (at the minimum, users need to provide a phenotype column).  Currently, IntLIM requires the phenotype of interest to have 2 categories.  Optionally, users can also input meta-information on metabolites and genes (e.g. names, pathways).  
+Interpretation of metabolomics data is very challenging.  Yet it can be eased through integration of metabolmoics with other ‘omics’ data. The IntLIM package, which includes a user-friendly RShiny web app, aims to integrate metabolomics data with transcriptomic data.  Unlike other approaches, IntLIM is focused on understanding how specific gene-metabolite associations are affected by phenotypic features.  To this end, we develop a linear modeling approach that describes how gene-metabolite associations are affected by phenotype.  The workflow involves the following steps: 1) input gene expression/metabolomics data files, 2) filter data sets by gene and metabolite abundances and imputed values, 3) run the linear model to extract FDR-adjusted interaction p-values, 4) filter results by p-values and Spearman correlation differences, and 5) plot/visualize specific gene-metabolite associations. 
 
-An example data set is provided within the package, and is a subset of the NCI-60 gene expression and metabolomics data (https://wiki.nci.nih.gov/display/NCIDTPdata/Molecular+Target+Data).  
+An example data set is provided within the package, and is a subset of the NCI-60 gene expression and metabolomics data (https://wiki.nci.nih.gov/display/NCIDTPdata/Molecular+Target+Data).  A vignette will outline how to run the workflow.  
 
 ## IntLIM prerequisites
+
 IntLIM is an R package and can be run on version >= 3.2.0. 
 
 Download (or upgrade) R here: https://cloud.r-project.org/
 
 RStudio (an interface to R than can make R easier to use) can be download here (not required): https://www.rstudio.com/products/rstudio/download3/
 
-## Contact
-
-If you encounter any problems running on the software, or find installation problems or bugs, please start an issue on the Issues tab or email Ewy Mathe at Ewy.Mathe@osumc.edu or Jalal Siddiqui at jalal.siddiqui@osumc.edu.  We are also very open to any comments, including how we can ameliorate the package.
-
 ## Installation from Github
 
 To install IntLIM, simply type the following in the R terminal:
+
 ```
 install.packages("devtools")
 devtools::install_github("mathelab/IntLIM")
 ```
+## Vignette
+
+A detailed vignette can be found here:
+https://mathelab.github.io/IntLIM/vignette.html
 
 ## Running IntLIM's user-friendly web app:
 
@@ -35,10 +37,7 @@ Alternatively, to launch the web app, type th following in your R console:
 library(IntLIM)
 runIntLIMApp()
 ```
-## Vignette
-A detailed vignette can be found here:
-https://mathelab.github.io/IntLIM/vignette.html
 
-## Highcharts
+## Contact
 
-All plots from this package use Highcharts: Highcharts (www.highcharts.com) is a Highsoft software product which is not free for commercial and Governmental use.
+If you encounter any problems running on the software, or find installation problems or bugs, please start an issue on the Issues tab or email Ewy Mathe at Ewy.Mathe@osumc.edu or Jalal Siddiqui at jalal.siddiqui@osumc.edu.  We are also very open to any comments, including how we can improve and ameliorate the package.
