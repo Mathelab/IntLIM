@@ -2,6 +2,11 @@
 knitr::opts_chunk$set(echo = TRUE)
 
 ## ----eval = FALSE--------------------------------------------------------
+#  ## try http:// if https:// URLs are not supported
+#  source("https://bioconductor.org/biocLite.R")
+#  biocLite("MultiDataSet")
+
+## ----eval = FALSE--------------------------------------------------------
 #  install.packages(devtools)
 #  install_github(“/mathelab/IntLIM”)
 
