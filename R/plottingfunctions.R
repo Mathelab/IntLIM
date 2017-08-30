@@ -590,7 +590,7 @@ pvalCorrVolcano <- function(inputResults, inputData,nrpoints=10000,diffcorr=0.5,
     graphics::smoothScatter(x = Corrdiff, pval, xlab = 'Difference in Correlation between Phenotypes', 
 		ylab = '-log10(FDR-adjusted p-value)', nrpoints=nrpoints, 
                 main = 'Volcano Plot')
-    graphics::abline(h=-log(pvalcutoff),lty=2,col="blue")
+    graphics::abline(h=-log10(pvalcutoff),lty=2,col="blue")
     graphics::abline(v=c(diffcorr,-diffcorr),lty=2,col="blue")
 }
 
