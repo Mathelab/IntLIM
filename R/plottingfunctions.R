@@ -46,6 +46,8 @@ PlotDistributions <- function(inputData,viewer=T,
             else d <- dplyr::data_frame()
             d
         })
+        outs <- data.frame(outs, 'z' = colnames(mygene)[outs$x + 1])
+        z <- outs$z
 # To try to get the gene names of outliers, would have to go back and get the gene names from original data frame and put htem in outs$color
 	boxplotOptions <- list(
           fillColor = '#ffffff',
@@ -66,8 +68,11 @@ PlotDistributions <- function(inputData,viewer=T,
       highcharter::hc_plotOptions(
         boxplot = boxplotOptions
         ) %>%
-      hc_add_series(data = bxps,type="boxplot",color=cols[1],showInLegend=FALSE) %>%
-      highcharter::hc_add_series(data=list_parse(outs),type="scatter",color=cols[1],showInLegend=FALSE) %>%
+      hc_add_series(data = bxps,name = "Gene Expression", type="boxplot",color=cols[1],showInLegend=FALSE) %>%
+      highcharter::hc_add_series(data=list_parse(outs),name = "Gene Expression", 
+      type="scatter",color=cols[1],showInLegend=FALSE,
+      tooltip = list(headerFormat = "", pointFormat = "{point.z} <br/> {point.y}", 
+      showInLegend = FALSE)) %>%
 #		name = str_trim(paste(list(...)$name, "outliers")),
 #                type = "scatter") #marker = list(...)) %>%
 #		tooltip = list(headerFormat = "<span>{point.key}</span><br/>")) %>%
@@ -75,7 +80,7 @@ PlotDistributions <- function(inputData,viewer=T,
       highcharter::hc_yAxis(title = list(text = "log(expression)",
                             style = list(fontSize = "13px")),
                labels = list(format = "{value}")) %>%
-      highcharter::hc_xAxis(labels="") %>%
+      highcharter::hc_xAxis(labels="", categories = colnames(mygene)) %>%
       highcharter::hc_tooltip(valueDecimals = 2) %>%
       highcharter::hc_exporting(enabled = TRUE)
 
@@ -91,6 +96,8 @@ PlotDistributions <- function(inputData,viewer=T,
             else d <- dplyr::data_frame()
             d
         })
+        outs <- data.frame(outs, 'z' = colnames(mymetab)[outs$x + 1])
+        z <- outs$z
 
         m <- highcharter::highchart(width = 750, height = 750 ) %>%
       highcharter::hc_title(text = "Metabolite Levels",
@@ -99,13 +106,16 @@ PlotDistributions <- function(inputData,viewer=T,
       highcharter::hc_plotOptions(
         boxplot = boxplotOptions
         ) %>%
-      highcharter::hc_add_series(data = bxps,type="boxplot",color=cols[2],showInLegend=FALSE) %>%
-      highcharter::hc_add_series(data=list_parse(outs),type="scatter",color=cols[2],showInLegend=FALSE) %>%
+      highcharter::hc_add_series(data = bxps,name = "Metabolite Levels", 
+      type="boxplot",color=cols[2],showInLegend=FALSE) %>%
+      highcharter::hc_add_series(data=list_parse(outs),name = "Metabolite Levels", 
+      type="scatter",color=cols[2],showInLegend=FALSE,tooltip = list(headerFormat = "", pointFormat = "{point.z} <br/> {point.y}", 
+      showInLegend = FALSE)) %>%
       
       highcharter::hc_yAxis(title = list(text = "log(abundances)",
                             style = list(fontSize = "13px")),
                labels = list(format = "{value}")) %>%
-      highcharter::hc_xAxis(labels="") %>%
+      highcharter::hc_xAxis(labels="", categories = colnames(mymetab)) %>%
       highcharter::hc_tooltip(valueDecimals = 2) %>%
       highcharter::hc_exporting(enabled = TRUE)
 
