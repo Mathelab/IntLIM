@@ -31,7 +31,7 @@ The package includes a reduced set of the original NCI-60 dataset.  The CSV inpu
      csvfile <- file.path(dir, "NCItestinput.csv")
      csvfile
 ```
-Please see the vignette at XXX for additional information.
+Please see the vignette at [https://mathelab.github.io/IntLIM/IntLIMVignette.html](https://mathelab.github.io/IntLIM/IntLIMVignette.html) for additional information.
 
 In addition, the original datasets for the NCI-60 and the breast cancer dataset used in the manuscript can be found HEREXXX.
 
