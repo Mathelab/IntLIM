@@ -66,8 +66,7 @@ The CSV file is expecected to have the following 2 columns and 6 rows:
 5. geneMetaData,myfilename (optional)
 6. sampleMetaData,myfilename"
 
-The transcriptomic and metabolomic data and meta-data is stored in a series of comma-separated-values (.CSV) files.  The 5 files consist of normalized/log2-transformed metabolite abundance data, metabolite feature meta data, log2-transformed gene expression data, gene expression feature data, and sample meta data.  A meta-file lists the location of the other 5 fives.  This file is input into IntLIM.  These files should ideally be in the same folder.  
-SV files).  Of note, input data files should be in a specific format: 
+The transcriptomic and metabolomic data and meta-data is stored in a series of comma-separated-values (.CSV) files.  The 5 files consist of normalized/log2-transformed metabolite abundance data, metabolite feature meta data, log2-transformed gene expression data, gene expression feature data, and sample meta data.  A meta-file lists the location of the other 5 fives.  This file is input into IntLIM.  These files should ideally be in the same folder.  Of note, input data files should be in a specific format: 
 
 
 File type      | Description   
