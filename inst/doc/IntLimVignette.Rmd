@@ -53,6 +53,19 @@ library(IntLIM)
 
 The first step is importing in the gene expression and metabolite data.  To this end we have provided a sample data file for users wishing to use IntLIM.  
 
+IntLIM requires a specific format for gene expression and metabolite data.  For IntLIM, we require the metabolite data, gene expression data, metabolite meta data, gene meta data, and sample meta data.  We also need a CSV meta-file that lists the location of the other files.  These need to be in the same folder.  The formats are described below.  In addition, we provide a sample set of files.  
+
+__*Please be sure that all files noted in the CSV file, including the CSV file, are in the same folder. Do not include path names in the filenames.*__
+
+Users need to input a CSV file with two required columns: 'type' and 'filenames'.
+The CSV file is expecected to have the following 2 columns and 6 rows:
+1. type,filenames
+2. metabData,myfilename
+3. geneData,myfilename
+4. metabMetaData,myfilename (optional)
+5. geneMetaData,myfilename (optional)
+6. sampleMetaData,myfilename"
+
 The transcriptomic and metabolomic data and meta-data is stored in a series of comma-separated-values (.CSV) files.  The 5 files consist of normalized/log2-transformed metabolite abundance data, metabolite feature meta data, log2-transformed gene expression data, gene expression feature data, and sample meta data.  A meta-file lists the location of the other 5 fives.  This file is input into IntLIM.  These files should ideally be in the same folder.  
 SV files).  Of note, input data files should be in a specific format: 
 
@@ -66,7 +79,9 @@ geneMetaData   | rows are genes, features are columns
 sampleMetaData | rows are samples, features are columns 
 
 
-For the sampleMetaData, the first column of the sampleMetaData file is assumed to be the sample id, and those sample ids should match the columns of metabData and geneData (e.g. it is required that all sample ids in the metabData and geneData are also in the sampleMetaDatafile).
+For the metabData and geneData files, the first row contains the feature ids and the first column contains the sample ids.  
+
+For the sampleMetaData, the first column of the sampleMetaData file is assumed to be the sample id, and those sample ids should match the first row of metabData and geneData (e.g. it is required that all sample ids in the metabData and geneData are also in the sampleMetaDatafile).
 
 A small data set is embedded in a package.  This consists of the National Cancer Institute-60 (NCI-60) cell line data with a reduced number of genes for faster calculation.  To access it use the following commands.  csvfile describes the location of the meta-file describing the location of the other 5 input files.  
 
