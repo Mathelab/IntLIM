@@ -4,8 +4,8 @@ options(shiny.trace=F)
 shinyServer(function(input, output, session) {      
     #file input==================================================================================================
 
-  #rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
-   rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLIM/inst/extdata", getVolumes()(), WD = '.')   
+  rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
+  # rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLIM/inst/extdata", getVolumes()(), WD = '.')   
 
     shinyFileChoose(input,'file1',
                     roots = rootVolumes,
