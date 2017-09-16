@@ -61,7 +61,7 @@ FilterData <- function(inputData,geneperc=0,metabperc=0, metabmiss=0) {
                         mean(x,na.rm=T)))
                 keepers <- which(mymean > stats::quantile(mymean,metabperc))
                 mymetab <- mymetab[keepers,]
-		fmetab <- Biobase::AnnotatedDataFrame(data = Biobase::fData(inputData[["metabolite"]])[keepers,])
+		fmetab <- Biobase::AnnotatedDataFrame(data = Biobase::fData(inputData[["metabolite"]]))[keepers,]
         } else {
                 print("No metabolite filtering by percentile is applied")
 		mymetab <- mymetab
@@ -72,7 +72,7 @@ FilterData <- function(inputData,geneperc=0,metabperc=0, metabmiss=0) {
 		mycut <- metabmiss * ncol(mymetab)
 		keepers <- which(missnum < mycut)
 		mymetab <- mymetab[keepers,]
-		fmetab <- Biobase::AnnotatedDataFrame(data = Biobase::fData(inputData[["metabolite"]])[keepers,])
+		fmetab <- Biobase::AnnotatedDataFrame(data = Biobase::fData(inputData[["metabolite"]]))[keepers,]
 	} else {
 		print("No metabolite filtering by missing values is applied")
 		mymetab <- mymetab
