@@ -1,5 +1,5 @@
 headerbar <- shinydashboard::dashboardHeader(
-    title = "IntLim",
+    title = "IntLIM",
     titleWidth = 270,
     shinydashboard::dropdownMenu(
         type = "notifications",

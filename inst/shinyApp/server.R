@@ -5,7 +5,7 @@ shinyServer(function(input, output, session) {
     #file input==================================================================================================
 
   #rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
-   rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLim/inst/extdata", getVolumes()(), WD = '.')   
+   rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLIM/inst/extdata", getVolumes()(), WD = '.')   
 
     shinyFileChoose(input,'file1',
                     roots = rootVolumes,
@@ -79,7 +79,7 @@ shinyServer(function(input, output, session) {
     
     multiData <- eventReactive(input$run,{
         
-        IntLim::ReadData(req(as.character(
+        IntLIM::ReadData(req(as.character(
             parseFilePaths(
                 rootVolumes,
                 input$file1)$datapath)),
@@ -92,7 +92,7 @@ shinyServer(function(input, output, session) {
     
     output$stats<-renderDataTable({
         
-        table<- as.data.frame(t(IntLim::ShowStats(multiData())))
+        table<- as.data.frame(t(IntLIM::ShowStats(multiData())))
         colnames(table)<-"value"
         cbind(names=rownames(table),table)
         
@@ -100,7 +100,7 @@ shinyServer(function(input, output, session) {
     
     
     output$plot<-renderUI(
-        IntLim::PlotDistributions(multiData())
+        IntLIM::PlotDistributions(multiData())
     )
     
     #filter data==================================================================================================
@@ -110,7 +110,7 @@ shinyServer(function(input, output, session) {
             FmultiData<-multiData()
         }
         if(input$run2!=0){
-            FmultiData<-IntLim::FilterData(multiData(),
+            FmultiData<-IntLIM::FilterData(multiData(),
 		geneperc=input$geneperc,
 		metabperc=input$metabperc,
 		metabmiss=input$metabmiss)
@@ -121,7 +121,7 @@ shinyServer(function(input, output, session) {
     
     output$Ostats<-renderDataTable({
         if(input$run2==0) return()
-        table<- as.data.frame(t(IntLim::ShowStats(multiData())))
+        table<- as.data.frame(t(IntLIM::ShowStats(multiData())))
         colnames(table)<-"value"
         cbind(names=rownames(table),table)
         
@@ -130,12 +130,12 @@ shinyServer(function(input, output, session) {
     
     output$Oplot<-renderUI({
         if(input$run2==0) return()
-        IntLim::PlotDistributions(multiData())
+        IntLIM::PlotDistributions(multiData())
     }
     )
     output$Fstats<-renderDataTable({
         if(input$run2==0) return()
-        table<- as.data.frame(t(IntLim::ShowStats(FmultiData())))
+        table<- as.data.frame(t(IntLIM::ShowStats(FmultiData())))
         colnames(table)<-"value"
         cbind(names=rownames(table),table)
         
@@ -144,14 +144,14 @@ shinyServer(function(input, output, session) {
     
     output$Fplot<-renderUI({
         if(input$run2==0) return()
-        IntLim::PlotDistributions(FmultiData())
+        IntLIM::PlotDistributions(FmultiData())
     }
     )
     
     output$downloadFdata <- downloadHandler(
         filename = "Filtered data.zip",
         content = function(con) {
-            IntLim::OutputData(FmultiData(),con)
+            IntLIM::OutputData(FmultiData(),con)
         }
     )
     
@@ -169,19 +169,19 @@ shinyServer(function(input, output, session) {
     
     myres <- eventReactive(input$run3,{
         shinyjs::html("text", "")
-        IntLim::RunIntLim(FmultiData(),stype=input$stype,outcome='metabolite')
+        IntLIM::RunIntLim(FmultiData(),stype=input$stype,outcome='metabolite')
         
     })
     diffcorr<-reactive(input$diffcorr1)
     pvalcutoff<-reactive(input$pvalcutoff1)
     
     output$volcanoPlot<-renderPlot(
-        {IntLim::pvalCorrVolcano(myres(),FmultiData(),input$nrpoints,diffcorr(),pvalcutoff())},
+        {IntLIM::pvalCorrVolcano(myres(),FmultiData(),input$nrpoints,diffcorr(),pvalcutoff())},
 	height=500
     )
     output$Pdist<-renderPlot({
         
-        IntLim::DistPvalues(myres(),breaks = input$breaks)
+        IntLIM::DistPvalues(myres(),breaks = input$breaks)
         
     })
     
@@ -211,7 +211,7 @@ shinyServer(function(input, output, session) {
     
     myres2 <- eventReactive(input$run4,{
             
-                IntLim::ProcessResults(myres(),FmultiData(),pvalcutoff=pvalcutoff(),
+                IntLIM::ProcessResults(myres(),FmultiData(),pvalcutoff=pvalcutoff(),
                                diffcorr=diffcorr(),
                                corrtype=input$corrtype,
                                treecuts=input$treecuts)
@@ -222,13 +222,13 @@ shinyServer(function(input, output, session) {
     })
         
     output$heatmap<-plotly::renderPlotly({
-        IntLim::CorrHeatmap(myres2(),treecuts=input$treecuts)
+        IntLIM::CorrHeatmap(myres2(),treecuts=input$treecuts)
     }
     )
     output$downloadData <- downloadHandler(
         filename = "results.csv",
         content = function(con) {
-            IntLim::OutputResults(req(myres2()),con)
+            IntLIM::OutputResults(req(myres2()),con)
         }
     )
     
@@ -265,12 +265,12 @@ shinyServer(function(input, output, session) {
             pair1<-pairTable()[a[1,],]
             geneName1<-pair1[,"gene"]
             metabName1<-pair1[,"metab"]
-            splot1<-IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName1,metabName=metabName1) 
+            splot1<-IntLIM::PlotGMPair(FmultiData(),input$stype,geneName=geneName1,metabName=metabName1) 
             if(length(input$table_rows_selected) > 1){
                 pair2<-as.matrix(pairTable()[a[2,],])
                 geneName2<-pair2[,"gene"]
                 metabName2<-pair2[,"metab"]
-                splot2<-IntLim::PlotGMPair(FmultiData(),input$stype,geneName=geneName2,metabName=metabName2)
+                splot2<-IntLIM::PlotGMPair(FmultiData(),input$stype,geneName=geneName2,metabName=metabName2)
             
                 p <-htmltools::browsable(highcharter::hw_grid(splot1, splot2, ncol = 2, rowheight = 550))
             }
@@ -366,7 +366,7 @@ shinyServer(function(input, output, session) {
         else if (!is.null(myres())) {
             infoBox(
                 "Status",
-                HTML(paste("IntLim models are calculated.",
+                HTML(paste("IntLIM models are calculated.",
                            "You can proceed to Step 4",
                            sep = "<br/>")),
                 icon = icon("thumbs-up", lib = "glyphicon"),

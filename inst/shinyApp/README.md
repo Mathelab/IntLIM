@@ -27,7 +27,7 @@ Note also that the input data files should be in a specific format:
 ## Test data
 The package includes a reduced set of the original NCI-60 dataset.  The CSV input file location for this test dataset can be located by typing the following in the R console:
 ```
-     dir <- system.file("extdata", package="IntLim", mustWork=TRUE)
+     dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
      csvfile <- file.path(dir, "NCItestinput.csv")
      csvfile
 ```
@@ -37,4 +37,4 @@ In addition, the original datasets for the NCI-60 and the breast cancer dataset 
 
 ## Contact
 
-If you have any questions, comments, or concerns on how to use IntLim please contact Ewy Mathe at ewy.mathe@osumc.edu or  Jalal Siddiqui at jalal.siddiqui@osumc.edu.
+If you have any questions, comments, or concerns on how to use IntLIM please contact Ewy Mathe at ewy.mathe@osumc.edu or  Jalal Siddiqui at jalal.siddiqui@osumc.edu.
