@@ -1,5 +1,6 @@
 # IntLIM:  Integration through LInear Modeling
 [![Build Status](https://travis-ci.org/Mathelab/IntLIM.svg?branch=master)](https://travis-ci.org/Mathelab/IntLIM)
+[![Build status](https://ci.appveyor.com/api/projects/status/l16jtorygs95gjum/branch/master?svg=true)](https://ci.appveyor.com/project/Mathelab/IntLIM/branch/master)
 
 ## IntLIM
 
