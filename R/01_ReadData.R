@@ -86,14 +86,16 @@ ReadData <- function(inputFile,metabid=NULL,geneid=NULL, logmetab=FALSE,loggene=
 	warning("No metadata provided for metabolites");MmetaData<-NULL;metabid=NULL; } else if
     (!file.exists(temp)) {
         stop(paste("File", temp, "does not exist"))} else {
-    MmetaData<-utils::read.csv(temp)}
+    MmetaData<-utils::read.csv(temp)
+    colnames(MmetaData)[which(colnames(MmetaData)==metabid)]="id"}
 
    temp <- paste0(mydir,"/",as.character(csvfile['geneMetaData',]))
    if(as.character(csvfile['geneMetaData',])=="") {
         warning("No metadata provided for genes");GmetaData<-NULL;geneid=NULL} else if
     (!file.exists(temp)) {
         stop(paste("File", temp, "does not exist"))} else {
-    GmetaData<-utils::read.csv(temp)}
+    GmetaData<-utils::read.csv(temp)
+    colnames(GmetaData)[which(colnames(GmetaData)==geneid)]="id"}
 
     temp <- paste0(mydir,"/",as.character(csvfile['sampleMetaData',]))
     if(!file.exists(temp)) {

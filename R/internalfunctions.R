@@ -19,15 +19,15 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
 
 	# Check that feature data and abundance data metabolites corresponds
         if (!is.null(metabfdata)) {
-        if(length(which(colnames(metabfdata)==metabid))!=1) {
+        if(length(which(colnames(metabfdata)=='id'))!=1) {
                 stop(paste("metabid provided",metabid,"does not exist in metabolite meta data file"))} else if 
 	(length(intersect(rownames(metabdata),as.character(metabfdata[,metabid])))<nrow(metabdata)){
                 stop("Metabolites in abundance data file and metabolite meta data file are not equal")} else {
                 myind <- as.numeric(lapply(rownames(metabdata),function(x) {
-                        which(as.character(metabfdata[,metabid])==x)[1]}))
+                        which(as.character(metabfdata[,'id'])==x)[1]}))
                         metabpdata<-pdata[myind,]}
 
-	rownames(metabfdata)=as.character(metabfdata[,metabid])
+	rownames(metabfdata)=as.character(metabfdata[,'id'])
         }
 
         # Check that samples data and abundance data samples correspond
@@ -48,9 +48,13 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
 	}
 	
 	if(is.null(metabfdata)) {
-		metabfdata <- data.frame(id = rownames(metabdata))
+		metabfdata <- data.frame(id = rownames(metabdata),stringsAsFactors=FALSE)
                 rownames(metabfdata) <- metabfdata[,1]
 	}
+	# Make sure order of feature data is the same as the data matrix:
+	myind=as.numeric(lapply(rownames(metabdata),function(x) which(metabfdata[,"id"]==x)))
+        metabfdata <- data.frame(id=metabfdata[myind,],stringsAsFactors=FALSE)
+	rownames(metabfdata) <- metabfdata[,1]
 	metabfeatureData <- Biobase::AnnotatedDataFrame(data = metabfdata)
 	metab.set <- methods::new("MetaboliteSet",metabData = metabdata, 
 		phenoData = metabphenoData, featureData = metabfeatureData)
@@ -59,17 +63,17 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
 	#####  Now the genes
 	# Check that feature data and gene expression data corresponds
        if(!is.null(genefdata)) {
-       if(length(which(colnames(genefdata)==geneid))!=1) {
+       if(length(which(colnames(genefdata)=="id"))!=1) {
                 stop(paste("geneid provided",geneid,"does not exist in gene meta data file"))
-        } else if(length(intersect(rownames(genedata),as.character(genefdata[,geneid]))) < nrow(genedata)){
+        } else if(length(intersect(rownames(genedata),as.character(genefdata[,'id']))) < nrow(genedata)){
                 stop("Genes in expression data file and gene meta data file are not equal")
         } else {
                 myind <- as.numeric(lapply(rownames(genedata),function(x) {
-                        which(as.character(genefdata[,geneid])==x)[1]}))
+                        which(as.character(genefdata[,'id'])==x)[1]}))
                         genepdata<-pdata[myind,]
         }
 
-        rownames(genefdata)=as.character(genefdata[,geneid])
+        rownames(genefdata)=as.character(genefdata[,'id'])
         }
         # Check that samples data and abundance data samples correspond
         if(length(intersect(colnames(genedata),rownames(pdata)))<ncol(genedata)){ 
@@ -82,7 +86,7 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
 
         #new data frames are set for phenoData and featureData
         if (loggene == TRUE){
-                metabdata <- log2(genedata)
+                genedata <- log2(genedata)
         }
 
         gene.set <- Biobase::ExpressionSet(assayData=as.matrix(genedata))
@@ -96,7 +100,10 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
 	        genefdata$start <- rep(0,nrow(genefdata))}
 	if(length(which(colnames(genefdata)=="end"))==0) {
 	        genefdata$end <- rep(0,nrow(genefdata))}
-	Biobase::fData(gene.set) <- genefdata
+	# Make sure that the order of genefdata is the same as the input data
+	myind=as.numeric(lapply(rownames(genedata),function(x) which(genefdata$id==x)))
+	genefdata <- genefdata[myind,]
+	Biobase::fData(gene.set) <- data.frame(genefdata,stringAsFactors=FALSE)
 	genepdata$id=rownames(genepdata)
 	Biobase::pData(gene.set) <- genepdata
 	
