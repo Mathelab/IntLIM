@@ -82,7 +82,7 @@ For the metabData and geneData files, the first row contains the feature ids and
 
 For the sampleMetaData, the first column of the sampleMetaData file is assumed to be the sample id, and those sample ids should match the first row of metabData and geneData (e.g. it is required that all sample ids in the metabData and geneData are also in the sampleMetaDatafile).
 
-Additionally, the metabMetaData, geneMetaData, and SampleMetaData need to contain an 'id' column that contains the same of the features (metabolite or gene) or sample (sample id, name, etc).
+Additionally, the metabMetaData, geneMetaData, and SampleMetaData need to contain an 'id' column that contains the name of the features (metabolite or gene) or sample (sample id, name, etc).
 
 A small data set is embedded in a package.  This consists of the National Cancer Institute-60 (NCI-60) cell line data with a reduced number of genes for faster calculation.  To access it use the following commands.  csvfile describes the location of the meta-file describing the location of the other 5 input files.  
 
