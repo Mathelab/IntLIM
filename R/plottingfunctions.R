@@ -594,3 +594,43 @@ pvalCorrVolcano <- function(inputResults, inputData,nrpoints=10000,diffcorr=0.5,
     graphics::abline(v=c(diffcorr,-diffcorr),lty=2,col="blue")
 }
 
+
+
+
+
+#' histogram of gene-metabolite pairs
+#' depending upon metabolite or gene 
+#'
+#' @param inputResults IntLimResults object with model results (output of RunIntLim() and ProcessResults())
+#' @param type 'metabolite' or 'gene'.  'metabolite' set as default
+#'
+#' @examples
+#' \dontrun{
+#' dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
+#' csvfile <- file.path(dir, "NCItestinput.csv")
+#' mydata <- ReadData(csvfile,metabid='id',geneid='id')
+#' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
+#' myres <- ProcessResults(inputResults=myres,inputData=mydata)
+#' HistogramGMPairs(myres)
+#' }
+#' @export
+HistogramGMPairs <- function(myres, type = 'metabolite', breaks = 50){
+
+x <- myres@filt.results
+
+if(is.null(x)){
+    stop('Please run ProcessResults() before inputting into HistogramGMPairs')
+}
+if (type == 'metabolite'){
+metab.pairs <- data.frame(table(x$metab))
+metab.pairs.number <- as.vector(metab.pairs$Freq)
+hist(metab.pairs.number, breaks = breaks, main = "Number of gene-metabolite pairs based on metabolite", xlab = 'Gene-metabolite pairs based on metabolite')
+}else if (type == 'gene'){
+
+gene.pairs <- data.frame(table(x$gene))
+gene.pairs.number <- as.vector(gene.pairs$Freq)
+hist(gene.pairs.number, main = "Number of gene-metabolite pairs based on gene", breaks = breaks, xlab = 'Gene-metabolite pairs based on gene')
+}else{
+    stop("Only two valid types:  gene or metabolite.  Invalid type entered")    
+    }
+}

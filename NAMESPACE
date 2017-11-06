@@ -3,6 +3,7 @@
 export(CorrHeatmap)
 export(DistPvalues)
 export(FilterData)
+export(HistogramGMPairs)
 export(OutputData)
 export(OutputResults)
 export(PlotDistributions)
