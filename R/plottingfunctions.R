@@ -603,6 +603,7 @@ pvalCorrVolcano <- function(inputResults, inputData,nrpoints=10000,diffcorr=0.5,
 #'
 #' @param inputResults IntLimResults object with model results (output of RunIntLim() and ProcessResults())
 #' @param type 'metabolite' or 'gene'.  'metabolite' set as default
+#' @param breaks Number of breaks selected for histogram
 #'
 #' @examples
 #' \dontrun{
@@ -611,12 +612,12 @@ pvalCorrVolcano <- function(inputResults, inputData,nrpoints=10000,diffcorr=0.5,
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
 #' myres <- ProcessResults(inputResults=myres,inputData=mydata)
-#' HistogramGMPairs(myres)
+#' HistogramGMPairs(inputResults=myres)
 #' }
 #' @export
-HistogramGMPairs <- function(myres, type = 'metabolite', breaks = 50){
+HistogramGMPairs <- function(inputResults, type = 'metabolite', breaks = 50){
 
-x <- myres@filt.results
+x <- inputResults@filt.results
 
 if(is.null(x)){
     stop('Please run ProcessResults() before inputting into HistogramGMPairs')
