@@ -252,7 +252,7 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL) {
                 clindata <- data.frame(m, type)
                 mlin <- getstatsOneLM(Y ~ m + type + m:type, clindata = clindata,
                         arraydata = arraydata)
-		interaction.term.index <- grep("m:type",rownames(mlin$p.value.coeff))
+		interaction.term.index <- grep("g:type",rownames(mlin$p.value.coeff))
                 p.val.vector <- as.vector(mlin$p.value.coeff[interaction.term.index,])
                 #p.val.vector <- as.vector(mlin@p.value.coeff['m:type',])
                 # Print out progress every 1000 genes
