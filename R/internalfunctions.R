@@ -219,8 +219,9 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL) {
                 clindata <- data.frame(g, type)
                 mlin <- getstatsOneLM(Y ~ g + type + g:type, clindata = clindata,
                         arraydata = arraydata)
-                p.val.vector <- as.vector(mlin$p.value.coeff[4,])
-                #p.val.vector <- as.vector(mlin@p.value.coeff[4,])
+                interaction.term.index <- grep("g:type",rownames(mlin$p.value.coeff))
+		p.val.vector <- as.vector(mlin$p.value.coeff[interaction.term.index,])
+                #p.val.vector <- as.vector(mlin@p.value.coeff['g:type',])
                 # Print out progress every 1000 genes
                 if (x %% numprog == 0){
                     progX <- round(x/numgenes*100)
@@ -251,8 +252,9 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL) {
                 clindata <- data.frame(m, type)
                 mlin <- getstatsOneLM(Y ~ m + type + m:type, clindata = clindata,
                         arraydata = arraydata)
-                p.val.vector <- as.vector(mlin$p.value.coeff[4,])
-                #p.val.vector <- as.vector(mlin@p.value.coeff[4,])
+		interaction.term.index <- grep("g:type",rownames(mlin$p.value.coeff))
+                p.val.vector <- as.vector(mlin$p.value.coeff[interaction.term.index,])
+                #p.val.vector <- as.vector(mlin@p.value.coeff['m:type',])
                 # Print out progress every 1000 genes
                 if (x %% numprog == 0){
                     progX <- round(x/nummetab*100)
