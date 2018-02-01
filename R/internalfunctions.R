@@ -122,7 +122,9 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
 #' @import MultiDataSet
 #' @param inputData MultiDataSet object (output of ReadData())
 #' @param stype category to color-code by (can be more than two categories)
-getCommon <- function(inputData,stype=NULL) {
+#' @param addvar vector of additional variables to be incorporated into model
+#' @param class.addvar class of additional variables
+getCommon <- function(inputData,stype=NULL, addvar = NULL, class.addvar = NULL) {
    incommon<-MultiDataSet::commonSamples(inputData)
    mp <- Biobase::pData(incommon[["metabolite"]])
    gp <- Biobase::pData(incommon[["expression"]])
@@ -137,6 +139,7 @@ getCommon <- function(inputData,stype=NULL) {
 
    # Force the order to be the same, in case it isn't
    p <- mp[rownames(gp),]
+   p.0 <- p
    metab <- metab[,colnames(gene)]
 
    if(!is.null(stype)) {
@@ -158,12 +161,53 @@ getCommon <- function(inputData,stype=NULL) {
 		p <- new.p
         }
    }
+   
+   if(!is.null(addvar)){
+       
+       if (length(addvar %in% colnames(p.0)) != sum(addvar %in% colnames(p.0))){
+           stop("Additional variable names not in pData")
+       }
+       addvar_matrix <- p.0[colnames(gene),addvar, drop = FALSE]
+       na.addvar <- which(is.na(addvar_matrix) | addvar_matrix == '',arr.ind = TRUE)
+       na.addvar.list <- unique(rownames(na.addvar))
+       new.overall.list <- setdiff(colnames(gene), na.addvar.list)
+       
+       addvar_matrix <- addvar_matrix[new.overall.list,,drop = FALSE]
+       
+       class.var <- apply(addvar_matrix,2,class)
+       
+       gene <- gene[,new.overall.list]
+       metab <- metab[,new.overall.list]
+       p <- p.0[new.overall.list,stype]
+       
+       if(!(is.null(class.addvar))){
+           
+           if(length(class.addvar) != length(addvar)){
+               stop("lengths of addvar and class.addvar not the same")
+           }
+           len.addvar <- length(addvar)
+           for(i in 1:len.addvar){
+               if(class.addvar[i] == 'numeric'){
+                   
+                   addvar_matrix[,i] <- as.numeric(addvar_matrix[,i])
+                   
+               }else{
+                   
+                   addvar_matrix[,i] <- as.factor(as.character(addvar_matrix[,i]))
+                   
+               }
+           }
+       }
+       
+   }else{
+       addvar_matrix <- NULL
+   }
 
    # Check that everything is in right order
    if(!all.equal(rownames(mp),rownames(gp)) || !all.equal(colnames(metab),colnames(gene))){ 
 	stop("Something went wrong with the merging!  Sample names of input files may not match.")
    } else {
-   out <- list(p=as.factor(as.character(p)),gene=gene,metab=metab)
+   out <- list(p=as.factor(as.character(p)),gene=gene,metab=metab, addvar_matrix=addvar_matrix)
    }
    return(out)
 }
@@ -178,7 +222,8 @@ getCommon <- function(inputData,stype=NULL) {
 #' (default is 'metabolite')
 #' @param type vector of sample type (by default, it will be used in the interaction term).
 #' Only 2 categories are currently supported.
-RunLM <- function(incommon, outcome="metabolite", type=NULL) { 
+#' @param addvar vector of additional vectors to consider
+RunLM <- function(incommon, outcome="metabolite", type=NULL, addvar=NULL) { 
 
     gene <- incommon$gene
     metab <- incommon$metab
@@ -209,17 +254,39 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL) {
 
     if (outcome == "metabolite") {
         arraydata <- data.frame(metab)
-        form <- stats::formula(m ~ g + type + g:type)
+        #form <- stats::formula(m ~ g + type + g:type)
         # Retrieve pvalues by iterating through each gene
         numgenes <- nrow(gene)
 	numprog <- round(numgenes*0.1)
+	form.add <- "Y ~ g + type + g:type"
+	    if (!(is.null(addvar))){
+	        form.add <- "Y ~ g + type + g:type"
+	        
+	        len.addvar <- length(addvar)
+	        for (i in 1:len.addvar){
+	            form.add <- paste(form.add, '+', addvar[i])
+	        }
+	    }
+	
+	
         list.pvals <- lapply(1:numgenes, function(x) {
                 #print(x)
                 g <- as.numeric(gene[x,])
+                
+                if(is.null(addvar)){
                 clindata <- data.frame(g, type)
-                mlin <- getstatsOneLM(Y ~ g + type + g:type, clindata = clindata,
+                }else{
+                    clindata <- data.frame(g, type, incommon$addvar_matrix)
+                }
+                
+                mlin <- getstatsOneLM(stats::as.formula(form.add), clindata = clindata,
                         arraydata = arraydata)
-                p.val.vector <- as.vector(mlin$p.value.coeff[4,])
+                term.pvals <- rownames(mlin$p.value.coeff)
+                index.interac <- grep('g:type', term.pvals)
+                
+                p.val.vector <- as.vector(mlin$p.value.coeff[index.interac,])
+                
+                
                 #p.val.vector <- as.vector(mlin@p.value.coeff[4,])
                 # Print out progress every 1000 genes
                 if (x %% numprog == 0){
@@ -240,18 +307,37 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL) {
     colnames(mat.pvals) <- colnames(mat.pvalsadj) <- rownames(metab)
     } else if (outcome == "gene") {
         arraydata <- data.frame(gene)
-        form <- stats::formula(g ~ m + type + m:type)
+        #form <- stats::formula(g ~ m + type + m:type)
 
         # Retrieve pvalues by iterating through each gene
         nummetab <- nrow(metab)
 	numprog <- round(nummetab*0.1)
+	
+	form.add <- "Y ~ m + type + m:type"
+	if (!(is.null(addvar))){
+	    form.add <- "Y ~ m + type + m:type"
+	    
+	    len.addvar <- length(addvar)
+	    for (i in 1:len.addvar){
+	        form.add <- paste(form.add, '+', addvar[i])
+	    }
+	}
         list.pvals <- lapply(1:nummetab, function(x) {
                 #print(x)
-                m <- as.numeric(gene[x,])
-                clindata <- data.frame(m, type)
-                mlin <- getstatsOneLM(Y ~ m + type + m:type, clindata = clindata,
+                m <- as.numeric(metab[x,])
+                
+                if(is.null(addvar)){
+                    clindata <- data.frame(m, type)
+                }else{
+                    clindata <- data.frame(m, type, incommon$addvar_matrix)
+                }
+               
+                mlin <- getstatsOneLM(stats::as.formula(form.add), clindata = clindata,
                         arraydata = arraydata)
-                p.val.vector <- as.vector(mlin$p.value.coeff[4,])
+                
+                term.pvals <- rownames(mlin$p.value.coeff)
+                index.interac <- grep('m:type', term.pvals)
+                p.val.vector <- as.vector(mlin$p.value.coeff[index.interac,])
                 #p.val.vector <- as.vector(mlin@p.value.coeff[4,])
                 # Print out progress every 1000 genes
                 if (x %% numprog == 0){

@@ -1,2 +1,3 @@
 .travis.yml
 #inst/doc
+.Rproj.user

@@ -8,6 +8,8 @@
 #' in the interaction term). Only 2 categories are currently supported.
 #' @param outcome 'metabolite' or 'gene' must be set as outcome/independent variable
 #' (default is 'metabolite')
+#' @param addvar Additional variables from the phenotypic data that be integrated into linear model
+#' @param class.addvar Describing whether additional variables are 'numeric' or 'categorial'
 #' @return IntLimModel object with model results
 #'
 #' @examples
@@ -18,7 +20,7 @@
 #' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
 #' }
 #' @export
-RunIntLim <- function(inputData,stype=NULL,outcome="metabolite"){
+RunIntLim <- function(inputData,stype=NULL,outcome="metabolite", addvar=NULL, class.addvar=NULL){
 
     if (class(inputData) != "MultiDataSet") {
         stop("input data is not a MultiDataSet class")
@@ -34,7 +36,7 @@ RunIntLim <- function(inputData,stype=NULL,outcome="metabolite"){
 #    mp <- as.character(Biobase::pData(incommon[["metabolite"]])[,stype])
 #    gp <- as.character(Biobase::pData(incommon[["expression"]])[,stype])
 
-    incommon <- getCommon(inputData,stype)
+    incommon <- getCommon(inputData,stype,addvar,class.addvar=class.addvar)
 
     if(length(unique(stats::na.omit(incommon$p))) != 2) {
 	stop(paste("IntLim currently requires only two categories.  Make sure the column",stype,"only has two unique values"))
@@ -44,9 +46,19 @@ RunIntLim <- function(inputData,stype=NULL,outcome="metabolite"){
     print(table(incommon$p))
 
     ptm <- proc.time()
-    myres <- RunLM(incommon,outcome=outcome,type=incommon$p)
+    myres <- RunLM(incommon,outcome=outcome,type=incommon$p,addvar=addvar)
     print(proc.time() - ptm)
     myres@stype=stype
     myres@outcome=outcome
+    
+    if(!is.null(addvar)){
+        add.var <- colnames(incommon$addvar_matrix)
+        class.var <- c()
+        for(i in 1:length(addvar)){
+            class.var[i] <- class(incommon$addvar_matrix[,i])
+        }
+        
+        myres@addvar <- data.frame(add.var,class.var)
+    }
     return(myres)
 }
