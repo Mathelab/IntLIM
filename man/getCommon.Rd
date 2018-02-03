@@ -4,16 +4,16 @@
 \alias{getCommon}
 \title{Function that returns a list of all data for samples in common between metabolite and gene datasets}
 \usage{
-getCommon(inputData, stype = NULL, addvar = NULL, class.addvar = NULL)
+getCommon(inputData, stype = NULL, covar = NULL, class.covar = NULL)
 }
 \arguments{
 \item{inputData}{MultiDataSet object (output of ReadData())}
 
 \item{stype}{category to color-code by (can be more than two categories)}
 
-\item{addvar}{vector of additional variables to be incorporated into model}
+\item{covar}{vector of additional variables to be incorporated into model}
 
-\item{class.addvar}{class of additional variables}
+\item{class.covar}{class of additional variables}
 }
 \description{
 Function that returns a list of all data for samples in common between metabolite and gene datasets

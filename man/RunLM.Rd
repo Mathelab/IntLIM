@@ -4,7 +4,7 @@
 \alias{RunLM}
 \title{Function that runs linear models and returns interaction p-values.}
 \usage{
-RunLM(incommon, outcome = "metabolite", type = NULL, addvar = NULL)
+RunLM(incommon, outcome = "metabolite", type = NULL, covar = NULL)
 }
 \arguments{
 \item{incommon}{MultiDataSet object (output of ReadData()) with gene}
@@ -15,7 +15,7 @@ RunLM(incommon, outcome = "metabolite", type = NULL, addvar = NULL)
 \item{type}{vector of sample type (by default, it will be used in the interaction term).
 Only 2 categories are currently supported.}
 
-\item{addvar}{vector of additional vectors to consider}
+\item{covar}{vector of additional vectors to consider}
 }
 \description{
 Function that runs linear models and returns interaction p-values.

@@ -4,8 +4,8 @@
 \alias{RunIntLim}
 \title{Run linear models and retrieve relevant statistics}
 \usage{
-RunIntLim(inputData, stype = NULL, outcome = "metabolite", addvar = NULL,
-  class.addvar = NULL)
+RunIntLim(inputData, stype = NULL, outcome = "metabolite", covar = NULL,
+  class.covar = NULL)
 }
 \arguments{
 \item{inputData}{MultiDataSet object (output of ReadData()) with gene expression,
@@ -17,9 +17,9 @@ in the interaction term). Only 2 categories are currently supported.}
 \item{outcome}{'metabolite' or 'gene' must be set as outcome/independent variable
 (default is 'metabolite')}
 
-\item{addvar}{Additional variables from the phenotypic data that be integrated into linear model}
+\item{covar}{Additional variables from the phenotypic data that be integrated into linear model}
 
-\item{class.addvar}{Describing whether additional variables are 'numeric' or 'categorial'}
+\item{class.covar}{Describing whether additional variables are 'numeric' or 'categorial'}
 }
 \value{
 IntLimModel object with model results

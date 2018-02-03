@@ -22,6 +22,6 @@ in the interaction term). Only 2 categories are currently supported.}
 
 \item{\code{outcome}}{outcome is either 'metabolite' or 'gene'}
 
-\item{\code{addvar}}{describing additional variables and the class they form}
+\item{\code{covar}}{describing additional variables and the class they form}
 }}
 
