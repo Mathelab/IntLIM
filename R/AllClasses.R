@@ -28,7 +28,7 @@ methods::setClass (
 #' @slot stype column name that represents sample type (by default, it will be used
 #' in the interaction term). Only 2 categories are currently supported.
 #' @slot outcome outcome is either 'metabolite' or 'gene'
-#' @slot addvar describing additional variables and the class they form
+#' @slot covar describing additional variables and the class they form
 methods::setClass(
 	Class="IntLimResults",
 	representation(interaction.pvalues="matrix", 
@@ -38,6 +38,6 @@ methods::setClass(
 		warnings="character",
 		stype="character",
 		outcome="character",
-		addvar="data.frame"))
+		covar="data.frame"))
 
 

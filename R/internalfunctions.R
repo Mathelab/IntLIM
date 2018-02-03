@@ -122,9 +122,9 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
 #' @import MultiDataSet
 #' @param inputData MultiDataSet object (output of ReadData())
 #' @param stype category to color-code by (can be more than two categories)
-#' @param addvar vector of additional variables to be incorporated into model
-#' @param class.addvar class of additional variables
-getCommon <- function(inputData,stype=NULL, addvar = NULL, class.addvar = NULL) {
+#' @param covar vector of additional variables to be incorporated into model
+#' @param class.covar class of additional variables
+getCommon <- function(inputData,stype=NULL, covar = NULL, class.covar = NULL) {
    incommon<-MultiDataSet::commonSamples(inputData)
    mp <- Biobase::pData(incommon[["metabolite"]])
    gp <- Biobase::pData(incommon[["expression"]])
@@ -162,52 +162,52 @@ getCommon <- function(inputData,stype=NULL, addvar = NULL, class.addvar = NULL) 
         }
    }
    
-   if(!is.null(addvar)){
+   if(!is.null(covar)){
        
-       if (length(addvar %in% colnames(p.0)) != sum(addvar %in% colnames(p.0))){
+       if (length(covar %in% colnames(p.0)) != sum(covar %in% colnames(p.0))){
            stop("Additional variable names not in pData")
        }
-       addvar_matrix <- p.0[colnames(gene),addvar, drop = FALSE]
-       na.addvar <- which(is.na(addvar_matrix) | addvar_matrix == '',arr.ind = TRUE)
-       na.addvar.list <- unique(rownames(na.addvar))
-       new.overall.list <- setdiff(colnames(gene), na.addvar.list)
+       covar_matrix <- p.0[colnames(gene),covar, drop = FALSE]
+       na.covar <- which(is.na(covar_matrix) | covar_matrix == '',arr.ind = TRUE)
+       na.covar.list <- unique(rownames(na.covar))
+       new.overall.list <- setdiff(colnames(gene), na.covar.list)
        
-       addvar_matrix <- addvar_matrix[new.overall.list,,drop = FALSE]
+       covar_matrix <- covar_matrix[new.overall.list,,drop = FALSE]
        
-       class.var <- apply(addvar_matrix,2,class)
+       class.var <- apply(covar_matrix,2,class)
        
        gene <- gene[,new.overall.list]
        metab <- metab[,new.overall.list]
        p <- p.0[new.overall.list,stype]
        
-       if(!(is.null(class.addvar))){
+       if(!(is.null(class.covar))){
            
-           if(length(class.addvar) != length(addvar)){
-               stop("lengths of addvar and class.addvar not the same")
+           if(length(class.covar) != length(covar)){
+               stop("lengths of covar and class.covar not the same")
            }
-           len.addvar <- length(addvar)
-           for(i in 1:len.addvar){
-               if(class.addvar[i] == 'numeric'){
+           len.covar <- length(covar)
+           for(i in 1:len.covar){
+               if(class.covar[i] == 'numeric'){
                    
-                   addvar_matrix[,i] <- as.numeric(addvar_matrix[,i])
+                   covar_matrix[,i] <- as.numeric(covar_matrix[,i])
                    
                }else{
                    
-                   addvar_matrix[,i] <- as.factor(as.character(addvar_matrix[,i]))
+                   covar_matrix[,i] <- as.factor(as.character(covar_matrix[,i]))
                    
                }
            }
        }
        
    }else{
-       addvar_matrix <- NULL
+       covar_matrix <- NULL
    }
 
    # Check that everything is in right order
    if(!all.equal(rownames(mp),rownames(gp)) || !all.equal(colnames(metab),colnames(gene))){ 
 	stop("Something went wrong with the merging!  Sample names of input files may not match.")
    } else {
-   out <- list(p=as.factor(as.character(p)),gene=gene,metab=metab, addvar_matrix=addvar_matrix)
+   out <- list(p=as.factor(as.character(p)),gene=gene,metab=metab, covar_matrix=covar_matrix)
    }
    return(out)
 }
@@ -222,8 +222,8 @@ getCommon <- function(inputData,stype=NULL, addvar = NULL, class.addvar = NULL) 
 #' (default is 'metabolite')
 #' @param type vector of sample type (by default, it will be used in the interaction term).
 #' Only 2 categories are currently supported.
-#' @param addvar vector of additional vectors to consider
-RunLM <- function(incommon, outcome="metabolite", type=NULL, addvar=NULL) { 
+#' @param covar vector of additional vectors to consider
+RunLM <- function(incommon, outcome="metabolite", type=NULL, covar=NULL) { 
 
     gene <- incommon$gene
     metab <- incommon$metab
@@ -259,12 +259,12 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL, addvar=NULL) {
         numgenes <- nrow(gene)
 	numprog <- round(numgenes*0.1)
 	form.add <- "Y ~ g + type + g:type"
-	    if (!(is.null(addvar))){
+	    if (!(is.null(covar))){
 	        form.add <- "Y ~ g + type + g:type"
 	        
-	        len.addvar <- length(addvar)
-	        for (i in 1:len.addvar){
-	            form.add <- paste(form.add, '+', addvar[i])
+	        len.covar <- length(covar)
+	        for (i in 1:len.covar){
+	            form.add <- paste(form.add, '+', covar[i])
 	        }
 	    }
 	
@@ -273,10 +273,10 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL, addvar=NULL) {
                 #print(x)
                 g <- as.numeric(gene[x,])
                 
-                if(is.null(addvar)){
+                if(is.null(covar)){
                 clindata <- data.frame(g, type)
                 }else{
-                    clindata <- data.frame(g, type, incommon$addvar_matrix)
+                    clindata <- data.frame(g, type, incommon$covar_matrix)
                 }
                 
                 mlin <- getstatsOneLM(stats::as.formula(form.add), clindata = clindata,
@@ -314,22 +314,22 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL, addvar=NULL) {
 	numprog <- round(nummetab*0.1)
 	
 	form.add <- "Y ~ m + type + m:type"
-	if (!(is.null(addvar))){
+	if (!(is.null(covar))){
 	    form.add <- "Y ~ m + type + m:type"
 	    
-	    len.addvar <- length(addvar)
-	    for (i in 1:len.addvar){
-	        form.add <- paste(form.add, '+', addvar[i])
+	    len.covar <- length(covar)
+	    for (i in 1:len.covar){
+	        form.add <- paste(form.add, '+', covar[i])
 	    }
 	}
         list.pvals <- lapply(1:nummetab, function(x) {
                 #print(x)
                 m <- as.numeric(metab[x,])
                 
-                if(is.null(addvar)){
+                if(is.null(covar)){
                     clindata <- data.frame(m, type)
                 }else{
-                    clindata <- data.frame(m, type, incommon$addvar_matrix)
+                    clindata <- data.frame(m, type, incommon$covar_matrix)
                 }
                
                 mlin <- getstatsOneLM(stats::as.formula(form.add), clindata = clindata,
