@@ -78,7 +78,10 @@ ProcessResults <- function(inputResults,
 		gene=genenames[keepers2])
 	inputResults@filt.results <- cbind(inputResults@filt.results,fincor1[keepers2],fincor2[keepers2])
 	colnames(inputResults@filt.results)[3:4]=paste0(setdiff(as.character(unlist(unique(p))),""),"_cor")
-
+    
+	abs.diffcorr <- mydiffcor[keepers2]
+	print(abs.diffcorr)
+	inputResults@filt.results <- cbind(inputResults@filt.results, abs.diffcorr)
 	if(inputResults@outcome == "metabolite") {
                 adjp <- reshape2::melt(inputResults@interaction.adj.pvalues)
 		p <-  reshape2::melt(inputResults@interaction.pvalues)
@@ -94,7 +97,7 @@ ProcessResults <- function(inputResults,
 	outpadj <- adjp[cornames,]
 
 	inputResults@filt.results = cbind(inputResults@filt.results,outp$value, outpadj$value)
-	colnames(inputResults@filt.results)[5:6]=c("Pval","FDRadjPval")
+	colnames(inputResults@filt.results)[6:7]=c("Pval","FDRadjPval")
 
 
 	if (treecuts > 0){
