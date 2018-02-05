@@ -23,6 +23,7 @@ Imports:
     methods,
     reshape2,
     magrittr,
+    GenomicRanges,
     htmltools,
     highcharter,
     RColorBrewer,
