@@ -79,9 +79,9 @@ ProcessResults <- function(inputResults,
 	inputResults@filt.results <- cbind(inputResults@filt.results,fincor1[keepers2],fincor2[keepers2])
 	colnames(inputResults@filt.results)[3:4]=paste0(setdiff(as.character(unlist(unique(p))),""),"_cor")
     
-	abs.diffcorr <- mydiffcor[keepers2]
-	print(abs.diffcorr)
-	inputResults@filt.results <- cbind(inputResults@filt.results, abs.diffcorr)
+	diff.corr <- inputResults@filt.results[,4] - inputResults@filt.results[,3]
+	print(diff.corr)
+	inputResults@filt.results <- cbind(inputResults@filt.results, diff.corr)
 	if(inputResults@outcome == "metabolite") {
                 adjp <- reshape2::melt(inputResults@interaction.adj.pvalues)
 		p <-  reshape2::melt(inputResults@interaction.pvalues)
