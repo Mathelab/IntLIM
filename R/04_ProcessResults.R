@@ -1,9 +1,9 @@
-#' Retrieve significant gene-metabolite pairs, based on adjusted p-values.  
-#' For each gene-metabolite pair that is statistically significant, calculate the 
+#' Retrieve significant gene-metabolite pairs, based on adjusted p-values.
+#' For each gene-metabolite pair that is statistically significant, calculate the
 #' correlation within group1 (e.g. cancer) and the correlation within group2 (e.g.
 #' non-cancer).  Users can then remove pairs with a difference in correlations between
 #' groups 1 and 2 less than a user-defined threshold.
-#' 
+#'
 #' @include internalfunctions.R
 #'
 #' @param inputResults IntLimResults object with model results (output of RunIntLim())
@@ -13,7 +13,7 @@
 #' @param diffcorr cutoff of differences in correlations for filtering (default 0.5)
 #' @param corrtype spearman or pearson or other parameters allowed by cor() function (default
 #' spearman)
-#' @param treecuts user-selected number of clusters (of gene-metabolite pairs) to cut the tree into 
+#' @param treecuts user-selected number of clusters (of gene-metabolite pairs) to cut the tree into
 #' @return IntResults object with model results (now includes correlations)
 #'
 #' @examples
@@ -62,7 +62,7 @@ ProcessResults <- function(inputResults,
 		metabnames <- as.character(temp[,2])
 	} else {
 		keepers <- which(mydat <= pvalcutoff, arr.ind=T)
-		fincor1 <- as.numeric(apply(keepers,1,function(x) 
+		fincor1 <- as.numeric(apply(keepers,1,function(x)
 			cor1.m[x[1],x[2]]))
                 fincor2 <- as.numeric(apply(keepers,1,function(x)
                         cor2.m[x[1],x[2]]))
@@ -74,13 +74,13 @@ ProcessResults <- function(inputResults,
 
 	keepers2 <- which(mydiffcor >= diffcorr)
 
-	inputResults@filt.results <- data.frame(metab=metabnames[keepers2], 
+	inputResults@filt.results <- data.frame(metab=metabnames[keepers2],
 		gene=genenames[keepers2])
 	inputResults@filt.results <- cbind(inputResults@filt.results,fincor1[keepers2],fincor2[keepers2])
 	colnames(inputResults@filt.results)[3:4]=paste0(setdiff(as.character(unlist(unique(p))),""),"_cor")
-    
+
 	diff.corr <- inputResults@filt.results[,4] - inputResults@filt.results[,3]
-	
+
 	inputResults@filt.results <- cbind(inputResults@filt.results, diff.corr)
 	if(inputResults@outcome == "metabolite") {
                 adjp <- reshape2::melt(inputResults@interaction.adj.pvalues)
@@ -109,11 +109,13 @@ ProcessResults <- function(inputResults,
 
 
 	}
+
+print(paste(nrow(inputResults@filt.results), 'gene-metabolite pairs found given cutoffs'))
 return(inputResults)
 }
 
 
-#' Create results table, which includes significant gene:metabolite pairs, associated p-values, 
+#' Create results table, which includes significant gene:metabolite pairs, associated p-values,
 #' and correlations in each category evaluated.
 #'
 #' @param inputResults IntLimResults object with model results (output of ProcessResults())
@@ -140,7 +142,7 @@ return(inputResults)
 #                        m <- which(colnames(inputResults@interaction.pvalues) == a$metab[i])
 #                        if(length(g)==0 || length(m)==0) {p<-c(p,NA);padj<-c(padj,NA)} else {
 #                                p <- c(p,inputResults@interaction.pvalues[g,m])
-#				padj <- c(padj,inputResults@interaction.adj.pvalues[g,m]) 
+#				padj <- c(padj,inputResults@interaction.adj.pvalues[g,m])
 #                              padj <- c(padj,inputResults@interaction.adj.pvalues[a$gene[i],a$metab[i]])
 #                        }
 #                }
