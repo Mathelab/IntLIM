@@ -53,7 +53,7 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
 	}
 	# Make sure order of feature data is the same as the data matrix:
 	myind=as.numeric(lapply(rownames(metabdata),function(x) which(metabfdata[,"id"]==x)))
-        metabfdata <- data.frame(id=metabfdata[myind,],stringsAsFactors=FALSE)
+        metabfdata <- data.frame(metabfdata[myind,],stringsAsFactors=FALSE)
 	rownames(metabfdata) <- metabfdata[,1]
 	metabfeatureData <- Biobase::AnnotatedDataFrame(data = metabfdata)
 	metab.set <- methods::new("MetaboliteSet",metabData = metabdata, 

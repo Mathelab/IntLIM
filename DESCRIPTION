@@ -52,6 +52,7 @@ Collate:
     'IntLimResults_extendedfunctions.R'
     'MultiDataSet_extendedfunctions.R'
     'plottingfunctions.R'
+    'ramplinkedinfunctions.R'
     'runShiny.R'
     'statsfunctions.R'
     'writingfunctions.R'
