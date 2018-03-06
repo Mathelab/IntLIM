@@ -2,8 +2,8 @@
 % Please edit documentation in R/04_ProcessResults.R
 \name{ProcessResults}
 \alias{ProcessResults}
-\title{Retrieve significant gene-metabolite pairs, based on adjusted p-values.  
-For each gene-metabolite pair that is statistically significant, calculate the 
+\title{Retrieve significant gene-metabolite pairs, based on adjusted p-values.
+For each gene-metabolite pair that is statistically significant, calculate the
 correlation within group1 (e.g. cancer) and the correlation within group2 (e.g.
 non-cancer).  Users can then remove pairs with a difference in correlations between
 groups 1 and 2 less than a user-defined threshold.}
@@ -30,8 +30,8 @@ spearman)}
 IntResults object with model results (now includes correlations)
 }
 \description{
-Retrieve significant gene-metabolite pairs, based on adjusted p-values.  
-For each gene-metabolite pair that is statistically significant, calculate the 
+Retrieve significant gene-metabolite pairs, based on adjusted p-values.
+For each gene-metabolite pair that is statistically significant, calculate the
 correlation within group1 (e.g. cancer) and the correlation within group2 (e.g.
 non-cancer).  Users can then remove pairs with a difference in correlations between
 groups 1 and 2 less than a user-defined threshold.

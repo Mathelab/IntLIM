@@ -41,13 +41,13 @@ devtools::install_github("mathelab/IntLIM")
 A detailed vignette can be found here:
 https://mathelab.github.io/IntLIM/IntLIMVignette.html
 
-## Formatted Data
+## Formatted Data and Analysis Codes
 
-Formatted data for the NCI-60 analyses can be obtained from the following GitHub repository:
+Formatted data and codes to reproduce the NCI-60 analyses can be obtained from the following GitHub repository:
 
 https://github.com/Mathelab/NCI60_GeneMetabolite_Data
 
-Formatted data for the breast cancer analyses can be obtained from the following GitHub repository:
+Formatted data and codes to reproduce the breast cancer analyses can be obtained from the following GitHub repository:
 
 https://github.com/Mathelab/BreastCancerAmbs_GeneMetabolite_Data
 

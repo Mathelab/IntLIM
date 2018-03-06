@@ -262,7 +262,7 @@ shinyServer(function(input, output, session) {
     
     output$scatterplot<-renderUI({
             a<-as.matrix(scatterrows())
-            pair1<-pairTable()[a[1,],]
+            pair1<-as.matrix(pairTable()[a[1,],])
             geneName1<-pair1[,"gene"]
             metabName1<-pair1[,"metab"]
             splot1<-IntLIM::PlotGMPair(FmultiData(),input$stype,geneName=geneName1,metabName=metabName1) 
