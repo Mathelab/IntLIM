@@ -2,6 +2,8 @@
 
 The goal of this app is to provide users with a user-friendly platform for integrating gene expression and metabolomics data.  Specifically, the software finds gene:metabolite relationships that are specific to a given phenotype (e.g. cancer vs non-cancer). For example, a given gene:metabolite pair could show a strong correlation in one phenotype (e.g. cancer) and no correlation in the other (e.g. non-cancer). 
 
+More details can be found in <a href="https://arxiv.org/abs/1802.10588" target="_blank">our manuscript</a>.
+
 ## Getting started (loading in data)
 
 __*Please be sure that all files noted in the CSV file, including the CSV file, are in the same folder. Do not include path names in the filenames.*__
