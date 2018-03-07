@@ -1,6 +1,6 @@
 #' Obtain lists of source IDs for inputting into RaMP or other pathway analysis
 #' program
-#' Requires KEGG ids and/or HMDB ids
+#' Requires sourceIDs and sourceDBs
 #' Otherwise will output names given
 #' @param inputResults results of IntLIM analysis
 #' @param inputData IntLIM dataset containing feature data
@@ -12,56 +12,65 @@
 #' @export
 #'
 
-getMetabRes <- function(inputResults, inputData, outputMetab='id'){
+getMetabList <- function(inputResults, inputData, outputMetab='id'){
 
   fData.metab <- Biobase::fData(inputData[["metabolite"]])
   metab.list <- as.character(unique(inputResults@filt.results$metab))
   cols.fData.metab <- colnames(fData.metab)
-  kegg.index <- grep('kegg',tolower(cols.fData.metab))
-  hmdb.index <- grep('hmdb', tolower(cols.fData.metab))
 
-  if((length(kegg.index) == 0 & length(hmdb.index)==0) | outputMetab == 'name' ){
+  if (outputMetab == 'id' | outputMetab == 'mapping'){
 
-    if(length(kegg.index) == 0 & length(hmdb.index)==0){
-    print("No KEGG or HMDB columns in metabolite feature data.  Will print out metabolite names")
+
+  if('sourceID' %in% cols.fData.metab & 'sourceDB' %in% cols.fData.metab){
+    len.metabs <- nrow(fData.metab)
+    mappinglist <- c()
+
+    mappingIDs <- function(index){
+      id.source <- as.character(fData.metab$sourceDB[index])
+      id.name <- as.character(fData.metab$sourceID[index])
+      id.list <- unlist(strsplit(id.name,split=','))
+      id.DB.added <- unlist(lapply(id.list, function(x){return(paste(id.source, ":", x, sep = ""))}))
+      mappingIDs <- paste(id.DB.added, collapse = ',')
+      return(mappingIDs)
     }
-    getMetabRes <- metab.list
-    return(getMetabRes)
-  }else{
-  KEGG.id <- as.character(fData.metab[metab.list,kegg.index])
-  HMDB.id <- as.character(fData.metab[metab.list,hmdb.index])
-  RaMP.input <- KEGG.id
-  RaMP.input[which(is.na(RaMP.input))] <- HMDB.id[which(is.na(RaMP.input))]
 
-  metab.res <- data.frame('metab'=metab.list, KEGG.id, HMDB.id, RaMP.input)
-  metab.id.list.obj <- as.character(metab.res$RaMP.input)
-  metab.id.list.obj <- metab.id.list.obj[which(!is.na(metab.id.list.obj))]
+    mappinglist <- unlist(lapply(1:nrow(fData.metab), mappingIDs))
+    mapping.complete <- data.frame('name' = fData.metab$id, 'mapping' = mappinglist)
+    rownames(mapping.complete) <- mapping.complete$name
+    mapping.summary <- mapping.complete[metab.list,]
 
-  if (outputMetab == 'id'){
-  getMetabRes <- metab.id.list.obj
+    if (outputMetab == 'id'){
+      mapping.res.list.string <- paste(as.character(mapping.summary$mapping,
+                                                    collapse = ','))
+      mapping.res.list <- unique(unlist(strsplit(mapping.res.list.string, split = ',')))
+      getMetabList <- mapping.res.list
+      return(getMetabList)
+    }else{ #asking for mapping
+      getMetabList <- mapping.summary
+      return(getMetabList)
+    }
   }else{
-    getMetabRes <- metab.res
+    print("No sourceID or sourceDB column.  Outputting only names")
+    getMetabList <- metab.list
+    return(getMetabList)
   }
-  return(getMetabRes)
+
+  }else{
+    getMetabList >- metab.list
+    return(getMetabList)
+
   }
 }
 
 
 
-
-
-
-
-
-
-
 #' Obtain lists of source IDs for inputting into RaMP or other pathway analysis
 #' program
-#' Requires sourceID for gene suitable for RaMP
+#' Requires sourceIDs and sourceDBs
 #' Otherwise will output names given
 #' @param inputResults results of IntLIM analysis
 #' @param inputData IntLIM dataset containing feature data
-#' @param outputGene format of metabolites.  Either names or a list of all
+#' @param outputGene format of genes.  Either names or a list of all
 #' gene ids.  'id' means source ID, 'name' means gene entry names,
 #' 'mapping' provides names and source IDs
 #' @return a list of source IDs or names for genes of interests
@@ -69,36 +78,54 @@ getMetabRes <- function(inputResults, inputData, outputMetab='id'){
 #' @export
 #'
 
-getGeneRes <- function(inputResults, inputData, outputGene='id'){
+getGeneList <- function(inputResults, inputData, outputGene='id'){
 
   fData.gene <- Biobase::fData(inputData[["expression"]])
-  colnames.fData.gene <- colnames(fData.gene)
-  sourceid.in <- 'sourceID' %in% colnames.fData.gene
-
   gene.list <- as.character(unique(inputResults@filt.results$gene))
+  cols.fData.gene <- colnames(fData.gene)
 
-    if(!sourceid.in | outputGene == 'name'){
-    if(!sourceid.in){
-      print('No column labeled sourceID in feature id.  Printing gene names')
+  if (outputGene == 'id' | outputGene == 'mapping'){
+
+
+    if('sourceID' %in% cols.fData.gene & 'sourceDB' %in% cols.fData.gene){
+      len.metabs <- nrow(fData.gene)
+      mappinglist <- c()
+
+      mappingIDs <- function(index){
+        id.source <- as.character(fData.gene$sourceDB[index])
+        id.name <- as.character(fData.gene$sourceID[index])
+        id.list <- unlist(strsplit(id.name,split=','))
+        id.DB.added <- unlist(lapply(id.list, function(x){return(paste(id.source, ":", x, sep = ""))}))
+        mappingIDs <- paste(id.DB.added, collapse = ',')
+        return(mappingIDs)
+      }
+
+      mappinglist <- unlist(lapply(1:nrow(fData.gene), mappingIDs))
+      mapping.complete <- data.frame('name' = fData.gene$id, 'mapping' = mappinglist)
+      rownames(mapping.complete) <- mapping.complete$name
+      mapping.summary <- mapping.complete[gene.list,]
+
+      if (outputGene == 'id'){
+        mapping.res.list.string <- paste(as.character(mapping.summary$mapping,
+                                                      collapse = ','))
+        mapping.res.list <- unique(unlist(strsplit(mapping.res.list.string, split = ',')))
+        getGeneList <- mapping.res.list
+        return(getGeneList)
+      }else{ #asking for mapping
+        getGeneList <- mapping.summary
+        return(getGeneList)
+      }
+    }else{
+      print("No sourceID or sourceDB column.  Outputting only names")
+      getGeneList <- gene.list
+      return(getGeneList)
     }
-    getGeneRes <- gene.list
-    return(getGeneRes)
-  }else{
 
-  ensembl.id.collec <- as.character(fData.gene[gene.list,'sourceID'])
-  gene.id.list <- paste(ensembl.id.collec, collapse = ',')
-  gene.id.list.obj <- unique(unlist(strsplit(gene.id.list, split = ',')))
-
-  if(outputGene == 'id'){
-  gene.id.list.obj <- gene.id.list.obj[which(!is.na(gene.id.list.obj))]
-  getGeneRes <- gene.id.list.obj
-  return(getGeneRes)
   }else{
-  gene.res <- fData.gene[gene.list,c('id','sourceID')]
-  getGeneRes <- gene.res
-  return(getGeneRes)
-  }
+    getGeneList >- gene.list
+    return(getGeneList)
 
   }
-
 }
+
+
