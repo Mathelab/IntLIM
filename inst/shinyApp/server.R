@@ -1,97 +1,92 @@
 options(shiny.trace=F)
 
 
-shinyServer(function(input, output, session) {      
-    #file input==================================================================================================
-
-  rootVolumes <- c(Home = normalizePath("~"), getVolumes()(), WD = '.')
-  # rootVolumes <- c(Home = "/Users/ewymathe/Downloads/IntLIM/inst/extdata", getVolumes()(), WD = '.')   
-
-    shinyFileChoose(input,'file1',
-                    roots = rootVolumes,
-                    session = session)
-    
-    output$filename <- renderPrint( {
-
-        myFile <- as.character(
-            parseFilePaths(
-                rootVolumes,
-                input$file1)$datapath)
-        if (is.null(myFile)){
-            cat("Please select CSV file by clicking the button above")
-        }else{
-            paste("File name:", myFile)
-
-	myFile <- as.character(
-             parseFilePaths(
-               rootVolumes,
-               input$file1)$datapath)
-	if (is.null(myFile)){
-                cat("Please select CSV file by clicking the button above")
-            }else{
-            cat(paste0("File to load:", myFile))
-            }
-
-        }
+shinyServer(function(input, output, session) {  
+  
+    #Desktop file input==================================================================================================
+  fixUploadedFilesNames <- function(x) {
+    if (is.null(x)) {
+      return()
     }
-    )
+    oldNames = x$datapath
+    newNames = file.path(dirname(x$datapath),x$name)
+    file.rename(from = oldNames, to = newNames)
+    x$datapath <- newNames
+    x
+  }
+  
+  output$filename <- renderPrint({
+    myFile <- fixUploadedFilesNames(input$file1) #fixing uploaded filenames.
+    if (is.null(myFile)) {
+      cat("Please name your input file as input.csv & select multiple files by clicking the browse button")
+    } else if (length(myFile$name) !=6) {
+      cat("please select upto 6 files")
+    } else {
+      paste(myFile$name,"- uploaded")
+    }
+
+  })
+
+  output$idChooseM <- renderUI({
     
-    
-    output$idChooseM <- renderUI({
-        if (is.null(input$file1)){
-            
-        }else{
-            myFile <- as.character(
-                parseFilePaths(
-                    rootVolumes,
-                    input$file1)$datapath)
-            file<- read.csv(myFile)
-            rownames(file)<-file$type
-            if(file["metabMetaData","filenames"]==""){
-                return()
-            }
-            textInput("metabid", "Metab ID", "")
+    if (is.null(input$file1$datapath)) {
+      
+    } else {
+      myFile <- fixUploadedFilesNames(input$file1)
+      indexfile = which(myFile$name == 'input.csv')
+      if (indexfile == which(myFile$name == 'input.csv')) {
+        file <- read.csv(myFile$datapath[indexfile])
+        rownames(file) <- file$type
+        if (file["metabMetaData", "filenames"] == "") {
+          return()
         }
+        textInput("metabid", "Metab ID", "")
         
+      } else {
         
-    })
+        tags$b(paste("Please rename input file as input.csv"))
+        
+      }
+    }
     
-    output$idChooseG <- renderUI({
-        if (is.null(input$file1)){
-            
-        }else{
-            myFile <- as.character(
-                parseFilePaths(
-                    rootVolumes,
-                    input$file1)$datapath)
-            file<- read.csv(myFile)
-            rownames(file)<-file$type
-            if(file["geneMetaData","filenames"]==""){
-                return()
-            }
-            textInput("geneid", "Gene ID", "")
+  })
+  
+  output$idChooseG <- renderUI({
+    
+    if (is.null(input$file1)) {
+      
+    } else {
+      myFile <- fixUploadedFilesNames(input$file1)
+      indexfile = which(myFile$name == 'input.csv')
+      if (indexfile == which(myFile$name == 'input.csv')) {
+        file <- read.csv(myFile$datapath[indexfile])
+        rownames(file) <- file$type
+        if (file["metabMetaData", "filenames"] == "") {
+          return()
         }
+        textInput("geneid", "Gene ID", "")
         
+      } else {
         
-    })
-    
-    
-    
-    multiData <- eventReactive(input$run,{
+        tags$b(paste("Please rename input file as input.csv"))
         
-        IntLIM::ReadData(req(as.character(
-            parseFilePaths(
-                rootVolumes,
-                input$file1)$datapath)),
-            input$metabid,input$geneid)
-       
-        
-    })
+      }
+    }
     
-   
+  })
+  
+  ## Windows end
+  multiData <- eventReactive(input$run, {
     
-    output$stats<-renderDataTable({
-        
+    myFile <- fixUploadedFilesNames(input$file1)
+    print(length(myFile))
+    indexfile = which(myFile$name == 'input.csv')
+    IntLIM::ReadData(req(myFile$datapath[[indexfile]]),
+                     input$metabid, input$geneid)
+  
+  })
+  
+  output$stats<-renderDataTable({
         table<- as.data.frame(t(IntLIM::ShowStats(multiData())))
         colnames(table)<-"value"
         cbind(names=rownames(table),table)
