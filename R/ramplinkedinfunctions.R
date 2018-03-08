@@ -1,7 +1,19 @@
 #' Obtain lists of source IDs for inputting into RaMP or other pathway analysis
 #' program
-#' Requires sourceIDs and sourceDBs
+#' Requires sourceIDs and IDtypes
 #' Otherwise will output names given
+#' The IDtype should be as below
+#' +------------+
+#'| IDtype     |
+#'  +------------+
+#'  | CAS        |
+#'  | chebi      |
+#'  | chemspider |
+#'  | hmdb       |
+#'  | kegg       |
+#'  | LIPIDMAPS  |
+#'  | pubchem    |
+#'  +------------+
 #' @param inputResults results of IntLIM analysis
 #' @param inputData IntLIM dataset containing feature data
 #' @param outputMetab format of metabolites.  Either names or a list of all
@@ -21,16 +33,23 @@ getMetabList <- function(inputResults, inputData, outputMetab='id'){
   if (outputMetab == 'id' | outputMetab == 'mapping'){
 
 
-  if('sourceID' %in% cols.fData.metab & 'sourceDB' %in% cols.fData.metab){
+  if('sourceID' %in% cols.fData.metab & 'IDtype' %in% cols.fData.metab){
     len.metabs <- nrow(fData.metab)
     mappinglist <- c()
 
     mappingIDs <- function(index){
-      id.source <- as.character(fData.metab$sourceDB[index])
+      id.source <- as.character(fData.metab$IDtype[index])
       id.name <- as.character(fData.metab$sourceID[index])
       id.list <- unlist(strsplit(id.name,split=','))
       id.DB.added <- unlist(lapply(id.list, function(x){return(paste(id.source, ":", x, sep = ""))}))
+
+
       mappingIDs <- paste(id.DB.added, collapse = ',')
+
+      if(is.na(id.source) | is.na(id.name)){
+        mappingIDs <- NA
+      }
+
       return(mappingIDs)
     }
 
@@ -43,14 +62,14 @@ getMetabList <- function(inputResults, inputData, outputMetab='id'){
       mapping.res.list.string <- paste(as.character(mapping.summary$mapping,
                                                     collapse = ','))
       mapping.res.list <- unique(unlist(strsplit(mapping.res.list.string, split = ',')))
-      getMetabList <- mapping.res.list
+      getMetabList <- mapping.res.list[!is.na(mapping.res.list)]
       return(getMetabList)
     }else{ #asking for mapping
       getMetabList <- mapping.summary
       return(getMetabList)
     }
   }else{
-    print("No sourceID or sourceDB column.  Outputting only names")
+    print("No sourceID or IDtype column.  Outputting only names")
     getMetabList <- metab.list
     return(getMetabList)
   }
@@ -66,8 +85,20 @@ getMetabList <- function(inputResults, inputData, outputMetab='id'){
 
 #' Obtain lists of source IDs for inputting into RaMP or other pathway analysis
 #' program
-#' Requires sourceIDs and sourceDBs
+#' Requires sourceIDs and IDtypes
 #' Otherwise will output names given
+#' The IDtype should be as below
+#'
+#' +--------------------+
+#' | IDtype             |
+#'  +--------------------+
+#'  | enzymeNomenclature |
+#'  | ensembl            |
+#'  | entrez             |
+#'  | hmdb               |
+#'  | kegg               |
+#'  | uniprot            |
+#'  +--------------------+
 #' @param inputResults results of IntLIM analysis
 #' @param inputData IntLIM dataset containing feature data
 #' @param outputGene format of genes.  Either names or a list of all
@@ -87,16 +118,23 @@ getGeneList <- function(inputResults, inputData, outputGene='id'){
   if (outputGene == 'id' | outputGene == 'mapping'){
 
 
-    if('sourceID' %in% cols.fData.gene & 'sourceDB' %in% cols.fData.gene){
+    if('sourceID' %in% cols.fData.gene & 'IDtype' %in% cols.fData.gene){
       len.metabs <- nrow(fData.gene)
       mappinglist <- c()
 
       mappingIDs <- function(index){
-        id.source <- as.character(fData.gene$sourceDB[index])
+        id.source <- as.character(fData.gene$IDtype[index])
         id.name <- as.character(fData.gene$sourceID[index])
         id.list <- unlist(strsplit(id.name,split=','))
         id.DB.added <- unlist(lapply(id.list, function(x){return(paste(id.source, ":", x, sep = ""))}))
+
+
         mappingIDs <- paste(id.DB.added, collapse = ',')
+
+        if(is.na(id.source) | is.na(id.name)){
+          mappingIDs <- NA
+        }
+
         return(mappingIDs)
       }
 
@@ -109,14 +147,14 @@ getGeneList <- function(inputResults, inputData, outputGene='id'){
         mapping.res.list.string <- paste(as.character(mapping.summary$mapping,
                                                       collapse = ','))
         mapping.res.list <- unique(unlist(strsplit(mapping.res.list.string, split = ',')))
-        getGeneList <- mapping.res.list
+        getGeneList <- mapping.res.list[!is.na(mapping.res.list)]
         return(getGeneList)
       }else{ #asking for mapping
         getGeneList <- mapping.summary
         return(getGeneList)
       }
     }else{
-      print("No sourceID or sourceDB column.  Outputting only names")
+      print("No sourceID or IDtype column.  Outputting only names")
       getGeneList <- gene.list
       return(getGeneList)
     }

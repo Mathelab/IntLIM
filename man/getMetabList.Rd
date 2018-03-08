@@ -4,8 +4,20 @@
 \alias{getMetabList}
 \title{Obtain lists of source IDs for inputting into RaMP or other pathway analysis
 program
-Requires sourceIDs and sourceDBs
-Otherwise will output names given}
+Requires sourceIDs and IDtypes
+Otherwise will output names given
+The IDtype should be as below
++------------+
+| IDtype     |
+ +------------+
+ | CAS        |
+ | chebi      |
+ | chemspider |
+ | hmdb       |
+ | kegg       |
+ | LIPIDMAPS  |
+ | pubchem    |
+ +------------+}
 \usage{
 getMetabList(inputResults, inputData, outputMetab = "id")
 }
@@ -24,6 +36,18 @@ a list of source IDs or names for metabolites of interests
 \description{
 Obtain lists of source IDs for inputting into RaMP or other pathway analysis
 program
-Requires sourceIDs and sourceDBs
+Requires sourceIDs and IDtypes
 Otherwise will output names given
+The IDtype should be as below
++------------+
+| IDtype     |
+ +------------+
+ | CAS        |
+ | chebi      |
+ | chemspider |
+ | hmdb       |
+ | kegg       |
+ | LIPIDMAPS  |
+ | pubchem    |
+ +------------+
 }

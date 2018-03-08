@@ -4,8 +4,9 @@
 \alias{getGeneList}
 \title{Obtain lists of source IDs for inputting into RaMP or other pathway analysis
 program
-Requires sourceIDs and sourceDBs
-Otherwise will output names given}
+Requires sourceIDs and IDtypes
+Otherwise will output names given
+The IDtype should be as below}
 \usage{
 getGeneList(inputResults, inputData, outputGene = "id")
 }
@@ -22,8 +23,14 @@ gene ids.  'id' means source ID, 'name' means gene entry names,
 a list of source IDs or names for genes of interests
 }
 \description{
-Obtain lists of source IDs for inputting into RaMP or other pathway analysis
-program
-Requires sourceIDs and sourceDBs
-Otherwise will output names given
++--------------------+
+| IDtype             |
+ +--------------------+
+ | enzymeNomenclature |
+ | ensembl            |
+ | entrez             |
+ | hmdb               |
+ | kegg               |
+ | uniprot            |
+ +--------------------+
 }
