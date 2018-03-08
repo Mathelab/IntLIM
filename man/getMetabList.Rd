@@ -6,18 +6,18 @@
 program
 Requires sourceIDs and IDtypes
 Otherwise will output names given
-The IDtype should be as below
-+------------+
-| IDtype     |
- +------------+
- | CAS        |
- | chebi      |
- | chemspider |
- | hmdb       |
- | kegg       |
- | LIPIDMAPS  |
- | pubchem    |
- +------------+}
+The IDtype should be as below  \cr
++------------+ \cr
+| IDtype     | \cr
+ +------------+ \cr
+ | CAS        | \cr
+ | chebi      | \cr
+ | chemspider | \cr
+ | hmdb       | \cr
+ | kegg       | \cr
+ | LIPIDMAPS  | \cr
+ | pubchem    | \cr
+ +------------+ \cr}
 \usage{
 getMetabList(inputResults, inputData, outputMetab = "id")
 }
@@ -38,16 +38,16 @@ Obtain lists of source IDs for inputting into RaMP or other pathway analysis
 program
 Requires sourceIDs and IDtypes
 Otherwise will output names given
-The IDtype should be as below
-+------------+
-| IDtype     |
- +------------+
- | CAS        |
- | chebi      |
- | chemspider |
- | hmdb       |
- | kegg       |
- | LIPIDMAPS  |
- | pubchem    |
- +------------+
+The IDtype should be as below  \cr
++------------+ \cr
+| IDtype     | \cr
+ +------------+ \cr
+ | CAS        | \cr
+ | chebi      | \cr
+ | chemspider | \cr
+ | hmdb       | \cr
+ | kegg       | \cr
+ | LIPIDMAPS  | \cr
+ | pubchem    | \cr
+ +------------+ \cr
 }

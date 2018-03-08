@@ -2,18 +2,18 @@
 #' program
 #' Requires sourceIDs and IDtypes
 #' Otherwise will output names given
-#' The IDtype should be as below
-#' +------------+
-#'| IDtype     |
-#'  +------------+
-#'  | CAS        |
-#'  | chebi      |
-#'  | chemspider |
-#'  | hmdb       |
-#'  | kegg       |
-#'  | LIPIDMAPS  |
-#'  | pubchem    |
-#'  +------------+
+#' The IDtype should be as below  \cr
+#' +------------+ \cr
+#'| IDtype     | \cr
+#'  +------------+ \cr
+#'  | CAS        | \cr
+#'  | chebi      | \cr
+#'  | chemspider | \cr
+#'  | hmdb       | \cr
+#'  | kegg       | \cr
+#'  | LIPIDMAPS  | \cr
+#'  | pubchem    | \cr
+#'  +------------+ \cr
 #' @param inputResults results of IntLIM analysis
 #' @param inputData IntLIM dataset containing feature data
 #' @param outputMetab format of metabolites.  Either names or a list of all
@@ -59,7 +59,7 @@ getMetabList <- function(inputResults, inputData, outputMetab='id'){
     mapping.summary <- mapping.complete[metab.list,]
 
     if (outputMetab == 'id'){
-      mapping.res.list.string <- paste(as.character(mapping.summary$mapping,
+      mapping.res.list.string <- paste(as.character(mapping.summary$mapping[!is.na(mapping.summary$mapping)],
                                                     collapse = ','))
       mapping.res.list <- unique(unlist(strsplit(mapping.res.list.string, split = ',')))
       getMetabList <- mapping.res.list[!is.na(mapping.res.list)]
@@ -87,18 +87,17 @@ getMetabList <- function(inputResults, inputData, outputMetab='id'){
 #' program
 #' Requires sourceIDs and IDtypes
 #' Otherwise will output names given
-#' The IDtype should be as below
-#'
-#' +--------------------+
-#' | IDtype             |
-#'  +--------------------+
-#'  | enzymeNomenclature |
-#'  | ensembl            |
-#'  | entrez             |
-#'  | hmdb               |
-#'  | kegg               |
-#'  | uniprot            |
-#'  +--------------------+
+#' The IDtype should be as below \cr
+#' +--------------------+ \cr
+#' | IDtype             | \cr
+#'  +--------------------+ \cr
+#'  | enzymeNomenclature | \cr
+#'  | ensembl            | \cr
+#'  | entrez             | \cr
+#'  | hmdb               | \cr
+#'  | kegg               | \cr
+#'  | uniprot            | \cr
+#'  +--------------------+ \cr
 #' @param inputResults results of IntLIM analysis
 #' @param inputData IntLIM dataset containing feature data
 #' @param outputGene format of genes.  Either names or a list of all
@@ -144,7 +143,7 @@ getGeneList <- function(inputResults, inputData, outputGene='id'){
       mapping.summary <- mapping.complete[gene.list,]
 
       if (outputGene == 'id'){
-        mapping.res.list.string <- paste(as.character(mapping.summary$mapping,
+        mapping.res.list.string <- paste(as.character(mapping.summary$mapping[!is.na(mapping.summary$mapping)],
                                                       collapse = ','))
         mapping.res.list <- unique(unlist(strsplit(mapping.res.list.string, split = ',')))
         getGeneList <- mapping.res.list[!is.na(mapping.res.list)]

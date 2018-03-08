@@ -6,7 +6,17 @@
 program
 Requires sourceIDs and IDtypes
 Otherwise will output names given
-The IDtype should be as below}
+The IDtype should be as below \cr
++--------------------+ \cr
+| IDtype             | \cr
+ +--------------------+ \cr
+ | enzymeNomenclature | \cr
+ | ensembl            | \cr
+ | entrez             | \cr
+ | hmdb               | \cr
+ | kegg               | \cr
+ | uniprot            | \cr
+ +--------------------+ \cr}
 \usage{
 getGeneList(inputResults, inputData, outputGene = "id")
 }
@@ -23,14 +33,19 @@ gene ids.  'id' means source ID, 'name' means gene entry names,
 a list of source IDs or names for genes of interests
 }
 \description{
-+--------------------+
-| IDtype             |
- +--------------------+
- | enzymeNomenclature |
- | ensembl            |
- | entrez             |
- | hmdb               |
- | kegg               |
- | uniprot            |
- +--------------------+
+Obtain lists of source IDs for inputting into RaMP or other pathway analysis
+program
+Requires sourceIDs and IDtypes
+Otherwise will output names given
+The IDtype should be as below \cr
++--------------------+ \cr
+| IDtype             | \cr
+ +--------------------+ \cr
+ | enzymeNomenclature | \cr
+ | ensembl            | \cr
+ | entrez             | \cr
+ | hmdb               | \cr
+ | kegg               | \cr
+ | uniprot            | \cr
+ +--------------------+ \cr
 }
