@@ -336,7 +336,7 @@ shinyServer(function(input, output, session) {
     })
     
     output$statusbox3 <- renderInfoBox({
-        if (input$stype=="") {
+        if (!is.null(input$stype=="")) {
             infoBox(
                 "Status",
                 "Please select your sample type",
