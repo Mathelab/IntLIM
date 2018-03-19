@@ -86,10 +86,7 @@ body <- shinydashboard::dashboardBody(
                 ),#end of info flow
                 fluidRow(
                     shinydashboard::box(
-                        shinyFilesButton('file1',
-                                         'Select CSV File',
-                                         'Provide CSV File to Load Data',
-                                         FALSE),
+                      fileInput("file1", "Choose CSV File", multiple = TRUE, accept = ".csv"),
                         verbatimTextOutput('filename'),
                         uiOutput('idChooseM'),
                         uiOutput('idChooseG'),
