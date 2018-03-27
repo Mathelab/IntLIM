@@ -2,7 +2,7 @@
 % Please edit documentation in R/plottingfunctions.R
 \name{pvalCorrVolcano}
 \alias{pvalCorrVolcano}
-\title{'volcano' plot (difference in correlations vs p-values) 
+\title{'volcano' plot (difference in correlations vs p-values)
 of all gene-metabolite pairs}
 \usage{
 pvalCorrVolcano(inputResults, inputData, nrpoints = 10000, diffcorr = 0.5,
@@ -23,7 +23,7 @@ pvalCorrVolcano(inputResults, inputData, nrpoints = 10000, diffcorr = 0.5,
 a smoothScatter plot
 }
 \description{
-'volcano' plot (difference in correlations vs p-values) 
+'volcano' plot (difference in correlations vs p-values)
 of all gene-metabolite pairs
 }
 \examples{

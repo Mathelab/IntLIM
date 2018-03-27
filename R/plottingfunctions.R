@@ -69,9 +69,9 @@ PlotDistributions <- function(inputData,viewer=T,
         boxplot = boxplotOptions
         ) %>%
       hc_add_series(data = bxps,name = "Gene Expression", type="boxplot",color=cols[1],showInLegend=FALSE) %>%
-      highcharter::hc_add_series(data=list_parse(outs),name = "Gene Expression", 
+      highcharter::hc_add_series(data=list_parse(outs),name = "Gene Expression",
       type="scatter",color=cols[1],showInLegend=FALSE,
-      tooltip = list(headerFormat = "", pointFormat = "{point.z} <br/> {point.y}", 
+      tooltip = list(headerFormat = "", pointFormat = "{point.z} <br/> {point.y}",
       showInLegend = FALSE)) %>%
 #		name = str_trim(paste(list(...)$name, "outliers")),
 #                type = "scatter") #marker = list(...)) %>%
@@ -86,7 +86,7 @@ PlotDistributions <- function(inputData,viewer=T,
 
 	mymetab <- Biobase::assayDataElement(inputData[["metabolite"]],'metabData')
 	toplot <- suppressMessages(reshape2::melt(mymetab))
-        df <- dplyr::data_frame(value = toplot$value, by = toplot$variable) %>% 
+        df <- dplyr::data_frame(value = toplot$value, by = toplot$variable) %>%
 		dplyr::group_by_("by") %>%
                dplyr::do(data = grDevices::boxplot.stats(.$value))
         bxps <- purrr::map(df$data, "stats")
@@ -106,12 +106,12 @@ PlotDistributions <- function(inputData,viewer=T,
       highcharter::hc_plotOptions(
         boxplot = boxplotOptions
         ) %>%
-      highcharter::hc_add_series(data = bxps,name = "Metabolite Levels", 
+      highcharter::hc_add_series(data = bxps,name = "Metabolite Levels",
       type="boxplot",color=cols[2],showInLegend=FALSE) %>%
-      highcharter::hc_add_series(data=list_parse(outs),name = "Metabolite Levels", 
-      type="scatter",color=cols[2],showInLegend=FALSE,tooltip = list(headerFormat = "", pointFormat = "{point.z} <br/> {point.y}", 
+      highcharter::hc_add_series(data=list_parse(outs),name = "Metabolite Levels",
+      type="scatter",color=cols[2],showInLegend=FALSE,tooltip = list(headerFormat = "", pointFormat = "{point.z} <br/> {point.y}",
       showInLegend = FALSE)) %>%
-      
+
       highcharter::hc_yAxis(title = list(text = "log(abundances)",
                             style = list(fontSize = "13px")),
                labels = list(format = "{value}")) %>%
@@ -154,7 +154,7 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
         palette = "Set1") {
 
     categ <- c("Genes","Metabolites")
-    
+
         if(is.null(stype)) {
 		warning("The resulting PCA plot is not color-coded because you did not provide a category in 'stype'")
 		mytype <- NULL
@@ -164,7 +164,7 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
         	mytype <- as.character(Biobase::pData(inputData[["metabolite"]])[,stype])
                 numcateg <- length(unique(mytype))
                 if(length(palette) >= 2) {
-                           cols <- palette 
+                           cols <- palette
                 } else {
                 if(numcateg == 1) {
                        if(length(palette)==1) {cols <- RColorBrewer::brewer.pal(3, palette)[1]
@@ -177,7 +177,7 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
                       } else {stop("palette should be an RColorBrewer palette or a vector of colors")}
                 } else {stop("There are no values in your 'stype' column")}
                }
-        }      
+        }
 
 
 	if(common==T) {
@@ -207,7 +207,7 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
 			mymetab <- incommon$metab
 			alltype <- incommon$p
 			uniqtypes <- unique(alltype)
-			mycols <- as.character(alltype)	
+			mycols <- as.character(alltype)
 			for (i in 1:numcateg) {
 				mycols[which(alltype==uniqtypes[i])] <- cols[i]
 			}
@@ -260,7 +260,7 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
 			}
 		        if(length(which(is.na(gtypes)))>0) {
                 		gcols[which(is.na(gtypes))]="grey"
-			}        
+			}
                         if(length(which(is.na(mtypes)))>0) {
                                 mcols[which(is.na(mtypes))]="grey"
                         }
@@ -311,13 +311,13 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
 		pg <- pg %>% highcharter::hc_title(text="PCA of genes") %>%
 		highcharter::hc_xAxis(title=list(text=paste0("PC1:",round(gpercvar[1],1),"%"))) %>%
 		highcharter::hc_yAxis(title=list(text=paste0("PC2:",round(gpercvar[2],2),"%"))) %>%
-		hc_chart(zoomType = "xy") 
+		hc_chart(zoomType = "xy")
 #		dataLabels= list(enabled = TRUE, format = "{point.label}"),
 
                 pm <- pm %>% highcharter::hc_title(text="PCA of metabolites") %>%
                 highcharter::hc_xAxis(title=list(text=paste0("PC1:",round(mpercvar[1],1),"%"))) %>%
                 highcharter::hc_yAxis(title=list(text=paste0("PC2:",round(mpercvar[2],2),"%"))) %>%
-                hc_chart(zoomType = "xy") 
+                hc_chart(zoomType = "xy")
 
 
          if (viewer == TRUE) {
@@ -349,7 +349,7 @@ PlotPCA <- function(inputData,viewer=T,stype=NULL,common=T,
 #' }
 #' @export
 DistPvalues<- function(IntLimResults,breaks=100) {
-    
+
     hist(IntLimResults@interaction.pvalues,breaks=breaks,
 	main="Histogram of Interaction P-values")
 }
@@ -358,7 +358,7 @@ DistPvalues<- function(IntLimResults,breaks=100) {
 #' Plot correlation heatmap
 #'
 #' @import magrittr
-#' @import heatmaply 
+#' @import heatmaply
 #'
 #' @param inputResults IntLimResults object (output of ProcessResults())
 #' @param top_pairs cutoff of the top pairs, sorted by adjusted p-values, to be plotted (plotting more than 1200 can take some time) (default: 1200)
@@ -433,7 +433,8 @@ type <- cor <- c()
                                                margins = c(80,5),
                                                dendrogram = "row",
                                                y_axis_font_size ="1px",
-                                               colors = palette)
+                                               colors = palette,
+                                               key.title = 'Correlation \n differences')
                     hm
 }
 
@@ -458,7 +459,7 @@ type <- cor <- c()
 #' csvfile <- file.path(dir, "NCIinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' PlotGMPair(mydata,stype="PBO_vs_Leukemia","DLG4","(p-Hydroxyphenyl)lactic acid")
-#' 
+#'
 #' }
 #' @export
 PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
@@ -476,7 +477,7 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
       else {
         stop("palette must either be an RColorBrewer palette or a vector of hex colors of size 2")
       }
-   
+
    if (class(inputData) != "MultiDataSet") {
         stop("input data is not a MultiDataSet class")
 }
@@ -497,7 +498,7 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
     } else {
 	stop(paste0("The gene ",geneName," was not found in your data"))
     }
-    
+
     metab<-incommon$metab
     if(length(which(rownames(metab)==metabName))>0) {
     	sMetab<-as.numeric(metab[metabName,])
@@ -507,12 +508,12 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
 
     if(length(unique(mytypes))!=2) {
 	stop(paste0("The group selected, '",stype,"', should only contain two different categories"))
-    }   
- 
+    }
+
     mycols <- as.character(mytypes)
     mycols[which(mytypes==unique(mytypes)[1])] <- cols[1]
     mycols[which(mytypes==unique(mytypes)[2])] <- cols[2]
-    
+
     data<-data.frame(x=sGene,y=sMetab,z=colnames(gene),label=mytypes,color=mycols)
 
     max<- max(data$x)
@@ -533,7 +534,7 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
     #cols=c("blue","pink")
 
         hc <- highcharter::highchart(width = 350, height = 350 ) %>%
-                highcharter::hc_title(text="Gene:metabolite scatterplot") %>%
+                highcharter::hc_title(text=paste(geneName,' vs. ', metabName, sep = '')) %>%
                 highcharter::hc_xAxis(title=list(text=geneName)) %>%
                 highcharter::hc_yAxis(title=list(text=metabName)) %>%
                 hc_chart(zoomType = "xy") %>%
@@ -550,13 +551,13 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
         highcharter::hc_add_series(name = uniqtypes[2],
 		data=line2,type='line',#name=sprintf("regression line %s",type2),
 		color = cols[2],enableMouseTracking=FALSE,marker=FALSE)
-    
+
     hc
 }
 
 
-#' 'volcano' plot (difference in correlations vs p-values) 
-#' of all gene-metabolite pairs 
+#' 'volcano' plot (difference in correlations vs p-values)
+#' of all gene-metabolite pairs
 #'
 #' @param inputResults IntLimResults object with model results (output of RunIntLim())
 #' @param inputData MultiDataSet object (output of ReadData()) with gene expression,
@@ -587,8 +588,8 @@ pvalCorrVolcano <- function(inputResults, inputData,nrpoints=10000,diffcorr=0.5,
     volc.table <- volc.results@filt.results
     Corrdiff <- volc.table[,4] - volc.table[,3]
     pval <- -log10(volc.table$FDRadjPval)
-    graphics::smoothScatter(x = Corrdiff, pval, xlab = 'Difference in Correlation between Phenotypes', 
-		ylab = '-log10(FDR-adjusted p-value)', nrpoints=nrpoints, 
+    graphics::smoothScatter(x = Corrdiff, pval, xlab = 'Difference in Correlation between Phenotypes',
+		ylab = '-log10(FDR-adjusted p-value)', nrpoints=nrpoints,
                 main = 'Volcano Plot')
     graphics::abline(h=-log10(pvalcutoff),lty=2,col="blue")
     graphics::abline(v=c(diffcorr,-diffcorr),lty=2,col="blue")
@@ -599,7 +600,7 @@ pvalCorrVolcano <- function(inputResults, inputData,nrpoints=10000,diffcorr=0.5,
 
 
 #' histogram of gene-metabolite pairs
-#' depending upon metabolite or gene 
+#' depending upon metabolite or gene
 #'
 #' @param inputResults IntLimResults object with model results (output of RunIntLim() and ProcessResults())
 #' @param type 'metabolite' or 'gene'.  'metabolite' set as default
@@ -632,6 +633,6 @@ gene.pairs <- data.frame(table(x$gene))
 gene.pairs.number <- as.vector(gene.pairs$Freq)
 hist(gene.pairs.number, main = "Number of gene-metabolite pairs based on gene", breaks = breaks, xlab = 'Gene-metabolite pairs based on gene')
 }else{
-    stop("Only two valid types:  gene or metabolite.  Invalid type entered")    
+    stop("Only two valid types:  gene or metabolite.  Invalid type entered")
     }
 }
