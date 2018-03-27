@@ -2,20 +2,22 @@
 
 The goal of this app is to provide users with a user-friendly platform for integrating gene expression and metabolomics data.  Specifically, the software finds gene:metabolite relationships that are specific to a given phenotype (e.g. cancer vs non-cancer). For example, a given gene:metabolite pair could show a strong correlation in one phenotype (e.g. cancer) and no correlation in the other (e.g. non-cancer). 
 
-More details can be found in <a href="https://arxiv.org/abs/1802.10588" target="_blank">our manuscript</a>.
+More details can be found in <a href="https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2085-6" target="_blank"> our publication "IntLIM: integration using linear models of metabolomics and gene expression data"</a>.
 
 ## Getting started (loading in data)
 
 __*Please be sure that all files noted in the CSV file, including the CSV file, are in the same folder. Do not include path names in the filenames.*__
 
-Users need to input a CSV file with two required columns: 'type' and 'filenames'.
-The CSV file is expecected to have the following 2 columns and 6 rows:
+Users need to input a CSV file named 'input.csv' with two required columns: 'type' and 'filenames'.
+The CSV file is expected to have the following 2 columns and 6 rows:
 1. type,filenames
 2. metabData,myfilename
 3. geneData,myfilename
 4. metabMetaData,myfilename (optional)
 5. geneMetaData,myfilename (optional)
 6. sampleMetaData,myfilename"
+
+*NOTE*: For the ShinyApp, the meta-file must be named 'input.csv'
 
 Note also that the input data files should be in a specific format:
 - metabData: rows are metabolites, columns are samples; the first row is assumed to have sample ids and these ids should be unique; the first column is assumed to have feature ids and those should be unique.
@@ -35,7 +37,7 @@ The package includes a reduced set of the original NCI-60 dataset.  The CSV inpu
 ```
 Please see the vignette at [https://mathelab.github.io/IntLIM/IntLIMVignette.html](https://mathelab.github.io/IntLIM/IntLIMVignette.html) for additional information.
 
-In addition, the original datasets for the NCI-60 and the breast cancer dataset used in the manuscript can be found HEREXXX.
+In addition, the original datasets for the NCI-60 and the breast cancer dataset used in the manuscript can be found at [https://github.com/Mathelab/NCI60_GeneMetabolite_Data](https://github.com/Mathelab/NCI60_GeneMetabolite_Data) and [https://github.com/Mathelab/BreastCancerAmbs_GeneMetabolite_Data](https://github.com/Mathelab/BreastCancerAmbs_GeneMetabolite_Data) respectively.
 
 ## Contact
 
