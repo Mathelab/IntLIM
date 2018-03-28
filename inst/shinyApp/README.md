@@ -10,6 +10,7 @@ __*Please be sure that all files noted in the CSV file, including the CSV file, 
 
 Users need to input a CSV file named 'input.csv' with two required columns: 'type' and 'filenames'.
 The CSV file is expected to have the following 2 columns and 6 rows:
+
 1. type,filenames
 2. metabData,myfilename
 3. geneData,myfilename
