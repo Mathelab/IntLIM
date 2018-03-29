@@ -55,7 +55,7 @@ sidebar <- shinydashboard::dashboardSidebar(
 )
 
 body <- shinydashboard::dashboardBody(
-    
+
     shinydashboard::tabItems(
         shinydashboard::tabItem(tabName = "about",
                              shiny::tabPanel("About",
@@ -67,14 +67,14 @@ body <- shinydashboard::dashboardBody(
         ),
         shinydashboard::tabItem(tabName = "loaddata",
                 fluidRow(
-                    
+
                     shinydashboard::box(
                         title = strong("Load Data"),
                         width = 8,
                         solidHeader = TRUE,
-                        h5("This step takes a CSV file as input (see About) and performs the following:"),
+                        h5("This step takes all the relevant CSV files as input with the meta-data file being named 'input.csv' and containing names of other required files (See About):"),
                         tags$ul(
-                             tags$li("Loads the CSV input file and checks that all files exist"),
+                             tags$li("Loads the CSV inputs file and checks that all files exist"),
                              tags$li("Reads in all files from the CSV input file and creates a MultiOmics object"),
                              tags$li("Outputs a statistic summary of the data loaded in")
                         )
@@ -92,14 +92,14 @@ body <- shinydashboard::dashboardBody(
                         uiOutput('idChooseG'),
                         hr(),
                         actionButton("run", "Run"),
-                        
+
                         conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                          tags$div("Loading...",id="loadmessage"))
                     ),
                     shinydashboard::box(
                         tags$b("Summary Statistics"),
                         #plot.new(),
-                        
+
                         pre(dataTableOutput('stats')),
                         tags$style(type="text/css", '#stats tfoot {display:none;}')
                     )
@@ -110,12 +110,12 @@ body <- shinydashboard::dashboardBody(
                         tags$b("Distribution of Input Data"),
                         pre(htmlOutput("plot"))
                     )
-                       
+
                 )#end of plot flow
-                
+
         ), # end tab loaddata
-        
-        
+
+
         shinydashboard::tabItem(tabName = "Filterdata",
                 fluidRow(
                     shinydashboard::box(
@@ -133,7 +133,7 @@ body <- shinydashboard::dashboardBody(
                         width=4,
                         infoBoxOutput("statusbox2", width = NULL),
                         downloadButton('downloadFdata', 'Download')
-                        
+
                     )
                     ), # end filter option flow
                 fluidRow(
@@ -147,7 +147,7 @@ body <- shinydashboard::dashboardBody(
                         dataTableOutput('Fstats'),
                         tags$style(type="text/css", '#Fstats tfoot {display:none;}')
                     )
-                ),#end stats comparison flow    
+                ),#end stats comparison flow
                 fluidRow(
                     shinydashboard::box(
                         tags$b("The distribution of the origin data."),
@@ -158,12 +158,12 @@ body <- shinydashboard::dashboardBody(
                         uiOutput('Fplot')
                     )
                 )#end plot comparison flow
-                
+
         ),
-        
+
         shinydashboard::tabItem(tabName = "RunLM",
                 fluidRow(
-                    
+
                     shinydashboard::box(
                         title = strong("Run IntLIM") ,
                         width = 6,
@@ -173,13 +173,13 @@ body <- shinydashboard::dashboardBody(
 			h5("The linear model performed is 'm ~ g + p + g:p' where "),
 			tags$ul(
 				tags$li("'m' is the metabolite abundance"),
-				tags$li("‘g’ is the gene expression level"), 
+				tags$li("‘g’ is the gene expression level"),
 				tags$li("‘p’ is the phenotype (e.g. tumor vs non-tumor)"),
 				tags$li("‘g:p’ is the interaction between phenotype and gene expression")
 			),
 			h5("A statistically significant p-value of the the interaction term ‘g:p’ indicates that the gene-metabolite relationship is phenotype-specific. Please see manuscript for more details."),
 #                        radioButtons("dataset", label = h5("Select column that has the categories that you wish to compare (e.g. tumor vs. non-tumor):"),
-#                                     choices = list("metabolite" = "metabolite", "gene" = "gene"), 
+#                                     choices = list("metabolite" = "metabolite", "gene" = "gene"),
 #                                     selected = "metabolite"),
                         hr(),
                         uiOutput('choosestype'),
@@ -188,26 +188,26 @@ body <- shinydashboard::dashboardBody(
                         numericInput("diffcorr1", "cutoff of differences in correlations for filtering (0-1):", 0.5, min = 0, max = 1),
                         actionButton("run3", "Run")
 
-                       
-                        
+
+
                     ),
                     shinydashboard::box(
                         width = 6,
                         height =650,
-                        
-                       
-                        
+
+
+
                         numericInput("breaks","Breaks of histogram",100,min=10,max = 500),
                         plotOutput("Pdist"),
                         hr(),
                         textOutput("Ptext")
-                        
+
                     )
                 ),
                 fluidRow(
                     shinydashboard::box(
                         width = 8,
-                        
+
                     tags$head(tags$style(type="text/css", "
                      loadmessage {
                                          position: fixed;
@@ -225,16 +225,16 @@ body <- shinydashboard::dashboardBody(
                                          ")),
                     conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                      tags$div("Loading...(It might take several minutes depending on the size of the dataset,please be patient!)",id="loadmessage")),
-                    
+
                     plotOutput("volcanoPlot")
-                    
-                    
+
+
                 ),
                 shinydashboard::box(
                     width = 4,
                     infoBoxOutput("statusbox3", width = NULL)
-                    
-                
+
+
                 )
                 )
         ),
@@ -245,8 +245,8 @@ body <- shinydashboard::dashboardBody(
                         width = 8,
                         height = 200,
                         solidHeader = TRUE,
-                        h5("Process the results and filter pairs of genes-metabolites based on 
-                           adjusted p-values and differences in correlation coefficients between the two groups being compared."),  
+                        h5("Process the results and filter pairs of genes-metabolites based on
+                           adjusted p-values and differences in correlation coefficients between the two groups being compared."),
                         h5("Then plot heatmap of significant gene-metabolite pairs by filling out parameters below and clicking 'Run'.")
                         ),
                     shinydashboard::box(
@@ -267,10 +267,10 @@ body <- shinydashboard::dashboardBody(
                         numericInput("treecuts", "number of clusters to cut the dendrogram/tree into (reflects color-code in heatmap)",0,min=0,max=20),
                         actionButton("run4", "Run")
                     ),
-                    
+
                     shinydashboard::box(
                         width = 8,
-                        
+
                     tags$head(tags$style(type="text/css", "
                      loadmessage {
                                          position: fixed;
@@ -290,7 +290,7 @@ body <- shinydashboard::dashboardBody(
                                      tags$div("Loading...",id="loadmessage")),
                     plotly::plotlyOutput("heatmap")
                     )
-                   
+
                 )
                 ),
         shinydashboard::tabItem(tabName = "scatterplot",
@@ -299,7 +299,7 @@ body <- shinydashboard::dashboardBody(
                                         title = strong("Scatter plot") ,
                                         width = 8,
                                         solidHeader = TRUE,
-                                        h5("This step present the table of gene-metabolite pairs and the absolute value of their 
+                                        h5("This step present the table of gene-metabolite pairs and the absolute value of their
                                            correlation differece"),
                                         h5("You can plot the scatter plot of prefered gene-metabolite pairs by clicking table")
                                         ),
@@ -313,11 +313,11 @@ body <- shinydashboard::dashboardBody(
                                         width = NULL,
                                         tags$b("Pairs of difference of correlation "),
                                         pre(DT::dataTableOutput('table')),
-                                        
+
                                         #pre(textOutput("temp")),
                                         hr(),
                                         actionButton("run5", "Run"),
-                                        
+
                                         tags$head(tags$style(type="text/css", "
                                                              loadmessage {
                                                              position: fixed;
@@ -335,24 +335,24 @@ body <- shinydashboard::dashboardBody(
                                                              ")),
                                         conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                                          tags$div("Loading...",id="loadmessage"))
-                                        
-                                        
+
+
                                     )
                                 ),#end of table flow
                                     fluidRow(
                                     shinydashboard::box(
                                         width = NULL,
                                         pre(uiOutput("scatterplot"))
-                                    
+
                                     )
                                     )#end of scatterplot flow
-        
+
                                 )
-        
-        
-        
-        
-        
+
+
+
+
+
         )
                 )
 

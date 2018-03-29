@@ -8,7 +8,10 @@ More details can be found in <a href="https://bmcbioinformatics.biomedcentral.co
 
 __*Please be sure that all files noted in the CSV file, including the CSV file, are in the same folder. Do not include path names in the filenames.*__
 
-Users need to input a CSV file named 'input.csv' with two required columns: 'type' and 'filenames'.
+Users will need to input files for metabolite abundance data, gene expression data, sample meta-data, metabolite meta-data (optional) and gene meta-data (optional).  
+
+Users also need to input a CSV file named 'input.csv' with two required columns: 'type' and 'filenames'.
+
 The CSV file is expected to have the following 2 columns and 6 rows:
 
 1. type,filenames
