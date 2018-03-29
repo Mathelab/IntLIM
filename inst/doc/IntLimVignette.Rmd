@@ -2,7 +2,7 @@
 ---
 title: "IntLIM:  Integration through Linear Modeling"
 author: "Jalal K. Siddiqui, Elizabeth Baskin, Mingrui Liu, Carmen Z. Cantemir-Stone, Bofei Zhang, Russell Bonneville, Joseph P. McElroy, Kevin R. Coombes, Ewy Mathé"
-date: "8/23/2017"
+date: "3/29/2018"
 output: rmarkdown::html_document
 vignette: >
   %\VignetteIndexEntry{IntLIM:  Integration through Linear Modeling}
@@ -13,11 +13,11 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Introduction
+##Introduction
 
-Interpretation of metabolomics data is very challenging.  Yet it can be eased through integration of metabolmoics with other ‘omics’ data. The IntLIM package, which includes a user-friendly RShiny web app, aims to integrate metabolomics data with transcriptomic data.  Unlike other approaches, IntLIM is focused on understanding how specific gene-metabolite associations are affected by phenotypic features.  To this end, we develop a linear modeling approach that describes how gene-metabolite associations are affected by phenotype.  More information can be found on <a href="https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2085-6" target="_blank"> our publication "IntLIM: integration using linear models of metabolomics and gene expression data"</a>The workflow involves the following steps: 1) input gene expression/metabolomics data files, 2) filter data sets by gene and metabolite abundances and imputed values, 3) run the linear model to extract FDR-adjusted interaction p-values, 4) filter results by p-values and Spearman correlation differences, and 5) plot/visualize specific gene-metabolite associations. 
+Interpretation of metabolomics data is very challenging.  Yet it can be eased through integration of metabolomics with other ‘omics’ data. The IntLIM package, which includes a user-friendly RShiny web app, aims to integrate metabolomics data with transcriptomic data.  Unlike other approaches, IntLIM is focused on understanding how specific gene-metabolite associations are affected by phenotypic features.  To this end, we develop a linear modeling approach that describes how gene-metabolite associations are affected by phenotype.  More information can be found on <a href="https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2085-6" target="_blank"> our publication "IntLIM: integration using linear models of metabolomics and gene expression data"</a>The workflow involves the following steps: 1) input gene expression/metabolomics data files, 2) filter data sets by gene and metabolite abundances and imputed values, 3) run the linear model to extract FDR-adjusted interaction p-values, 4) filter results by p-values and Spearman correlation differences, and 5) plot/visualize specific gene-metabolite associations. 
 
-## Installation
+##Installation
 
 IntLIM is an R package and can be run on version >= 3.2.0. 
 
@@ -48,7 +48,7 @@ IntLIM can be loaded using the library function
 library(IntLIM)
 ```
 
-## Inputting Gene Expression and Metabolite Abundances
+##Inputting Gene Expression and Metabolite Abundances
 
 The first step is importing in the gene expression and metabolite data.  To this end we have provided a sample data file for users wishing to use IntLIM.  
 
@@ -103,7 +103,7 @@ The __ShowStats()__ function allows the user to summarize the metabolomic and ge
 IntLIM::ShowStats(IntLimObject = inputData)
 ```
 
-## Filtering and Observing Data
+##Filtering and Observing Data
 
 Optionally, the __FilterData()__ function allows the user to filter out the features (genes or metabolites) based on their mean values. Users should input a percentile cutoff and any feature with a mean value below that cutoff will be removed.  Furthermore we can filter out metabolites by percentage of missing or imputed values.  For the analysis, we filter out the genes with the lowest 10% of gene expression and metabolites with more than 80% imputed values.  This is done as below. We henceforth have 1303 genes and 212 metabolites for 20 cell line samples.  
 
@@ -124,7 +124,7 @@ Prior to running the model, the user can also perform a principal component anal
 IntLIM::PlotPCA(inputData = inputDatafilt,stype = "PBO_vs_Leukemia")
 ```
 
-## Run IntLIM
+##Run IntLIM
 
 The linear models are run by the __RunIntLim()__ function.  The __stype__ command allows the user to select a column from the sample meta data for the two categories to be compared (two cancer types, tumor vs. non-tumor, etc).  Currently, IntLIM only supports comparison of two categories (__"PBO_vs_Leukemia"__ is selected). The resulting object from the analysis is an IntLimResults object containing slots for un-adjusted and False Discovery Rate (FDR)-adjusted p-values for the “(g:p)” interaction coefficient.  A significant FDR-adjusted p-value implies that the slope of gene-metabolite association in one phenotype is different from the other.  The __RunIntLim()__ function is based heavily on the MultiLinearModel functions developed for the ClassComparison package part of oompa (http://oompa.r-forge.r-project.org).  
 
@@ -146,7 +146,7 @@ IntLIM::pvalCorrVolcano(inputResults = myres, inputData = inputDatafilt, diffcor
 
 Process the results and filter pairs of genes-metabolites based on adjusted p-values and differences in correlation coefficients between groups 1 and 2.  Then plot heatmap of significant gene-metabolite pairs
 
-## Filter Results
+##Filter Results
 
 The __ProcessResults()__ function allows the user to filter the results by FDR p-values (default set at 0.05) and by the absolute value difference of the gene-metabolite Spearman correlation (default set at 0.50) between the two groups.  The output is a list of gene-metabolite pairs and gene-metabolite Spearman correlations for each of the two groups
 
@@ -160,7 +160,7 @@ The __CorrHeatmap()__ produces a clustered heatmap of the gene-metabolite Spearm
 IntLIM::CorrHeatmap(myres)
 ```
 
-## Visualize and Export Results
+##Visualize and Export Results
 
 A __PlotGMPair()__ function  allows the user to plot a chosen gene-metabolite association for selected groups. An example is shown below for DLG4 vs. (p-Hydroxyphenyl)lactic acid.  
 
@@ -182,7 +182,7 @@ OutputResults(inputResults=myres,filename="~/MyResults.zip")
 
 ```
 
-## ShinyApp User Interface
+##ShinyApp User Interface
 
 A Shiny App embedded in the package provides a user friendly interface for running IntLim (https://shiny.rstudio.com).  This can be run by calling __runIntLIMApp()__ below. 
 
@@ -190,7 +190,7 @@ A Shiny App embedded in the package provides a user friendly interface for runni
 	runIntLIMApp()
 ```
 
-### References
+##References
 
 Siddiqui JK, Baskin E, Liu M, Cantemir-Stone CZ, Zhang B, Bonneville R, McElroy JP, Coombes KR, Mathé EA. IntLIM: integration using linear models of metabolomics and gene expression data. BMC bioinformatics. 2018 Dec;19(1):81.
 
