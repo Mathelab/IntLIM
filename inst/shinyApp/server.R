@@ -1,5 +1,4 @@
 options(shiny.trace=F)
-library(readr)
 shinyServer(function(input, output, session) {
 
     #Desktop file input==================================================================================================
@@ -76,9 +75,7 @@ shinyServer(function(input, output, session) {
 
   ## Windows end
   multiData <- eventReactive(input$run, {
-    print(Sys.time())
     myFile <- fixUploadedFilesNames(input$file1)
-    print(length(myFile))
     indexfile = which(myFile$name == 'input.csv')
     IntLIM::ReadData(req(myFile$datapath[[indexfile]]),
                      input$metabid, input$geneid)
