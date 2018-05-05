@@ -289,10 +289,12 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL, covar=NULL) {
                 
                 #p.val.vector <- as.vector(mlin@p.value.coeff[4,])
                 # Print out progress every 1000 genes
-                if (x %% numprog == 0){
+        	if (numprog != 0){
+	        if (x %% numprog == 0){
                     progX <- round(x/numgenes*100)
                     print(paste(progX,"% complete"))
                 }
+	}	
                 return(p.val.vector)
         })
     mat.pvals <- do.call(rbind, list.pvals)
@@ -340,10 +342,12 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL, covar=NULL) {
                 p.val.vector <- as.vector(mlin$p.value.coeff[index.interac,])
                 #p.val.vector <- as.vector(mlin@p.value.coeff[4,])
                 # Print out progress every 1000 genes
-                if (x %% numprog == 0){
+         if (numprog != 0){       
+	 if (x %% numprog == 0){
                     progX <- round(x/nummetab*100)
                     print(paste(progX,"% complete"))
                 }
+	}	
                 return(p.val.vector)
         })
     mat.pvals <- do.call(rbind, list.pvals)
@@ -357,7 +361,7 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL, covar=NULL) {
     rownames(mat.pvals) <- rownames(mat.pvalsadj) <- rownames(metab)
     colnames(mat.pvals) <- colnames(mat.pvalsadj) <- rownames(gene)
 
-    mat.pvals <- t(mat.pvals)
+    #mat.pvals <- t(mat.pvals)
     } else {
         stop("outcome must be either 'metabolite' or 'gene'")
     }
