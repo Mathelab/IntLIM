@@ -18,7 +18,7 @@ shinyServer(function(input, output, session) {
   output$filename <- renderPrint({
     myFile <- fixUploadedFilesNames(input$file1) #fixing uploaded filenames.
     if (is.null(myFile)) {
-      cat("Please name your input file as input.csv & select multiple files by clicking the browse button")
+      cat("Select all files by holding down Shift key and clicking 'Browse' above")
     } else if (length(myFile$name) !=6) {
       cat("please select upto 6 files")
     } else {

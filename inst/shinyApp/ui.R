@@ -72,12 +72,15 @@ body <- shinydashboard::dashboardBody(
                         title = strong("Load Data"),
                         width = 8,
                         solidHeader = TRUE,
-                        h5("This step takes all the relevant CSV files as input with the meta-data file being named 'input.csv' and containing names of other required files (See About):"),
-                        tags$ul(
-                             tags$li("Loads the CSV inputs file and checks that all files exist"),
-                             tags$li("Reads in all files from the CSV input file and creates a MultiOmics object"),
-                             tags$li("Outputs a statistic summary of the data loaded in")
-                        )
+                        h5("This step takes all the relevant CSV files as input, including the following (See About for more details):"),
+			tags$ul(
+				tags$li("input.csv (required): contains the names of all files input (See About)"),
+				tags$li("metabData (required): rows are metabolites, columns are samples; the first row is assumed to have sample ids and these ids should be unique; the first column is assumed to have feature ids and those should be unique."),
+				tags$li("sampleMetaData (required): rows are samples, features are columns"),
+				tags$li("geneData (required): rows are genes, columns are samples; the first row is assumed to have sample ids and these ids should be unique; the first column is assumed to have feature ids and those should be unique."),
+				tags$li("metabMetaData (optional): rows are metabolites, features are columns"),
+    				tags$li("geneMetaData (optional): rows are genes, features are columns")
+			)
                         ),
                     shinydashboard::box(
                         width = 4,
