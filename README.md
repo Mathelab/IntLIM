@@ -2,6 +2,9 @@
 [![Build Status](https://travis-ci.org/Mathelab/IntLIM.svg?branch=master)](https://travis-ci.org/Mathelab/IntLIM)
 [![Build status](https://ci.appveyor.com/api/projects/status/1y05oo8y4v7r28bf?svg=true)](https://ci.appveyor.com/project/Mathelab/IntLIM/branch/master)
 
+# New!  IntLIM app is accessible via a server (no installation needed!).
+Please [click here](https://intlim.bmi.osumc.edu/).  And let us know if additional functionalities would be useful (see contact info below).
+
 ## IntLIM
 
 Interpretation of metabolomics data is very challenging.  Yet it can be eased through integration of metabolomics with other ‘omics’ data. The IntLIM package, which includes a user-friendly RShiny web app, aims to integrate metabolomics data with transcriptomic data.  Unlike other approaches, IntLIM is focused on understanding how specific gene-metabolite associations are affected by phenotypic features.  To this end, we develop a linear modeling approach that describes how gene-metabolite associations are affected by phenotype.  The workflow involves the following steps: 1) input gene expression/metabolomics data files, 2) filter data sets by gene and metabolite abundances and imputed values, 3) run the linear model to extract FDR-adjusted interaction p-values, 4) filter results by p-values and Spearman correlation differences, and 5) plot/visualize specific gene-metabolite associations. 
