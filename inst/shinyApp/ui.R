@@ -89,7 +89,7 @@ body <- shinydashboard::dashboardBody(
                 ),#end of info flow
                 fluidRow(
                     shinydashboard::box(
-                      fileInput("file1", "Choose CSV File", multiple = TRUE, accept = ".csv"),
+                      fileInput("file1", "Select all CSV Files (input, metabData, geneData, and sampleMetaData are required)", multiple = TRUE, accept = ".csv"),
                         verbatimTextOutput('filename'),
                         uiOutput('idChooseM'),
                         uiOutput('idChooseG'),
