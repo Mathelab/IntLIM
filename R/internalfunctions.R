@@ -25,7 +25,7 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
                 stop("Metabolites in abundance data file and metabolite meta data file are not equal")} else {
                 myind <- as.numeric(lapply(rownames(metabdata),function(x) {
                         which(as.character(metabfdata[,'id'])==x)[1]}))
-                        metabpdata<-pdata[myind,]}
+                        metabpdata<-pdata[myind,,drop=FALSE]}
 
 	rownames(metabfdata)=as.character(metabfdata[,'id'])
         }
@@ -36,11 +36,14 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
         } else {
                 myind <- as.numeric(lapply(colnames(metabdata),function(x) {
                         which(rownames(pdata)==x)[1]}))
-                        metabpdata<-pdata[myind,]
+                        metabpdata<-pdata[myind,,drop=FALSE]
         }
 
 	#new data frames are set for phenoData and featureData
+    
+
 	metabpdata$id=rownames(metabpdata)
+
 	metabphenoData <- Biobase::AnnotatedDataFrame(data = metabpdata)
 
 	if (logmetab == TRUE){
@@ -70,7 +73,7 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
         } else {
                 myind <- as.numeric(lapply(rownames(genedata),function(x) {
                         which(as.character(genefdata[,'id'])==x)[1]}))
-                        genepdata<-pdata[myind,]
+                        genepdata<-pdata[myind,,drop=FALSE]
         }
 
         rownames(genefdata)=as.character(genefdata[,'id'])
@@ -81,7 +84,7 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
         } else {
 		myind <- as.numeric(lapply(colnames(genedata),function(x) {
 			which(rownames(pdata)==x)[1]}))
-			genepdata<-pdata[myind,]
+			genepdata<-pdata[myind,,drop=FALSE]
 	}
 
         #new data frames are set for phenoData and featureData
