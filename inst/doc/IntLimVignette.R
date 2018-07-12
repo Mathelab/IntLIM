@@ -54,7 +54,7 @@ IntLIM::PlotGMPair(inputDatafilt,stype="PBO_vs_Leukemia","DLG4","(p-Hydroxypheny
 
 ## ----eval = FALSE--------------------------------------------------------
 #  IntLIM::OutputData(inputData=inputDatafilt,filename="~/FilteredData.zip")
-#  OutputResults(inputResults=myres,filename="~/MyResults.zip")
+#  OutputResults(inputResults=myres,filename="~/MyResults.csv")
 #  
 
 ## ----eval=FALSE----------------------------------------------------------

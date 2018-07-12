@@ -178,7 +178,7 @@ Lastly, various writing functions are implemented.  The __OutputData()__ and __O
 
 ```{r eval = FALSE}
 IntLIM::OutputData(inputData=inputDatafilt,filename="~/FilteredData.zip")
-OutputResults(inputResults=myres,filename="~/MyResults.zip")
+OutputResults(inputResults=myres,filename="~/MyResults.csv")
 
 ```
 
