@@ -364,6 +364,7 @@ body <- shinydashboard::dashboardBody(
 
 
 shinyUI(fluidPage(
+  tags$head(includeHTML(("google_analytics.html"))),
     shinydashboard::dashboardPage(
         headerbar,
         sidebar,
