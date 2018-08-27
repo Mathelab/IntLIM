@@ -34,7 +34,8 @@ Imports:
     purrr,
     heatmaply,
     plotly,
-    DT
+    DT,
+    gplots
 Suggests:
     knitr
 Encoding: UTF-8

@@ -368,7 +368,7 @@ DistPvalues<- function(IntLimResults,breaks=100) {
 #' @param palette choose an RColorBrewer palette ("Set1", "Set2", "Set3",
 #' "Pastel1", "Pastel2", "Paired", etc.) or submit a vector of colors
 #' @return a highcharter object
-#'
+#'@param static allows user to decide whether heatmap is interactive or static
 #' @examples
 #' \dontrun{
 #' dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
@@ -379,7 +379,7 @@ DistPvalues<- function(IntLimResults,breaks=100) {
 #' CorrHeatmap(myres)
 #' }
 #' @export
-CorrHeatmap <- function(inputResults,viewer=T,top_pairs=1200,treecuts=2, palette = NULL) {
+CorrHeatmap <- function(inputResults,viewer=T,top_pairs=1200,treecuts=2, palette = NULL, static = FALSE) {
 type <- cor <- c()
 
 	if(nrow(inputResults@filt.results)==0) {
@@ -428,14 +428,29 @@ type <- cor <- c()
                 if (is.null(palette)){
 			palette=grDevices::colorRampPalette(c("#D01C8B", "#F1B6DA", "#F7F7F7", "#B8E186", "#4DAC26")) (255)[255:1]
                 }
-                    hm <- heatmaply::heatmaply(heat_data,main = "Correlation heatmap",
+                  
+                  if(static == FALSE){
+                  hm <- heatmaply::heatmaply(heat_data,main = "Correlation heatmap",
                                                k_row = treecuts,#k_col = 2,
                                                margins = c(80,5),
                                                dendrogram = "row",
                                                y_axis_font_size ="1px",
                                                colors = palette,
                                                key.title = 'Correlation \n differences')
+                  }else{
+                      hm <- gplots::heatmap.2(heat_data,main = "Correlation heatmap",
+                                                 #k_row = treecuts,#k_col = 2,
+                                                 #margins = c(80,5),
+                                                 dendrogram = "row",
+                                                 #y_axis_font_size ="1px",
+                                                 col = palette,
+                                                 key.title = 'Correlation \n differences',
+                                                labRow = rep('',nrow(heat_data)),
+                                              cexCol = 0.05 + 0.25/log10(ncol(heat_data)),
+                                                trace = 'none')
+                  }
                     hm
+                    return(hm)
 }
 
 #' scatter plot of gene-metabolite pairs (based on user selection)
