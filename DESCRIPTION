@@ -35,7 +35,8 @@ Imports:
     heatmaply,
     plotly,
     DT,
-    gplots
+    gplots,
+    dendextend
 Suggests:
     knitr
 Encoding: UTF-8
