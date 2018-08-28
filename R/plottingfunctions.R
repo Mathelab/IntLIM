@@ -439,13 +439,22 @@ type <- cor <- c()
                                                key.title = 'Correlation \n differences')
                   }else{
                       
-                      distance = stats::dist(heat_data)
-                      hcluster = stats::hclust(distance)
-                      dend1 = stats::as.dendrogram(hcluster)
-                      dend1 = dendextend::set(dend1, "branches_k_color", k = treecuts)
-                      dend1 = dendextend::set(dend1, "branches_lwd", c(1,treecuts))
-                      dend1 = dendextend::ladderize(dend1)
-                      row_dend  <-dend1
+                      hmr <- heatmaply::heatmapr(heat_data,main = "Correlation heatmap",
+                                                 k_row = treecuts,#k_col = 2,
+                                                 margins = c(80,5),
+                                                 dendrogram = "row",
+                                                 y_axis_font_size ="1px",
+                                                 colors = palette,
+                                                 key.title = 'Correlation \n differences')
+                      #distance = stats::dist(heat_data)
+                      #hcluster = stats::hclust(distance)
+                      #dend1 = stats::as.dendrogram(hcluster)
+                      #dend1 = dendextend::set(dend1, "branches_k_color", k = treecuts)
+                      #dend1 = dendextend::set(dend1, "branches_lwd", c(1,treecuts))
+                      #dend1 = dendextend::ladderize(dend1)
+                      #row_dend  <-dend1
+                      
+                      row_dend = hmr$rows
                       hm <- gplots::heatmap.2(heat_data,main = "Correlation \n heatmap",
                                                  #k_row = treecuts,#k_col = 2,
                                                  #margins = c(80,5),
