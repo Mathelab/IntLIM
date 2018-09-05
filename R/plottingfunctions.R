@@ -474,6 +474,28 @@ type <- cor <- c()
                     return(hm)
 }
 
+
+
+#' Plot correlation heatmap in pdf
+#'
+#'
+#' @param inputResults IntLimResults object (output of ProcessResults())
+#' @param top_pairs cutoff of the top pairs, sorted by adjusted p-values, to be plotted (plotting more than 1200 can take some time) (default: 1200)
+#' @param viewer whether the plot should be displayed in the RStudio viewer (T) or
+#' in Shiny/Knittr (F)
+#' @param treecuts number of clusters (of gene-metabolite pairs) to cut the tree into for color-coding
+#' @param palette choose an RColorBrewer palette ("Set1", "Set2", "Set3",
+#' "Pastel1", "Pastel2", "Paired", etc.) or submit a vector of colors
+#' @return a highcharter object
+#' 
+#' @export
+CorrHeatmap_pdf <- function(inputResults,viewer=T,top_pairs=1200,treecuts=2, palette = NULL) {
+    
+    hm = IntLIM::CorrHeatmap(inputResults = inputResults, viewer = viewer, top_pairs = top_pairs, treecuts = treecuts,
+                             palette = palette, static = TRUE, html.file = NULL)
+    return(hm)
+}
+
 #' scatter plot of gene-metabolite pairs (based on user selection)
 #'
 #' @import magrittr
