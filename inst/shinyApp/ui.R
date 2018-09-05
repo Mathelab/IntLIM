@@ -291,6 +291,8 @@ body <- shinydashboard::dashboardBody(
                                          ")),
                     conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                      tags$div("Loading...",id="loadmessage")),
+                    downloadButton('downloadplot1',label='Download heatmap as pdf'),
+                    #downloadButton('downloadplot2',label='Download heatmap as html'),
                     plotly::plotlyOutput("heatmap")
                     )
 
