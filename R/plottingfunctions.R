@@ -369,6 +369,7 @@ DistPvalues<- function(IntLimResults,breaks=100) {
 #' "Pastel1", "Pastel2", "Paired", etc.) or submit a vector of colors
 #' @return a highcharter object
 #'@param static allows user to decide whether heatmap is interactive or static
+#'@param html.file allows user to specify file path to output heatmap onto (used for non-static heatmaply objects)
 #' @examples
 #' \dontrun{
 #' dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
@@ -379,7 +380,8 @@ DistPvalues<- function(IntLimResults,breaks=100) {
 #' CorrHeatmap(myres)
 #' }
 #' @export
-CorrHeatmap <- function(inputResults,viewer=T,top_pairs=1200,treecuts=2, palette = NULL, static = FALSE) {
+CorrHeatmap <- function(inputResults,viewer=T,top_pairs=1200,treecuts=2, palette = NULL, static = FALSE, 
+                        html.file=NULL) {
 type <- cor <- c()
 
 	if(nrow(inputResults@filt.results)==0) {
@@ -445,7 +447,8 @@ type <- cor <- c()
                                                  dendrogram = "row",
                                                  y_axis_font_size ="1px",
                                                  colors = palette,
-                                                 key.title = 'Correlation \n differences')
+                                                 key.title = 'Correlation \n differences',
+                                                 file=html.file)
                       #distance = stats::dist(heat_data)
                       #hcluster = stats::hclust(distance)
                       #dend1 = stats::as.dendrogram(hcluster)
