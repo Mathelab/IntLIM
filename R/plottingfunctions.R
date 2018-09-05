@@ -491,9 +491,86 @@ type <- cor <- c()
 #' @export
 CorrHeatmap_pdf <- function(inputResults,viewer=T,top_pairs=1200,treecuts=2, palette = NULL) {
     
-    hm = IntLIM::CorrHeatmap(inputResults = inputResults, viewer = viewer, top_pairs = top_pairs, treecuts = treecuts,
-                             palette = palette, static = TRUE, html.file = NULL)
-    return(hm)
+    type <- cor <- c()
+    
+    if(nrow(inputResults@filt.results)==0) {
+        stop("Make sure you run ProcessResults before making the heatmap")
+    }
+    
+    allres <- inputResults@filt.results
+    if(nrow(allres)>top_pairs) {
+        allp <- inputResults@filt.results[,"FDRadjPval"]
+        allres <- allres[order(allp,decreasing=F)[1:top_pairs],]
+    }
+    
+    toplot <- data.frame(name=paste(allres[,1],allres[,2],sep=" vs "),
+                         allres[,3:4])
+    suppressMessages(
+        meltedtoplot <- tidyr::gather(
+            toplot,
+            type,cor,colnames(toplot)[2],colnames(toplot)[3]))
+    
+    #all possible values of X (type) and Y (name)
+    theXAxis <- as.character(meltedtoplot[, "type"])
+    theYAxis <- as.character(meltedtoplot[, "name"])
+    
+    #unique values of X and Y
+    theUniqueY <- as.character(unique(theYAxis))
+    theUniqueX <- as.character(unique(theXAxis))
+    
+    # Substitute words with position on the meatrix
+    for (i in 1:length(theUniqueY)){
+        num <- which(theYAxis == theUniqueY[i])
+        theYAxis[num] <- i
+    }
+    for (i in 1:length(theUniqueX)) {
+        num <- which(theXAxis == theUniqueX[i])
+        theXAxis[num] <- i
+    }
+    # New package heatmaply here
+    type <- unique(meltedtoplot[,'type'])
+    num <- nrow(meltedtoplot[meltedtoplot[,'type'] == type[1],])
+    heat_data <- matrix(data = 0, nrow =num,ncol = 2)
+    row.names(heat_data) <- meltedtoplot[1:num,1]
+    colnames(heat_data) <- gsub("_cor","",c(type[1],type[2]))
+    heat_data[,1] <- meltedtoplot[1:num,3]
+    
+    heat_data[,2] <- meltedtoplot[-1:-num,3]
+    if (is.null(palette)){
+        palette=grDevices::colorRampPalette(c("#D01C8B", "#F1B6DA", "#F7F7F7", "#B8E186", "#4DAC26")) (255)[255:1]
+    }
+    
+    
+        
+        hmr <- heatmaply::heatmapr(heat_data,main = "Correlation heatmap",
+                                   k_row = treecuts,#k_col = 2,
+                                   margins = c(80,5),
+                                   dendrogram = "row",
+                                   y_axis_font_size ="1px",
+                                   colors = palette,
+                                   key.title = 'Correlation \n differences',
+                                   file=html.file)
+        #distance = stats::dist(heat_data)
+        #hcluster = stats::hclust(distance)
+        #dend1 = stats::as.dendrogram(hcluster)
+        #dend1 = dendextend::set(dend1, "branches_k_color", k = treecuts)
+        #dend1 = dendextend::set(dend1, "branches_lwd", c(1,treecuts))
+        #dend1 = dendextend::ladderize(dend1)
+        #row_dend  <-dend1
+        
+        row_dend = hmr$rows
+        gplots::heatmap.2(heat_data,main = "Correlation \n heatmap",
+                                #k_row = treecuts,#k_col = 2,
+                                #margins = c(80,5),
+                                dendrogram = "row",
+                                #y_axis_font_size ="1px",
+                                col = palette,
+                                density.info = 'none',
+                                key.title = 'Correlation \n differences',
+                                labRow = rep('',nrow(heat_data)),
+                                cexCol = 0.05 + 0.25/log10(ncol(heat_data)),
+                                trace = 'none', Rowv = row_dend)
+  
 }
 
 #' scatter plot of gene-metabolite pairs (based on user selection)
