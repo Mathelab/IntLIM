@@ -220,6 +220,40 @@ shinyServer(function(input, output, session) {
         IntLIM::CorrHeatmap(myres2(),treecuts=input$treecuts)
     }
     )
+    #download heatmap as pdf
+    output$downloadplot1 <- downloadHandler(
+      filename = "plot.pdf",
+      content = function(file) {
+        pdf(file, width=12, height=6.3)
+        IntLIM:: CorrHeatmap_pdf(myres2(),treecuts=input$treecuts)
+        dev.off()
+      }
+    )
+    
+    # To download heatmap as html use htmlwidgets package.
+    # heat_map <- function() {
+    #   IntLIM::CorrHeatmap(myres2(),treecuts=input$treecuts)
+    # }
+    # 
+    # observeEvent({heat_map()},{
+    #   
+    #   h<-heat_map()
+    #   s<-tags$div(style="position: relative; width:60%;")
+    #   
+    #   output$downloadplot2 <- downloadHandler(
+    #     filename = function() {
+    #       a <- paste("CorrHeatMap-", gsub(' ','_',Sys.time()), ".html", sep="")
+    #     },
+    #     
+    #     content = function(file) {
+    #       libdir <- paste(tools::file_path_sans_ext(basename(file)),"_files", sep = "")
+    #       htmltools::save_html(htmltools::browsable(htmltools::tagList(h,s)),file=file,libdir = libdir)
+    #       htmlwidgets:::pandoc_self_contained_html(file, file)
+    #       unlink(libdir, recursive = TRUE)
+    #     }
+    #   )
+    # })
+    # 
     output$downloadData <- downloadHandler(
         filename = "results.csv",
         content = function(con) {
