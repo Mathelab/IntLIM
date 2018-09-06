@@ -438,7 +438,8 @@ type <- cor <- c()
                                                dendrogram = "row",
                                                y_axis_font_size ="1px",
                                                colors = palette,
-                                               key.title = 'Correlation \n differences')
+                                               key.title = 'Correlation \n differences',
+					       file=html.file)
                   }else{
                       
                       hmr <- heatmaply::heatmapr(heat_data,main = "Correlation heatmap",
@@ -447,8 +448,7 @@ type <- cor <- c()
                                                  dendrogram = "row",
                                                  y_axis_font_size ="1px",
                                                  colors = palette,
-                                                 key.title = 'Correlation \n differences',
-                                                 file=html.file)
+                                                 key.title = 'Correlation \n differences' )
                       #distance = stats::dist(heat_data)
                       #hcluster = stats::hclust(distance)
                       #dend1 = stats::as.dendrogram(hcluster)
@@ -548,8 +548,7 @@ CorrHeatmap_pdf <- function(inputResults,viewer=T,top_pairs=1200,treecuts=2, pal
                                    dendrogram = "row",
                                    y_axis_font_size ="1px",
                                    colors = palette,
-                                   key.title = 'Correlation \n differences',
-                                   file=html.file)
+                                   key.title = 'Correlation \n differences')
         #distance = stats::dist(heat_data)
         #hcluster = stats::hclust(distance)
         #dend1 = stats::as.dendrogram(hcluster)
