@@ -370,6 +370,7 @@ DistPvalues<- function(IntLimResults,breaks=100) {
 #' @return a highcharter object
 #'@param static allows user to decide whether heatmap is interactive or static
 #'@param html.file allows user to specify file path to output heatmap onto (used for non-static heatmaply objects)
+#'@param pdf.file allows user to specify file path to output heatmap onto (used for static heatmap.2 objects)
 #' @examples
 #' \dontrun{
 #' dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
@@ -381,7 +382,7 @@ DistPvalues<- function(IntLimResults,breaks=100) {
 #' }
 #' @export
 CorrHeatmap <- function(inputResults,viewer=T,top_pairs=1200,treecuts=2, palette = NULL, static = FALSE, 
-                        html.file=NULL) {
+                        html.file=NULL, pdf.file=NULL) {
 type <- cor <- c()
 
 	if(nrow(inputResults@filt.results)==0) {
@@ -440,6 +441,41 @@ type <- cor <- c()
                                                colors = palette,
                                                key.title = 'Correlation \n differences',
 					       file=html.file)
+                  hm
+                  
+                  if(!is.null(pdf.file)){
+                      
+                      hmr <- heatmaply::heatmapr(heat_data,main = "Correlation heatmap",
+                                                 k_row = treecuts,#k_col = 2,
+                                                 margins = c(80,5),
+                                                 dendrogram = "row",
+                                                 y_axis_font_size ="1px",
+                                                 colors = palette,
+                                                 key.title = 'Correlation \n differences' )
+                      #distance = stats::dist(heat_data)
+                      #hcluster = stats::hclust(distance)
+                      #dend1 = stats::as.dendrogram(hcluster)
+                      #dend1 = dendextend::set(dend1, "branches_k_color", k = treecuts)
+                      #dend1 = dendextend::set(dend1, "branches_lwd", c(1,treecuts))
+                      #dend1 = dendextend::ladderize(dend1)
+                      #row_dend  <-dend1
+                      
+                      row_dend = hmr$rows
+                      grDevices::pdf(file=pdf.file, width=12, height=6.3)
+                      gplots::heatmap.2(heat_data,main = "Correlation \n heatmap",
+                                        #k_row = treecuts,#k_col = 2,
+                                        #margins = c(80,5),
+                                        dendrogram = "row",
+                                        #y_axis_font_size ="1px",
+                                        col = palette,
+                                        density.info = 'none',
+                                        key.title = 'Correlation \n differences',
+                                        labRow = rep('',nrow(heat_data)),
+                                        cexCol = 0.05 + 0.25/log10(ncol(heat_data)),
+                                        trace = 'none', Rowv = row_dend)
+                      grDevices::dev.off()
+                  }
+                  return(hm)
                   }else{
                       
                       hmr <- heatmaply::heatmapr(heat_data,main = "Correlation heatmap",
@@ -458,7 +494,7 @@ type <- cor <- c()
                       #row_dend  <-dend1
                       
                       row_dend = hmr$rows
-                      hm <- gplots::heatmap.2(heat_data,main = "Correlation \n heatmap",
+                      gplots::heatmap.2(heat_data,main = "Correlation \n heatmap",
                                                  #k_row = treecuts,#k_col = 2,
                                                  #margins = c(80,5),
                                                  dendrogram = "row",
@@ -469,9 +505,38 @@ type <- cor <- c()
                                                 labRow = rep('',nrow(heat_data)),
                                               cexCol = 0.05 + 0.25/log10(ncol(heat_data)),
                                                 trace = 'none', Rowv = row_dend)
+                      
+                      if(!is.null(pdf.file)){
+                          grDevices::pdf(file=pdf.file, width=12, height=6.3)
+                          gplots::heatmap.2(heat_data,main = "Correlation \n heatmap",
+                                            #k_row = treecuts,#k_col = 2,
+                                            #margins = c(80,5),
+                                            dendrogram = "row",
+                                            #y_axis_font_size ="1px",
+                                            col = palette,
+                                            density.info = 'none',
+                                            key.title = 'Correlation \n differences',
+                                            labRow = rep('',nrow(heat_data)),
+                                            cexCol = 0.05 + 0.25/log10(ncol(heat_data)),
+                                            trace = 'none', Rowv = row_dend)
+                          grDevices::dev.off()
+                      }
+                      
+                      
                   }
-                    hm
-                    return(hm)
+                 
+                  
+                  if(!is.null(html.file) & static==TRUE){
+                      hm.html.out <- heatmaply::heatmaply(heat_data,main = "Correlation heatmap",
+                                                 k_row = treecuts,#k_col = 2,
+                                                 margins = c(80,5),
+                                                 dendrogram = "row",
+                                                 y_axis_font_size ="1px",
+                                                 colors = palette,
+                                                 key.title = 'Correlation \n differences',
+                                                 file=html.file)
+                  }
+                    
 }
 
 

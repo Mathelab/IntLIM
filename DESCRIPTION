@@ -36,7 +36,8 @@ Imports:
     plotly,
     DT,
     gplots,
-    dendextend
+    dendextend,
+    htmlwidgets
 Suggests:
     knitr
 Encoding: UTF-8

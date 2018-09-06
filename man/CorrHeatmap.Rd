@@ -5,7 +5,7 @@
 \title{Plot correlation heatmap}
 \usage{
 CorrHeatmap(inputResults, viewer = T, top_pairs = 1200, treecuts = 2,
-  palette = NULL, static = FALSE, html.file = NULL)
+  palette = NULL, static = FALSE, html.file = NULL, pdf.file = NULL)
 }
 \arguments{
 \item{inputResults}{IntLimResults object (output of ProcessResults())}
@@ -23,6 +23,8 @@ in Shiny/Knittr (F)}
 \item{static}{allows user to decide whether heatmap is interactive or static}
 
 \item{html.file}{allows user to specify file path to output heatmap onto (used for non-static heatmaply objects)}
+
+\item{pdf.file}{allows user to specify file path to output heatmap onto (used for static heatmap.2 objects)}
 }
 \value{
 a highcharter object
