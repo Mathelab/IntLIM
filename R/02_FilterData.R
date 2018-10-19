@@ -72,11 +72,13 @@ FilterData <- function(inputData,geneperc=0,metabperc=0, metabmiss=0) {
 		mycut <- metabmiss * ncol(mymetab)
 		keepers <- which(missnum < mycut)
 		mymetab <- mymetab[keepers,]
-		fmetab <- Biobase::AnnotatedDataFrame(data = Biobase::fData(inputData[["metabolite"]]))[keepers,]
+		#fmetab <- Biobase::AnnotatedDataFrame(data = Biobase::fData(inputData[["metabolite"]]))[keepers,]
+		fmetab <- fmetab[keepers,]
 	} else {
 		print("No metabolite filtering by missing values is applied")
 		mymetab <- mymetab
-		fmetab <- Biobase::AnnotatedDataFrame(data = Biobase::fData(inputData[["metabolite"]]))
+		#fmetab <- Biobase::AnnotatedDataFrame(data = Biobase::fData(inputData[["metabolite"]]))
+		fmetab <- fmetab
 	}
 
 	# Now reconstruct the multidataset object
