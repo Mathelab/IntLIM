@@ -4,7 +4,8 @@ Title: Integration of Omics Data Using Linear Modeling
 Version: 0.1.0
 Authors@R: c(
  person("Jalal", "Siddiqui", email = "Jalal.Siddiqui@osumc.edu", role="aut"),
- person("Mingrui", "Liu", email="liu.4800@buckeyemail.osu.edu", role="aut"),
+ person("Shunchao", "Wang", email="shunchao.wang@osumc.edu", role="aut"),
+ person("Rohith", "Vanam", email="rohith.vanam@osumc.edu", role="aut"),
  person("Ewy", "Mathe", email="ewy.mathe@osumc.edu", role=c("aut","cre")))
 Maintainer: The package maintainer <ewy.mathe@osumc.edu>
 Description: This workflow takes normalized gene expression and metabolite levels, 
@@ -17,7 +18,6 @@ Imports:
     shinydashboard,
     shinyjs,
     rmarkdown,
-    shinyFiles,
     Biobase,
     MultiDataSet,
     methods,
@@ -42,7 +42,7 @@ Suggests:
     knitr
 Encoding: UTF-8
 LazyData: TRUE
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
 NeedsCompilation: no
 Collate: 
     'AllClasses.R'
