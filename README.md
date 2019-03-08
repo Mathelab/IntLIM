@@ -11,6 +11,16 @@ Interpretation of metabolomics data is very challenging.  Yet it can be eased th
 
 An example data set is provided within the package, and is a subset of the NCI-60 gene expression and metabolomics data (https://wiki.nci.nih.gov/display/NCIDTPdata/Molecular+Target+Data).  The vignette outlines how to run the workflow. More details can be found in <a href="https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-018-2085-6" target="_blank"> our publication "IntLIM: integration using linear models of metabolomics and gene expression data"</a>.
 
+## Citation
+If you use IntLIM, please cite the following work:
+
+Siddiqui JK, Baskin E, Liu M, Cantemir-Stone CZ, Zhang B, Bonneville R, McElroy JP, Coombes KR, Mathé EA. IntLIM: integration using linear models of metabolomics and gene expression data. BMC Bioinformatics. 2018 Mar 5;19(1):81. doi: 10.1186/s12859-018-2085-6.
+
+PMID: 229506475; PMCID: PMC5838881 DOI: 10.1186/s12859-018-2085-6
+
+To access, [click here](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5838881/)
+
+
 ## IntLIM prerequisites
 
 IntLIM is an R package and can be run on version >= 3.2.0. 
