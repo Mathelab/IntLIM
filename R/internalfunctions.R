@@ -1,26 +1,26 @@
 #' Generic function to create constructor of MultiDataSet gene object
 #'
 #' @include MetaboliteSet_addMetabolite.R
-#' @include AllClasses.R 
+#' @include AllClasses.R
 #'
 #' @param genefdata gene meta data
 #' @param metabfdata metabolite meta data
 #' @param pdata sample meta data
-#' @param geneid name of column from metabolite meta data to be used as id 
+#' @param geneid name of column from metabolite meta data to be used as id
 #'	(required if a gene meta data file is present, must match gene expression matrix))
 #' @param metabid name of column from gene meta data to be used as id
 #'      (required if a metabolite meta data file is present, must match metabolite abundances matrix))
 #' @param metabdata metabolite abundances (samples are in columns)
 #' @param genedata gene expression (samples are in columns)
-#' @param logmetab T/F 
+#' @param logmetab T/F
 #' @param loggene T/F
-CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid, 
+CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
 	metabdata, genedata, logmetab=FALSE,loggene=FALSE) {
 
 	# Check that feature data and abundance data metabolites corresponds
         if (!is.null(metabfdata)) {
         if(length(which(colnames(metabfdata)=='id'))!=1) {
-                stop(paste("metabid provided",metabid,"does not exist in metabolite meta data file"))} else if 
+                stop(paste("metabid provided",metabid,"does not exist in metabolite meta data file"))} else if
 	(length(intersect(rownames(metabdata),as.character(metabfdata[,metabid])))<nrow(metabdata)){
                 stop("Metabolites in abundance data file and metabolite meta data file are not equal")} else {
                 myind <- as.numeric(lapply(rownames(metabdata),function(x) {
@@ -40,7 +40,7 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
         }
 
 	#new data frames are set for phenoData and featureData
-    
+
 
 	metabpdata$id=rownames(metabpdata)
 
@@ -49,7 +49,7 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
 	if (logmetab == TRUE){
 		metabdata <- log2(metabdata)
 	}
-	
+
 	if(is.null(metabfdata)) {
 		metabfdata <- data.frame(id = rownames(metabdata),stringsAsFactors=FALSE)
                 rownames(metabfdata) <- metabfdata[,1]
@@ -59,9 +59,9 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
         metabfdata <- data.frame(metabfdata[myind,],stringsAsFactors=FALSE)
 	rownames(metabfdata) <- metabfdata[,1]
 	metabfeatureData <- Biobase::AnnotatedDataFrame(data = metabfdata)
-	metab.set <- methods::new("MetaboliteSet",metabData = metabdata, 
+	metab.set <- methods::new("MetaboliteSet",metabData = metabdata,
 		phenoData = metabphenoData, featureData = metabfeatureData)
-	
+
 
 	#####  Now the genes
 	# Check that feature data and gene expression data corresponds
@@ -79,7 +79,7 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
         rownames(genefdata)=as.character(genefdata[,'id'])
         }
         # Check that samples data and abundance data samples correspond
-        if(length(intersect(colnames(genedata),rownames(pdata)))<ncol(genedata)){ 
+        if(length(intersect(colnames(genedata),rownames(pdata)))<ncol(genedata)){
                 stop("Samples in expression data file and sample meta data file are not equal")
         } else {
 		myind <- as.numeric(lapply(colnames(genedata),function(x) {
@@ -109,7 +109,7 @@ CreateIntLimObject <- function(genefdata, metabfdata, pdata, geneid, metabid,
 	Biobase::fData(gene.set) <- data.frame(genefdata,stringAsFactors=FALSE)
 	genepdata$id=rownames(genepdata)
 	Biobase::pData(gene.set) <- genepdata
-	
+
 
 	multi <- MultiDataSet::createMultiDataSet()
 	multi1 <- MultiDataSet::add_genexp(multi, gene.set)
@@ -164,9 +164,9 @@ getCommon <- function(inputData,stype=NULL, covar = NULL, class.covar = NULL) {
 		p <- new.p
         }
    }
-   
+
    if(!is.null(covar)){
-       
+
        if (length(covar %in% colnames(p.0)) != sum(covar %in% colnames(p.0))){
            stop("Additional variable names not in pData")
        }
@@ -174,40 +174,40 @@ getCommon <- function(inputData,stype=NULL, covar = NULL, class.covar = NULL) {
        na.covar <- which(is.na(covar_matrix) | covar_matrix == '',arr.ind = TRUE)
        na.covar.list <- unique(rownames(na.covar))
        new.overall.list <- setdiff(colnames(gene), na.covar.list)
-       
+
        covar_matrix <- covar_matrix[new.overall.list,,drop = FALSE]
-       
+
        class.var <- apply(covar_matrix,2,class)
-       
+
        gene <- gene[,new.overall.list]
        metab <- metab[,new.overall.list]
        p <- p.0[new.overall.list,stype]
-       
+
        if(!(is.null(class.covar))){
-           
+
            if(length(class.covar) != length(covar)){
                stop("lengths of covar and class.covar not the same")
            }
            len.covar <- length(covar)
            for(i in 1:len.covar){
                if(class.covar[i] == 'numeric'){
-                   
+
                    covar_matrix[,i] <- as.numeric(covar_matrix[,i])
-                   
+
                }else{
-                   
+
                    covar_matrix[,i] <- as.factor(as.character(covar_matrix[,i]))
-                   
+
                }
            }
        }
-       
+
    }else{
        covar_matrix <- NULL
    }
 
    # Check that everything is in right order
-   if(!all.equal(rownames(mp),rownames(gp)) || !all.equal(colnames(metab),colnames(gene))){ 
+   if(!all.equal(rownames(mp),rownames(gp)) || !all.equal(colnames(metab),colnames(gene))){
 	stop("Something went wrong with the merging!  Sample names of input files may not match.")
    } else {
    out <- list(p=as.factor(as.character(p)),gene=gene,metab=metab, covar_matrix=covar_matrix)
@@ -221,16 +221,16 @@ getCommon <- function(inputData,stype=NULL, covar = NULL, class.covar = NULL) {
 #' @include AllClasses.R
 #'
 #' @param incommon MultiDataSet object (output of ReadData()) with gene
-#' @param outcome 'metabolite' or 'gene' must be set as outcome/independent variable 
+#' @param outcome 'metabolite' or 'gene' must be set as outcome/independent variable
 #' (default is 'metabolite')
 #' @param type vector of sample type (by default, it will be used in the interaction term).
 #' Only 2 categories are currently supported.
 #' @param covar vector of additional vectors to consider
-RunLM <- function(incommon, outcome="metabolite", type=NULL, covar=NULL) { 
+RunLM <- function(incommon, outcome="metabolite", type=NULL, covar=NULL) {
 
     gene <- incommon$gene
     metab <- incommon$metab
- 
+
     uniqtypes <- unique(type)
     if(length(uniqtypes)!=2) {
 	stop("The number of unique categores is not 2.")
@@ -255,124 +255,11 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL, covar=NULL) {
         mymessage <- c(mymessage,rownames(metab)[toremove])
     }
 
-    if (outcome == "metabolite") {
-        arraydata <- data.frame(metab)
-        #form <- stats::formula(m ~ g + type + g:type)
-        # Retrieve pvalues by iterating through each gene
-        numgenes <- nrow(gene)
-	numprog <- round(numgenes*0.1)
-	form.add <- "Y ~ g + type + g:type"
-	    if (!(is.null(covar))){
-	        form.add <- "Y ~ g + type + g:type"
-	        
-	        len.covar <- length(covar)
-	        for (i in 1:len.covar){
-	            form.add <- paste(form.add, '+', covar[i])
-	        }
-	    }
-	
-	
-        list.pvals <- lapply(1:numgenes, function(x) {
-                #print(x)
-                g <- as.numeric(gene[x,])
-                
-                if(is.null(covar)){
-                clindata <- data.frame(g, type)
-                }else{
-                    clindata <- data.frame(g, type, incommon$covar_matrix)
-                }
-                
-                mlin <- getstatsOneLM(stats::as.formula(form.add), clindata = clindata,
-                        arraydata = arraydata)
-                term.pvals <- rownames(mlin$p.value.coeff)
-                index.interac <- grep('g:type', term.pvals)
-                
-                p.val.vector <- as.vector(mlin$p.value.coeff[index.interac,])
-                
-                
-                #p.val.vector <- as.vector(mlin@p.value.coeff[4,])
-                # Print out progress every 1000 genes
-        	if (numprog != 0){
-	        if (x %% numprog == 0){
-                    progX <- round(x/numgenes*100)
-                    print(paste(progX,"% complete"))
-                }
-	}	
-                return(p.val.vector)
-        })
-    mat.pvals <- do.call(rbind, list.pvals)
-    # adjust p-values
-    row.pvt <- dim(mat.pvals)[1]
-    col.pvt <- dim(mat.pvals)[2]
-    myps <- as.vector(mat.pvals)
-    mypsadj <- stats::p.adjust(myps, method = 'fdr')
-    mat.pvalsadj <- matrix(mypsadj, row.pvt, col.pvt)
-
-    rownames(mat.pvals) <- rownames(mat.pvalsadj) <- rownames(gene)
-    colnames(mat.pvals) <- colnames(mat.pvalsadj) <- rownames(metab)
-    } else if (outcome == "gene") {
-        arraydata <- data.frame(gene)
-        #form <- stats::formula(g ~ m + type + m:type)
-
-        # Retrieve pvalues by iterating through each gene
-        nummetab <- nrow(metab)
-	numprog <- round(nummetab*0.1)
-	
-	form.add <- "Y ~ m + type + m:type"
-	if (!(is.null(covar))){
-	    form.add <- "Y ~ m + type + m:type"
-	    
-	    len.covar <- length(covar)
-	    for (i in 1:len.covar){
-	        form.add <- paste(form.add, '+', covar[i])
-	    }
-	}
-        list.pvals <- lapply(1:nummetab, function(x) {
-                #print(x)
-                m <- as.numeric(metab[x,])
-                
-                if(is.null(covar)){
-                    clindata <- data.frame(m, type)
-                }else{
-                    clindata <- data.frame(m, type, incommon$covar_matrix)
-                }
-               
-                mlin <- getstatsOneLM(stats::as.formula(form.add), clindata = clindata,
-                        arraydata = arraydata)
-                
-                term.pvals <- rownames(mlin$p.value.coeff)
-                index.interac <- grep('m:type', term.pvals)
-                p.val.vector <- as.vector(mlin$p.value.coeff[index.interac,])
-                #p.val.vector <- as.vector(mlin@p.value.coeff[4,])
-                # Print out progress every 1000 genes
-         if (numprog != 0){       
-	 if (x %% numprog == 0){
-                    progX <- round(x/nummetab*100)
-                    print(paste(progX,"% complete"))
-                }
-	}	
-                return(p.val.vector)
-        })
-    mat.pvals <- do.call(rbind, list.pvals)
-    # adjust p-values
-    row.pvt <- dim(mat.pvals)[1]
-    col.pvt <- dim(mat.pvals)[2]
-    myps <- as.vector(mat.pvals)
-    mypsadj <- stats::p.adjust(myps, method = 'fdr')
-    mat.pvalsadj <- matrix(mypsadj, row.pvt, col.pvt)
-
-    rownames(mat.pvals) <- rownames(mat.pvalsadj) <- rownames(metab)
-    colnames(mat.pvals) <- colnames(mat.pvalsadj) <- rownames(gene)
-
-    #mat.pvals <- t(mat.pvals)
-    } else {
-        stop("outcome must be either 'metabolite' or 'gene'")
-    }
-
-    myres <- methods::new('IntLimResults', interaction.pvalues=mat.pvals,
-		interaction.adj.pvalues = mat.pvalsadj,
-		warnings=mymessage)
-    return(myres)
+  mat.list <- getStatsAllLM(outcome = "metabolite", gene = gene, metab = metab, type = type, covar = covar, covarMatrix = incommon$covar_matrix)
+  myres <- methods::new('IntLimResults', interaction.pvalues=mat.list$mat.pvals,
+	interaction.adj.pvalues = mat.list$mat.pvalsadj, coefficient.pvalues=mat.list$mat.coefficients,
+	coefficient.adj.pvalues=mat.list$mat.pvalsadj.coefficients,warnings=mymessage)
+  return(myres)
 }
 
 #' Function that runs linear models for one gene vs all metabolites
@@ -383,7 +270,7 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL, covar=NULL) {
 #' @param clindata data frame with 1st column: expression of one analyte; 2nd column
 #' sample type (e.g. cancer/non-cancer)
 #' @param arraydata matrix of metabolite values
-    getstatsOneLM <- function(form, clindata, arraydata) {
+getstatsOneLM <- function(form, clindata, arraydata) {
 	call=match.call()
         YY <- t(arraydata)                      # the data matrix
         EY <- apply(YY, 2, mean)                # its mean vector
@@ -413,7 +300,7 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL, covar=NULL) {
         p.val.coeff <- 2*stats::pt(-abs(t.coeff),df = (N-p))
         #methods::new('IntLimModel', call=call, model=form,
          list(# call=call, model=form,
-                #coefficients=bhat,
+                coefficients=bhat,
                 # predictions=yhat,
                 #df=c(rdf, edf),
                 #sse=sse,
@@ -423,7 +310,136 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL, covar=NULL) {
                 #std.error.coeff = stderror.coeff,
                 #t.value.coeff = t.coeff,
                 p.value.coeff = p.val.coeff # interaction p-value
-         )
+    )
+}
+
+#' Function that runs Linear Models for all genes or metabolites
+#' @include AllClasses.R
+#' @param outcome 'metabolite' or 'gene' must be set as outcome/independent variable
+#' @param gene gene dataset in incommon MultiDataSet object (incommon$gene)
+#' @param metab metabolite dataset in incommon MultiDataSet object (incommon$metab)
+#' @param type vector of sample type (by default, it will be used in the interaction term).
+#' Only 2 categories are currently supported.
+#' @param covar vector of additional vectors to consider
+#' @param covarMatrix covariate matrix in incommon MultiDataSet object (incommon$covar_matrix)
+#' @return list of matrices (interaction.pvalues, interaction.adj.pvalues, coefficient.pvalues, coefficient.adj.pvalues )
+
+getStatsAllLM <- function(outcome, gene, metab, type, covar, covarMatrix) {
+  if (outcome=="metabolite") {
+    arraydata <- data.frame(metab)
+    num <- nrow(gene)
+    numprog <- round(num*0.1)
+    form.add <- "Y ~ g + type + g:type"
+    if (!is.null(covar)) {
+      len.covar <- length(covar)
+      for (i in 1:len.covar) {
+        form.add <- paste(form.add, '+', covar[i])
+      }
+    }
+    list.pvals <- list()
+    list.coefficients <- list()
+    for (i in 1:num) {
+      g <- as.numeric(gene[i, ])
+      if (is.null(covar)) {
+        clindata <- data.frame(g, type)
+      } else {
+        clindata <- data.frame(g, type, covarMatrix)
+      }
+      mlin <- getstatsOneLM(stats::as.formula(form.add), clindata = clindata,
+                            arraydata = arraydata)
+      term.pvals <- rownames(mlin$p.value.coeff)
+      index.interac <- grep('g:type', term.pvals)
+      p.val.vector <- as.vector(mlin$p.value.coeff[index.interac,])
+
+      term.coefficient <- rownames(mlin$coefficients)
+      index.coefficient <-  grep('g:type', term.coefficient)
+      coefficient.vector <- as.vector(mlin$coefficients[index.coefficient,])
+
+      if (numprog != 0){
+        if (i %% numprog == 0) {
+          progX <- round(i/num*100)
+          print(paste(progX,"% complete"))
         }
+      }
+      list.pvals[[i]] <-  p.val.vector
+      list.coefficients[[i]] <- coefficient.vector
+    }
+  } else if (outcome=="gene") {
+    arraydata <- data.frame(gene)
+    num <- nrow(metab)
+    numprog <- round(num*0.1)
+    form.add <- "Y ~ m + type + m:type"
+    if (!is.null(covar)) {
+      len.covar <- length(covar)
+      for (i in 1:len.covar) {
+        form.add <- paste(form.add, '+', covar[i])
+      }
+    }
+    list.pvals <- list()
+    list.coefficients <- list()
 
+    for (i in 1:num) {
+      m <- as.numeric(metab[i,])
+      if (is.null(covar)) {
+        clindata <- data.frame(m, type)
+      } else {
+        clindata <- data.frame(m, type, covarMatrix)
+      }
 
+      mlin <- getstatsOneLM(stats::as.formula(form.add), clindata = clindata,
+                            arraydata = arraydata)
+      term.pvals <- rownames(mlin$p.value.coeff)
+      index.interac <- grep('m:type', term.pvals)
+      p.val.vector <- as.vector(mlin$p.value.coeff[index.interac,])
+
+      term.coefficient <- rownames(mlin$coefficients)
+      index.coefficient <-  grep('m:type', term.coefficient)
+      coefficient.vector <- as.vector(mlin$coefficients[index.coefficient,])
+
+      if (numprog != 0){
+        if (i %% numprog == 0) {
+          progX <- round(i/num*100)
+          print(paste(progX,"% complete"))
+        }
+      }
+      list.pvals[[i]] <-  p.val.vector
+      list.coefficients[[i]] <- coefficient.vector
+    }
+  }
+
+  list.pvals
+  list.coefficients
+  mat.pvals <- do.call(rbind, list.pvals)
+  mat.coefficients <- do.call(rbind, list.coefficients)
+  # adjust p-values
+  row.pvt <- dim(mat.pvals)[1]
+  col.pvt <- dim(mat.pvals)[2]
+  myps <- as.vector(mat.pvals)
+  mypsadj <- stats::p.adjust(myps, method = 'fdr')
+  mat.pvalsadj <- matrix(mypsadj, row.pvt, col.pvt)
+
+  row.coe.pvt <- dim(mat.coefficients)[1]
+  col.coe.pvt <- dim(mat.coefficients)[2]
+  myps.coe <- as.vector(mat.coefficients)
+  mypsadj.coe <- stats::p.adjust(myps, method = 'fdr')
+  mat.coe.pvalsadj <- matrix(mypsadj.coe, row.coe.pvt, col.coe.pvt)
+
+  if (outcome=="metabolite") {
+    rownames(mat.pvals) <- rownames(mat.pvalsadj) <- rownames(gene)
+    colnames(mat.pvals) <- colnames(mat.pvalsadj) <- rownames(metab)
+    rownames(mat.coefficients) <- rownames(mat.coe.pvalsadj) <- rownames(gene)
+    colnames(mat.coefficients) <- colnames(mat.coe.pvalsadj) <- rownames(metab)
+  } else if (outcome=="gene") {
+    rownames(mat.pvals) <- rownames(mat.pvalsadj) <- rownames(metab)
+    colnames(mat.pvals) <- colnames(mat.pvalsadj) <- rownames(gene)
+    rownames(mat.coefficients) <- rownames(mat.coe.pvalsadj) <- rownames(metab)
+    colnames(mat.coefficients) <- colnames(mat.coe.pvalsadj) <- rownames(gene)
+  }
+
+  list.mat <- list()
+  list.mat[["mat.pvals"]] <- as.matrix(mat.pvals)
+  list.mat[["mat.pvalsadj"]] <- as.matrix(mat.pvalsadj)
+  list.mat[["mat.coefficients"]] <- as.matrix(mat.coefficients)
+  list.mat[["mat.pvalsadj.coefficients"]] <- as.matrix(mat.coe.pvalsadj)
+  list.mat
+}

@@ -9,7 +9,7 @@
 #' @exportClass MetaboliteSet
 #' @slot eSet List of eSet elements
 
-if(!require("Biobase")) install.packages("Biobase") 
+if(!require("Biobase")) install.packages("Biobase")
 
 methods::setClass (
 	Class = "MetaboliteSet",
@@ -23,6 +23,8 @@ methods::setClass (
 #' @exportClass IntLimResults
 #' @slot interaction.pvalues matrix of interaction p-values
 #' @slot interaction.adj.pvalues matrix of adjusted interaction pvalues
+#' @slot coefficient.pvalues matrix of adjusted coeffiecient pvalues
+#' @slot coefficient.adj.pvalues matrix of adjusted coeffiecient pvalues
 #' @slot corr matrix of correlations in group 1 and 2
 #' @slot warnings a message of whether genes and metabolites have 0 standard deviation
 #' @slot stype column name that represents sample type (by default, it will be used
@@ -31,13 +33,16 @@ methods::setClass (
 #' @slot covar describing additional variables and the class they form
 methods::setClass(
 	Class="IntLimResults",
-	representation(interaction.pvalues="matrix", 
+	representation(interaction.pvalues="matrix",
 		interaction.adj.pvalues="matrix",
+		coefficient.pvalues="matrix",
+		coefficient.adj.pvalues="matrix",
 		corr="data.frame",
 		filt.results="data.frame",
 		warnings="character",
 		stype="character",
 		outcome="character",
-		covar="data.frame"))
+		covar="data.frame")
+	)
 
 
