@@ -4,8 +4,8 @@
 \alias{PlotGMPair}
 \title{scatter plot of gene-metabolite pairs (based on user selection)}
 \usage{
-PlotGMPair(inputData, stype = NULL, geneName, metabName, palette = "Set1",
-  viewer = T)
+PlotGMPair(inputData, stype = NULL, geneName, metabName,
+  palette = "Set1", viewer = T)
 }
 \arguments{
 \item{inputData}{IntLimObject output of ReadData() or FilterData()}
@@ -31,7 +31,7 @@ scatter plot of gene-metabolite pairs (based on user selection)
 \examples{
 \dontrun{
 dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
-csvfile <- file.path(dir, "NCIinput.csv")
+csvfile <- file.path(dir, "NCItestinput.csv")
 mydata <- ReadData(csvfile,metabid='id',geneid='id')
 PlotGMPair(mydata,stype="PBO_vs_Leukemia","DLG4","(p-Hydroxyphenyl)lactic acid")
 

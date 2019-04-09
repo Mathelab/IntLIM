@@ -4,8 +4,8 @@
 \alias{RunIntLim}
 \title{Run linear models and retrieve relevant statistics}
 \usage{
-RunIntLim(inputData, stype = NULL, outcome = "metabolite", covar = NULL,
-  class.covar = NULL)
+RunIntLim(inputData, stype = NULL, outcome = "metabolite",
+  covar = NULL, class.covar = NULL)
 }
 \arguments{
 \item{inputData}{MultiDataSet object (output of ReadData()) with gene expression,

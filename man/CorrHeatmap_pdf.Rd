@@ -4,8 +4,8 @@
 \alias{CorrHeatmap_pdf}
 \title{Plot correlation heatmap in pdf}
 \usage{
-CorrHeatmap_pdf(inputResults, viewer = T, top_pairs = 1200, treecuts = 2,
-  palette = NULL)
+CorrHeatmap_pdf(inputResults, viewer = T, top_pairs = 1200,
+  treecuts = 2, palette = NULL)
 }
 \arguments{
 \item{inputResults}{IntLimResults object (output of ProcessResults())}

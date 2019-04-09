@@ -5,7 +5,8 @@
 \title{Plot correlation heatmap}
 \usage{
 CorrHeatmap(inputResults, viewer = T, top_pairs = 1200, treecuts = 2,
-  palette = NULL, static = FALSE, html.file = NULL, pdf.file = NULL)
+  palette = NULL, static = FALSE, html.file = NULL,
+  pdf.file = NULL)
 }
 \arguments{
 \item{inputResults}{IntLimResults object (output of ProcessResults())}

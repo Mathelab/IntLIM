@@ -4,8 +4,8 @@
 \alias{CreateIntLimObject}
 \title{Generic function to create constructor of MultiDataSet gene object}
 \usage{
-CreateIntLimObject(genefdata, metabfdata, pdata, geneid, metabid, metabdata,
-  genedata, logmetab = FALSE, loggene = FALSE)
+CreateIntLimObject(genefdata, metabfdata, pdata, geneid, metabid,
+  metabdata, genedata, logmetab = FALSE, loggene = FALSE)
 }
 \arguments{
 \item{genefdata}{gene meta data}

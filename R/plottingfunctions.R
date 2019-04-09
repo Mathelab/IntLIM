@@ -655,7 +655,7 @@ CorrHeatmap_pdf <- function(inputResults,viewer=T,top_pairs=1200,treecuts=2, pal
 #' @examples
 #' \dontrun{
 #' dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
-#' csvfile <- file.path(dir, "NCIinput.csv")
+#' csvfile <- file.path(dir, "NCItestinput.csv")
 #' mydata <- ReadData(csvfile,metabid='id',geneid='id')
 #' PlotGMPair(mydata,stype="PBO_vs_Leukemia","DLG4","(p-Hydroxyphenyl)lactic acid")
 #'
@@ -666,14 +666,12 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
 
       if(is.null(stype)) {
 	stop("Users must define stype which defines the categories to be compared (e.g. tumor vs non-tumor).  This could be the same parameter that was used to run RunIntLim()")
-	}
+	} 
       if (length(palette) == 2) {
         cols <- c(palette)
-      }
-      else if (length(palette) == 1) {
+      } else if (length(palette) == 1) {
         cols <- RColorBrewer::brewer.pal(3, palette)[1:2]
-      }
-      else {
+      } else {
         stop("palette must either be an RColorBrewer palette or a vector of hex colors of size 2")
       }
 
@@ -681,13 +679,13 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
         stop("input data is not a MultiDataSet class")
 }
 
-    incommon <- getCommon(inputData,stype)
+    incommon <- IntLIM::getCommon(inputData,stype)
 
 	if(is.null(stype)) {
                 stop("A category to colorcode by (e.g. stype) must be provided")
         } else if (length(intersect(colnames(Biobase::pData(inputData[["metabolite"]])),stype))!=1) {
-                stop(paste0("You provided ",stype, "as your stype variable but it does not exist in your data"))}
-        else {
+                stop(paste0("You provided ",stype, "as your stype variable but it does not exist in your data"))
+	} else {
                 mytypes <- incommon$p
         }
 
@@ -715,21 +713,28 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
 
     data<-data.frame(x=sGene,y=sMetab,z=colnames(gene),label=mytypes,color=mycols)
 
-    max<- max(data$x)
-    min<-min(data$x)
+    # Get points to draw the lines for each phenotype by hand
 
     uniqtypes=as.character(unique(mytypes))
 
-    m1<-stats::glm(data$y[which(data$label==uniqtypes[1])]~data$x[which(data$label==uniqtypes[1])])
-    line1<-data.frame(x=c(max,min),
-	y=c(as.numeric(m1$coefficients[2])*max+as.numeric(m1$coefficients[1]),
-		as.numeric(m1$coefficients[2])*min+as.numeric(m1$coefficients[1])))
-    m2<-stats::glm(data$y[which(data$label==uniqtypes[2])]~data$x[which(data$label==uniqtypes[2])])
-    line2<-data.frame(x=c(max,min),
-	y=c(as.numeric(m2$coefficients[2])*max+as.numeric(m2$coefficients[1]),
-		as.numeric(m2$coefficients[2])*min+as.numeric(m2$coefficients[1])))
+    # Starting with phenotype 1, get min and max x values constrained to the values of y
+    # The reason we do this, is because the lines do not necessary need to go out to the max or min of x, particularly 
+    # when slopes are really steep (abline does this automatically but not highcharter)
+    getLinePoints <- function(data,mytypes, uniqtypes, currenttype) {
+    	y=data$y[which(data$label==uniqtypes[currenttype])]; x=data$x[which(data$label==uniqtypes[currenttype])]
+	min <- min(data$x[which(mytypes==uniqtypes[currenttype])])
+    	max <- max(data$x[which(mytypes==uniqtypes[currenttype])])
 
-    ds <- list_parse(data)
+    	m1<-stats::glm(y ~ x)
+    	line1<-data.frame(x=c(max,min),
+	y=c(stats::predict(m1,data.frame(x=c(max,min)))))
+	return(data.frame(x=c(max,min), y=c(stats::predict(m1,data.frame(x=c(max,min))))))
+    }
+
+    line1 <- getLinePoints(data,mytypes,uniqtypes,currenttype=1)
+    line2 <- getLinePoints(data,mytypes, uniqtypes, currenttype=2)
+  
+    ds <- highcharter::list_parse(data)
     #cols=c("blue","pink")
 
         hc <- highcharter::highchart(width = 350, height = 350 ) %>%
