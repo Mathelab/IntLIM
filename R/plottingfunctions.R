@@ -679,7 +679,7 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
         stop("input data is not a MultiDataSet class")
 }
 
-    incommon <- IntLIM::getCommon(inputData,stype)
+    incommon <- IntLIM:::getCommon(inputData,stype)
 
 	if(is.null(stype)) {
                 stop("A category to colorcode by (e.g. stype) must be provided")
