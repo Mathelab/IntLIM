@@ -13,6 +13,7 @@
  before_install:
    Rscript -e 'update.packages(ask = FALSE)'
    R -e 'source("https://install-github.me/r-lib/remotes")'
+ before_script:
    Rscript -e 'BiocManager::install(version="devel", ask=FALSE)'
  os:
    - linux
