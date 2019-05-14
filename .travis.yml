@@ -12,6 +12,7 @@
  r_check_args: --no-build-vignettes --no-manual --as-cran
  before_install:
    Rscript -e 'update.packages(ask = FALSE)'
+   R -e 'source("https://install-github.me/r-lib/remotes")'
  os:
    - linux
  r_packages:
