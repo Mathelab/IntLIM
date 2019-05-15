@@ -255,10 +255,12 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL, covar=NULL) {
         mymessage <- c(mymessage,rownames(metab)[toremove])
     }
 
-  mat.list <- getStatsAllLM(outcome = "metabolite", gene = gene, metab = metab, type = type, covar = covar, covarMatrix = incommon$covar_matrix)
-  myres <- methods::new('IntLimResults', interaction.pvalues=mat.list$mat.pvals,
-	interaction.adj.pvalues = mat.list$mat.pvalsadj, coefficient.pvalues=mat.list$mat.coefficients,
-	coefficient.adj.pvalues=mat.list$mat.pvalsadj.coefficients,warnings=mymessage)
+  mat.list <- getStatsAllLM(outcome = outcome, gene = gene, metab = metab, type = type, covar = covar, covarMatrix = incommon$covar_matrix)
+  myres <- methods::new('IntLimResults',
+                        interaction.pvalues=mat.list$mat.pvals,
+                        interaction.adj.pvalues = mat.list$mat.pvalsadj,
+                        interaction.coefficients=mat.list$mat.coefficients,
+                        warnings=mymessage)
   return(myres)
 }
 
@@ -418,28 +420,21 @@ getStatsAllLM <- function(outcome, gene, metab, type, covar, covarMatrix) {
   mypsadj <- stats::p.adjust(myps, method = 'fdr')
   mat.pvalsadj <- matrix(mypsadj, row.pvt, col.pvt)
 
-  row.coe.pvt <- dim(mat.coefficients)[1]
-  col.coe.pvt <- dim(mat.coefficients)[2]
-  myps.coe <- as.vector(mat.coefficients)
-  mypsadj.coe <- stats::p.adjust(myps, method = 'fdr')
-  mat.coe.pvalsadj <- matrix(mypsadj.coe, row.coe.pvt, col.coe.pvt)
-
   if (outcome=="metabolite") {
     rownames(mat.pvals) <- rownames(mat.pvalsadj) <- rownames(gene)
     colnames(mat.pvals) <- colnames(mat.pvalsadj) <- rownames(metab)
-    rownames(mat.coefficients) <- rownames(mat.coe.pvalsadj) <- rownames(gene)
-    colnames(mat.coefficients) <- colnames(mat.coe.pvalsadj) <- rownames(metab)
+    rownames(mat.coefficients) <- rownames(gene)
+    colnames(mat.coefficients) <- rownames(metab)
   } else if (outcome=="gene") {
     rownames(mat.pvals) <- rownames(mat.pvalsadj) <- rownames(metab)
     colnames(mat.pvals) <- colnames(mat.pvalsadj) <- rownames(gene)
-    rownames(mat.coefficients) <- rownames(mat.coe.pvalsadj) <- rownames(metab)
-    colnames(mat.coefficients) <- colnames(mat.coe.pvalsadj) <- rownames(gene)
+    rownames(mat.coefficients) <- rownames(metab)
+    colnames(mat.coefficients) <- rownames(gene)
   }
 
   list.mat <- list()
   list.mat[["mat.pvals"]] <- as.matrix(mat.pvals)
   list.mat[["mat.pvalsadj"]] <- as.matrix(mat.pvalsadj)
   list.mat[["mat.coefficients"]] <- as.matrix(mat.coefficients)
-  list.mat[["mat.pvalsadj.coefficients"]] <- as.matrix(mat.coe.pvalsadj)
   list.mat
 }
