@@ -324,7 +324,7 @@ getstatsOneLM <- function(form, clindata, arraydata) {
 #' Only 2 categories are currently supported.
 #' @param covar vector of additional vectors to consider
 #' @param covarMatrix covariate matrix in incommon MultiDataSet object (incommon$covar_matrix)
-#' @return list of matrices (interaction.pvalues, interaction.adj.pvalues, coefficient.pvalues, coefficient.adj.pvalues )
+#' @return list of matrices (interaction.pvalues, interaction.adj.pvalues, interaction.coefficients)
 
 getStatsAllLM <- function(outcome, gene, metab, type, covar, covarMatrix) {
   if (outcome=="metabolite") {
@@ -387,7 +387,6 @@ getStatsAllLM <- function(outcome, gene, metab, type, covar, covarMatrix) {
       } else {
         clindata <- data.frame(m, type, covarMatrix)
       }
-
       mlin <- getstatsOneLM(stats::as.formula(form.add), clindata = clindata,
                             arraydata = arraydata)
       term.pvals <- rownames(mlin$p.value.coeff)
@@ -408,7 +407,6 @@ getStatsAllLM <- function(outcome, gene, metab, type, covar, covarMatrix) {
       list.coefficients[[i]] <- coefficient.vector
     }
   }
-
   list.pvals
   list.coefficients
   mat.pvals <- do.call(rbind, list.pvals)
@@ -419,7 +417,6 @@ getStatsAllLM <- function(outcome, gene, metab, type, covar, covarMatrix) {
   myps <- as.vector(mat.pvals)
   mypsadj <- stats::p.adjust(myps, method = 'fdr')
   mat.pvalsadj <- matrix(mypsadj, row.pvt, col.pvt)
-
   if (outcome=="metabolite") {
     rownames(mat.pvals) <- rownames(mat.pvalsadj) <- rownames(gene)
     colnames(mat.pvals) <- colnames(mat.pvalsadj) <- rownames(metab)
@@ -431,7 +428,6 @@ getStatsAllLM <- function(outcome, gene, metab, type, covar, covarMatrix) {
     rownames(mat.coefficients) <- rownames(metab)
     colnames(mat.coefficients) <- rownames(gene)
   }
-
   list.mat <- list()
   list.mat[["mat.pvals"]] <- as.matrix(mat.pvals)
   list.mat[["mat.pvalsadj"]] <- as.matrix(mat.pvalsadj)
