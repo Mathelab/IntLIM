@@ -1,6 +1,6 @@
 .travis.yml
 .appveyor.yml
-#inst/doc
+inst/doc
 .Rproj.user
 #doc
 Meta
