@@ -5,13 +5,13 @@
 \title{Run linear models and retrieve relevant statistics}
 \usage{
 RunIntLim(inputData, stype = NULL, outcome = "metabolite",
-  covar = NULL, class.covar = NULL)
+  covar = NULL, class.covar = NULL, continuous = FALSE)
 }
 \arguments{
 \item{inputData}{MultiDataSet object (output of ReadData()) with gene expression,
 metabolite abundances, and associated meta-data}
 
-\item{stype}{column name that represents sample type (by default, it will be used 
+\item{stype}{column name that represents sample type (by default, it will be used
 in the interaction term). Only 2 categories are currently supported.}
 
 \item{outcome}{'metabolite' or 'gene' must be set as outcome/independent variable
