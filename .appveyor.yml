@@ -22,18 +22,19 @@ environment:
 
   global:
     WARNINGS_ARE_ERRORS: 1
+    USE_RTOOLS: TRUE
 
   matrix:
 
   - R_VERSION: release
     R_ARCH: x64
-    BIOC_USE_DEVEL: false
-    _R_CHECK_FORCE_SUGGESTS_: false
+    BIOC_USE_DEVEL: FALSE
+    _R_CHECK_FORCE_SUGGESTS_: FALSE
 
   - R_VERSION: release
     R_ARCH: x64
-    BIOC_USE_DEVEL: true
-    _R_CHECK_FORCE_SUGGESTS_: false
+    BIOC_USE_DEVEL: TRUE
+    _R_CHECK_FORCE_SUGGESTS_: FALSE
 
 build_script:
   - travis-tool.sh install_bioc Biobase MultiDataSet BiocGenerics GenomicRanges IRanges
