@@ -4,8 +4,8 @@
 \alias{CreateIntLimObject}
 \title{Generic function to create constructor of MultiDataSet gene object}
 \usage{
-CreateIntLimObject(genefdata, metabfdata, pdata, geneid, metabid, metabdata,
-  genedata, logmetab = FALSE, loggene = FALSE)
+CreateIntLimObject(genefdata, metabfdata, pdata, geneid, metabid,
+  metabdata, genedata, logmetab = FALSE, loggene = FALSE)
 }
 \arguments{
 \item{genefdata}{gene meta data}
@@ -14,7 +14,7 @@ CreateIntLimObject(genefdata, metabfdata, pdata, geneid, metabid, metabdata,
 
 \item{pdata}{sample meta data}
 
-\item{geneid}{name of column from metabolite meta data to be used as id 
+\item{geneid}{name of column from metabolite meta data to be used as id
 (required if a gene meta data file is present, must match gene expression matrix))}
 
 \item{metabid}{name of column from gene meta data to be used as id

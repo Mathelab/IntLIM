@@ -4,18 +4,21 @@
 \alias{RunLM}
 \title{Function that runs linear models and returns interaction p-values.}
 \usage{
-RunLM(incommon, outcome = "metabolite", type = NULL, covar = NULL)
+RunLM(incommon, outcome = "metabolite", type = NULL, covar = NULL,
+  continuous = FALSE)
 }
 \arguments{
 \item{incommon}{MultiDataSet object (output of ReadData()) with gene}
 
-\item{outcome}{'metabolite' or 'gene' must be set as outcome/independent variable 
+\item{outcome}{'metabolite' or 'gene' must be set as outcome/independent variable
 (default is 'metabolite')}
 
 \item{type}{vector of sample type (by default, it will be used in the interaction term).
 Only 2 categories are currently supported.}
 
 \item{covar}{vector of additional vectors to consider}
+
+\item{continuous}{boolean to indicate whether the data is continuous or discrete}
 }
 \description{
 Function that runs linear models and returns interaction p-values.

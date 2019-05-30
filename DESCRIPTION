@@ -42,7 +42,6 @@ Suggests:
     knitr
 Encoding: UTF-8
 LazyData: TRUE
-RoxygenNote: 6.1.0.9000
 NeedsCompilation: no
 Collate: 
     'AllClasses.R'
@@ -60,3 +59,4 @@ Collate:
     'statsfunctions.R'
     'writingfunctions.R'
 VignetteBuilder: knitr
+RoxygenNote: 6.1.1

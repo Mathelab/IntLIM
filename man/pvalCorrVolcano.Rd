@@ -5,8 +5,8 @@
 \title{'volcano' plot (difference in correlations vs p-values)
 of all gene-metabolite pairs}
 \usage{
-pvalCorrVolcano(inputResults, inputData, nrpoints = 10000, diffcorr = 0.5,
-  pvalcutoff = 0.05)
+pvalCorrVolcano(inputResults, inputData, nrpoints = 10000,
+  diffcorr = 0.5, pvalcutoff = 0.05)
 }
 \arguments{
 \item{inputResults}{IntLimResults object with model results (output of RunIntLim())}

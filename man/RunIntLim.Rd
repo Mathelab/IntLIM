@@ -4,14 +4,14 @@
 \alias{RunIntLim}
 \title{Run linear models and retrieve relevant statistics}
 \usage{
-RunIntLim(inputData, stype = NULL, outcome = "metabolite", covar = NULL,
-  class.covar = NULL)
+RunIntLim(inputData, stype = NULL, outcome = "metabolite",
+  covar = NULL, class.covar = NULL, continuous = FALSE)
 }
 \arguments{
 \item{inputData}{MultiDataSet object (output of ReadData()) with gene expression,
 metabolite abundances, and associated meta-data}
 
-\item{stype}{column name that represents sample type (by default, it will be used 
+\item{stype}{column name that represents sample type (by default, it will be used
 in the interaction term). Only 2 categories are currently supported.}
 
 \item{outcome}{'metabolite' or 'gene' must be set as outcome/independent variable
@@ -20,6 +20,8 @@ in the interaction term). Only 2 categories are currently supported.}
 \item{covar}{Additional variables from the phenotypic data that be integrated into linear model}
 
 \item{class.covar}{Describing whether additional variables are 'numeric' or 'categorial'}
+
+\item{continuous}{boolean to indicate whether the data is continuous or discrete}
 }
 \value{
 IntLimModel object with model results

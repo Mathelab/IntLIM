@@ -226,36 +226,38 @@ getCommon <- function(inputData,stype=NULL, covar = NULL, class.covar = NULL) {
 #' @param type vector of sample type (by default, it will be used in the interaction term).
 #' Only 2 categories are currently supported.
 #' @param covar vector of additional vectors to consider
-RunLM <- function(incommon, outcome="metabolite", type=NULL, covar=NULL) {
-
+#' @param continuous boolean to indicate whether the data is continuous or discrete
+RunLM <- function(incommon, outcome="metabolite", type=NULL, covar=NULL, continuous=FALSE) {
     gene <- incommon$gene
     metab <- incommon$metab
-
-    uniqtypes <- unique(type)
-    if(length(uniqtypes)!=2) {
-	stop("The number of unique categores is not 2.")
-    }
-
-    genesd1 <- as.numeric(apply(gene[,which(type==uniqtypes[1])],1,function(x) stats::sd(x,na.rm=T)))
-    metabsd1 <- as.numeric(apply(metab[,which(type==uniqtypes[1])],1,function(x) stats::sd(x,na.rm=T)))
-    genesd2 <- as.numeric(apply(gene[,which(type==uniqtypes[2])],1,function(x) stats::sd(x,na.rm=T)))
-    metabsd2 <- as.numeric(apply(metab[,which(type==uniqtypes[2])],1,function(x) stats::sd(x,na.rm=T)))
-
     mymessage=""
-    if(length(which(genesd1==0))>0 || length(which(genesd2==0))>0) {
-	toremove <- c(which(genesd1==0),which(genesd2==0))
-	gene <- gene[-toremove,]
-	mymessage <- c(mymessage,paste("Removed",length(toremove),"genes that had a standard deviation of 0:"))
-	mymessage <- c(mymessage,rownames(gene)[toremove])
-    }
-    if(length(which(metabsd1==0))>0 || length(which(metabsd2==0))>0) {
-        toremove <- c(which(metabsd1==0),which(metabsd2==0))
-        metab <- metab[-toremove,]
-        mymessage <- c(mymessage,paste("Removed",length(toremove),"metabolites that had a standard deviation of 0:"))
-        mymessage <- c(mymessage,rownames(metab)[toremove])
+
+    if(!continuous){
+         uniqtypes <- unique(type)
+        if(length(uniqtypes)!=2) {
+    	stop("The number of unique categores is not 2.")
+        }
+
+        genesd1 <- as.numeric(apply(gene[,which(type==uniqtypes[1])],1,function(x) stats::sd(x,na.rm=T)))
+        metabsd1 <- as.numeric(apply(metab[,which(type==uniqtypes[1])],1,function(x) stats::sd(x,na.rm=T)))
+        genesd2 <- as.numeric(apply(gene[,which(type==uniqtypes[2])],1,function(x) stats::sd(x,na.rm=T)))
+        metabsd2 <- as.numeric(apply(metab[,which(type==uniqtypes[2])],1,function(x) stats::sd(x,na.rm=T)))
+
+        if(length(which(genesd1==0))>0 || length(which(genesd2==0))>0) {
+    	toremove <- c(which(genesd1==0),which(genesd2==0))
+    	gene <- gene[-toremove,]
+    	mymessage <- c(mymessage,paste("Removed",length(toremove),"genes that had a standard deviation of 0:"))
+    	mymessage <- c(mymessage,rownames(gene)[toremove])
+        }
+        if(length(which(metabsd1==0))>0 || length(which(metabsd2==0))>0) {
+            toremove <- c(which(metabsd1==0),which(metabsd2==0))
+            metab <- metab[-toremove,]
+            mymessage <- c(mymessage,paste("Removed",length(toremove),"metabolites that had a standard deviation of 0:"))
+            mymessage <- c(mymessage,rownames(metab)[toremove])
+        }
     }
 
-  mat.list <- getStatsAllLM(outcome = outcome, gene = gene, metab = metab, type = type, covar = covar, covarMatrix = incommon$covar_matrix)
+  mat.list <- getStatsAllLM(outcome = outcome, gene = gene, metab = metab, type = type, covar = covar, covarMatrix = incommon$covar_matrix, continuous = continuous)
   myres <- methods::new('IntLimResults',
                         interaction.pvalues=mat.list$mat.pvals,
                         interaction.adj.pvalues = mat.list$mat.pvalsadj,
@@ -263,6 +265,7 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL, covar=NULL) {
                         warnings=mymessage)
   return(myres)
 }
+
 
 #' Function that runs linear models for one gene vs all metabolites
 #'
@@ -272,10 +275,14 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL, covar=NULL) {
 #' @param clindata data frame with 1st column: expression of one analyte; 2nd column
 #' sample type (e.g. cancer/non-cancer)
 #' @param arraydata matrix of metabolite values
-getstatsOneLM <- function(form, clindata, arraydata) {
-	call=match.call()
+    getstatsOneLM <- function(form, clindata, arraydata) {
+      #array data is metabolites
+      #clindata is genes
+	      call=match.call()
         YY <- t(arraydata)                      # the data matrix
+        #mean of metabolites accross all samples
         EY <- apply(YY, 2, mean)                # its mean vector
+        #sum of squares after centering
         SYY <- apply(YY, 2, function(y) {sum(y^2)}) - nrow(YY)*EY^2     # sum of squares after centering
         clindata <- data.frame(y=YY[,1], clindata)
         dimnames(clindata)[[2]][1] <- 'Y'
@@ -326,7 +333,7 @@ getstatsOneLM <- function(form, clindata, arraydata) {
 #' @param covarMatrix covariate matrix in incommon MultiDataSet object (incommon$covar_matrix)
 #' @return list of matrices (interaction.pvalues, interaction.adj.pvalues, interaction.coefficients)
 
-getStatsAllLM <- function(outcome, gene, metab, type, covar, covarMatrix) {
+getStatsAllLM <- function(outcome, gene, metab, type, covar, covarMatrix, continuous) {
   if (outcome=="metabolite") {
     arraydata <- data.frame(metab)
     num <- nrow(gene)
@@ -347,6 +354,13 @@ getStatsAllLM <- function(outcome, gene, metab, type, covar, covarMatrix) {
       } else {
         clindata <- data.frame(g, type, covarMatrix)
       }
+
+      #change type for continuous data (factor to numeric)
+      if(continuous){
+        clindata[2] <- lapply(clindata[2], as.character)
+        clindata[2] <- lapply(clindata[2], as.numeric)
+      }
+
       mlin <- getstatsOneLM(stats::as.formula(form.add), clindata = clindata,
                             arraydata = arraydata)
       term.pvals <- rownames(mlin$p.value.coeff)
@@ -387,6 +401,7 @@ getStatsAllLM <- function(outcome, gene, metab, type, covar, covarMatrix) {
       } else {
         clindata <- data.frame(m, type, covarMatrix)
       }
+
       mlin <- getstatsOneLM(stats::as.formula(form.add), clindata = clindata,
                             arraydata = arraydata)
       term.pvals <- rownames(mlin$p.value.coeff)
