@@ -20,6 +20,8 @@ in the interaction term). Only 2 categories are currently supported.}
 \item{covar}{Additional variables from the phenotypic data that be integrated into linear model}
 
 \item{class.covar}{Describing whether additional variables are 'numeric' or 'categorial'}
+
+\item{continuous}{boolean to indicate whether the data is continuous or discrete}
 }
 \value{
 IntLimModel object with model results

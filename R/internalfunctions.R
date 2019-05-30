@@ -226,6 +226,7 @@ getCommon <- function(inputData,stype=NULL, covar = NULL, class.covar = NULL) {
 #' @param type vector of sample type (by default, it will be used in the interaction term).
 #' Only 2 categories are currently supported.
 #' @param covar vector of additional vectors to consider
+#' @param continuous boolean to indicate whether the data is continuous or discrete
 RunLM <- function(incommon, outcome="metabolite", type=NULL, covar=NULL, continuous=FALSE) {
     gene <- incommon$gene
     metab <- incommon$metab

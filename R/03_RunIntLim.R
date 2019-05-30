@@ -10,6 +10,7 @@
 #' (default is 'metabolite')
 #' @param covar Additional variables from the phenotypic data that be integrated into linear model
 #' @param class.covar Describing whether additional variables are 'numeric' or 'categorial'
+#' @param continuous boolean to indicate whether the data is continuous or discrete
 #' @return IntLimModel object with model results
 #'
 #' @examples
@@ -22,7 +23,7 @@
 #' @export
 RunIntLim <- function(inputData,stype=NULL,outcome="metabolite", covar=NULL, class.covar=NULL, continuous = FALSE){
 
-  print("You are running a local version of IntLIM! -Liz")
+
     if (class(inputData) != "MultiDataSet") {
         stop("input data is not a MultiDataSet class")
     }
@@ -39,9 +40,10 @@ RunIntLim <- function(inputData,stype=NULL,outcome="metabolite", covar=NULL, cla
 
     incommon <- getCommon(inputData,stype,covar,class.covar=class.covar)
 
-   # if(length(unique(stats::na.omit(incommon$p))) != 2) {
-	#stop(paste("IntLim currently requires only two categories.  Make sure the column",stype,"only has two unique values"))
-   # }
+
+    if(!continuous & length(unique(stats::na.omit(incommon$p))) != 2) {
+	    stop(paste("IntLim currently requires only two categories.  Make sure the column",stype,"only has two unique values"))
+    }
 
     print("Running the analysis on")
     print(table(incommon$p))
