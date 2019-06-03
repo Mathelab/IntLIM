@@ -114,6 +114,28 @@ print(paste(nrow(inputResults@filt.results), 'gene-metabolite pairs found given 
 return(inputResults)
 }
 
+#' Retrieve significant gene-metabolite pairs (aka filter out nonsignificant pairs) based on value of gene:type interaction coefficient from linear model
+#' @param inputResults IntLimResults object with model results (output of RunIntLim())
+#' @param InteractionCoeffcutoff Smallest interaction coefficient that will be graphed (positive or negative)
+#' @return IntLimResults object with model results (now includes filt.results data)
+#' @export
+ProcessResultsContinuous<- function(inputResults,
+                         InteractionCoeffcutoff=0.5){
+
+  if(class(inputResults) != "IntLimResults") {
+    stop("input data is not a IntLim class")
+  }
+
+  gene_metabolite_format_results = melt(inputResults@interaction.coefficients)
+  colnames(gene_metabolite_format_results) = c("gene", "metabolite", "interaction")
+  tofilter_sorted <- gene_metabolite_format_results[order(gene_metabolite_format_results$interaction),]
+
+  filtered = tofilter_sorted[tofilter_sorted$interaction>InteractionCoeffcutoff | tofilter_sorted$interaction < -InteractionCoeffcutoff,]
+
+  inputResults@filt.results = filtered
+  return(inputResults)
+
+}
 
 #' Create results table, which includes significant gene:metabolite pairs, associated p-values,
 #' and correlations in each category evaluated.

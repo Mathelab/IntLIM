@@ -4,7 +4,7 @@
 \alias{getStatsAllLM}
 \title{Function that runs Linear Models for all genes or metabolites}
 \usage{
-getStatsAllLM(outcome, gene, metab, type, covar, covarMatrix)
+getStatsAllLM(outcome, gene, metab, type, covar, covarMatrix, continuous)
 }
 \arguments{
 \item{outcome}{'metabolite' or 'gene' must be set as outcome/independent variable}
