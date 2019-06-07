@@ -816,6 +816,80 @@ InteractionCoefficientGraph<-function(inputResults,
 }
 
 
+#' Creates a graph of the marginal effect of phenotype
+#' @param inputResults IntLimResults object with model results (output of RunIntLim())
+#' @param inputData MultiDataSet object (output of ReadData()) with gene expression,
+#' @param metaboliteOfInterest metabolite in gene-metabolite pair
+#' @param geneOfInterest gene in gene-metabolite pair
+#' @return dataframe for further analysis
+#' @export
+MarginalEffectsGraphDataframe<-function(inputResults, inputData, geneOfInterest, metaboliteOfInterest){
+
+  if (class(inputData) != "MultiDataSet") {
+    stop("input data is not a MultiDataSet class")
+  }
+  if(class(inputResults) != "IntLimResults") {
+    stop("input data is not a IntLim class")
+  }
+
+  #get covariates
+  covariates = as.character(inputResults@covar$covariate)
+  covariates_class = as.character(inputResults@covar$class.var)
+
+  #get dataframes
+  incommon <- getCommon(inputData,inputResults@stype,covar=covariates,class.covar=covariates_class)
+  pheno <- incommon$p
+  gene <- incommon$gene
+  metab <- incommon$metab
+
+  #get one gene an metabolite
+  gene_data = gene[geneOfInterest,]
+  metab_data = metab[metaboliteOfInterest,]
+
+  #Add gene, phenotype and metabolite data for glm
+  forglm  = data.frame(row.names = 1:length(gene_data))
+  forglm$g = gene_data
+  forglm$type = as.numeric(as.character(pheno))
+  forglm$Y = as.numeric(metab_data)
+
+
+  if (!is.null(covariates)) {
+
+    #Add all covariates to dataframe for glm()
+    i=3
+    for(each in covariates){
+      names = colnames(forglm)
+      i = i+1
+      forglm[,i] = incommon$covar_matrix[,each]
+      colnames(forglm) = c(names, each)
+    }
+  }
+  return(forglm)
+}
+
+#' @export
+MarginalEffectsGraph<-function(dataframe, title){
+
+  form = "Y ~ g + type + g:type"
+  if (ncol(dataframe) > 3) {
+
+    covariates = colnames(dataframe)[4:ncol(dataframe)]
+    #Add all covariates to formula for glm()
+    for(i in 1:length(covariates)){
+      form <- paste(form, '+', covariates[i])
+    }
+  }
+  model = glm(formula = form, data=dataframe)
+  p = list(type=seq(min(dataframe$type),max(dataframe$type),by=0.1))
+  margins_output=margins(model,at=p)
+  cplot(model, "type", what = "prediction", main = title)
+  return_value = list(model, margins_output)
+  names(return_value) = c("model", "margins")
+  return(return_value)
+
+}
+
+
 #' histogram of gene-metabolite pairs
 #' depending upon metabolite or gene
 #'

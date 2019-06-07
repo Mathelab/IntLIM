@@ -37,7 +37,8 @@ Imports:
     DT,
     gplots,
     dendextend,
-    htmlwidgets
+    htmlwidgets,
+    margins
 Suggests:
     knitr
 Encoding: UTF-8
