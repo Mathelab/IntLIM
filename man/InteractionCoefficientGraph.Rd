@@ -4,12 +4,15 @@
 \alias{InteractionCoefficientGraph}
 \title{Graphs a scatterplot of gene-metabolite pairs vs. the interaction coefficient for the gene-metabolite pair}
 \usage{
-InteractionCoefficientGraph(inputResults, InteractionCoeffcutoff = 0.5)
+InteractionCoefficientGraph(inputResults, InteractionCoeffcutoff = 0.5,
+  pvalcutoff = 1)
 }
 \arguments{
 \item{inputResults}{IntLimResults object with model results (output of RunIntLim())}
 
 \item{InteractionCoeffcutoff}{Smallest interaction coefficient that will be graphed (positive or negative)}
+
+\item{pvalcutoff}{cutoff of FDR-adjusted p-value for filtering (default 0.05)}
 }
 \value{
 a scatterplot

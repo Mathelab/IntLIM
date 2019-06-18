@@ -799,20 +799,24 @@ pvalCorrVolcano <- function(inputResults, inputData,nrpoints=10000,diffcorr=0.5,
 
 #' Graphs a scatterplot of gene-metabolite pairs vs. the interaction coefficient for the gene-metabolite pair
 #' @param inputResults IntLimResults object with model results (output of RunIntLim())
+#' @param pvalcutoff cutoff of FDR-adjusted p-value for filtering (default 0.05)
 #' @param InteractionCoeffcutoff Smallest interaction coefficient that will be graphed (positive or negative)
 #' @return a scatterplot
 #' @export
 InteractionCoefficientGraph<-function(inputResults,
-                                      InteractionCoeffcutoff=0.5){
+                                      InteractionCoeffcutoff=0.5,
+                                      pvalcutoff=1){
     if(class(inputResults) != "IntLimResults") {
       stop("input data is not a IntLim class")
     }
 
-    inputResultsFiltered = ProcessResultsContinuous(inputResults, InteractionCoeffcutoff=InteractionCoeffcutoff)
+    inputResultsFiltered = ProcessResultsContinuous(inputResults, InteractionCoeffcutoff=InteractionCoeffcutoff,pvalcutoff=pvalcutoff)
 
-
-   plot(1:length(inputResultsFiltered@filt.results$interaction),inputResultsFiltered@filt.results$interaction, xlab = "Gene Metabolite Pairs", ylab = "Interaction Coefficient", pch=16)
-
+    if(nrow(inputResultsFiltered@filt.results) == 0){
+      stop("There are no pairs to plot -- try making your interaction coefficient and p-value cutoff less stringent.")
+    }else{
+      plot(1:length(inputResultsFiltered@filt.results$interaction),inputResultsFiltered@filt.results$interaction, xlab = "Gene Metabolite Pairs", ylab = "Interaction Coefficient", pch=16)
+    }
 }
 
 

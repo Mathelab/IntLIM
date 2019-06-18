@@ -117,22 +117,31 @@ return(inputResults)
 #' Retrieve significant gene-metabolite pairs (aka filter out nonsignificant pairs) based on value of gene:type interaction coefficient from linear model
 #' @param inputResults IntLimResults object with model results (output of RunIntLim())
 #' @param InteractionCoeffcutoff Smallest interaction coefficient that will be graphed (positive or negative)
+#' @param pvalcutoff cutoff of FDR-adjusted p-value for filtering (default 0.05)
 #' @return IntLimResults object with model results (now includes filt.results data)
 #' @export
 ProcessResultsContinuous<- function(inputResults,
-                         InteractionCoeffcutoff=0.5){
+                         InteractionCoeffcutoff=0.5,
+                         pvalcutoff=0.05){
 
   if(class(inputResults) != "IntLimResults") {
     stop("input data is not a IntLim class")
   }
 
-  gene_metabolite_format_results = melt(inputResults@interaction.coefficients)
-  colnames(gene_metabolite_format_results) = c("gene", "metabolite", "interaction")
-  tofilter_sorted <- gene_metabolite_format_results[order(gene_metabolite_format_results$interaction),]
+  gene_metabolite_format_coeff = melt(inputResults@interaction.coefficients)
+  colnames(gene_metabolite_format_coeff) = c("gene", "metabolite", "interaction")
 
-  filtered = tofilter_sorted[tofilter_sorted$interaction>InteractionCoeffcutoff | tofilter_sorted$interaction < -InteractionCoeffcutoff,]
 
-  inputResults@filt.results = filtered
+  gene_metabolite_format_adjp = melt(inputResults@interaction.adj.pvalues)
+  gene_metabolite_format_coeff$adjpval = gene_metabolite_format_adjp$value
+
+
+  tofilter_sortedbycoeff <- gene_metabolite_format_coeff[order(gene_metabolite_format_coeff$interaction),]
+
+  filtered_by_coeff = tofilter_sortedbycoeff[tofilter_sortedbycoeff$interaction>InteractionCoeffcutoff | tofilter_sortedbycoeff$interaction < -InteractionCoeffcutoff,]
+
+  filtered_by_pval = filtered_by_coeff[filtered_by_coeff$adjpval < pvalcutoff,]
+  inputResults@filt.results = filtered_by_pval
   return(inputResults)
 
 }
