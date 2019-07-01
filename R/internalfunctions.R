@@ -331,8 +331,8 @@ RunLM <- function(incommon, outcome="metabolite", type=NULL, covar=NULL, continu
 #' Only 2 categories are currently supported.
 #' @param covar vector of additional vectors to consider
 #' @param covarMatrix covariate matrix in incommon MultiDataSet object (incommon$covar_matrix)
+#' @param continuous indicate whether data is discrete (FALSE) or continuous (TRUE)
 #' @return list of matrices (interaction.pvalues, interaction.adj.pvalues, interaction.coefficients)
-
 getStatsAllLM <- function(outcome, gene, metab, type, covar, covarMatrix, continuous) {
   if (outcome=="metabolite") {
     arraydata <- data.frame(metab)

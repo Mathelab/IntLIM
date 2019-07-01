@@ -679,7 +679,7 @@ PlotGMPair<- function(inputData,stype=NULL,geneName,metabName,palette = "Set1",
         stop("input data is not a MultiDataSet class")
 }
 
-    incommon <- IntLIM:::getCommon(inputData,stype)
+    incommon <- getCommon(inputData,stype)
 
 	if(is.null(stype)) {
                 stop("A category to colorcode by (e.g. stype) must be provided")
@@ -802,7 +802,16 @@ pvalCorrVolcano <- function(inputResults, inputData,nrpoints=10000,diffcorr=0.5,
 #' @param pvalcutoff cutoff of FDR-adjusted p-value for filtering (default 0.05)
 #' @param InteractionCoeffcutoff Smallest interaction coefficient that will be graphed (positive or negative)
 #' @return a scatterplot
+#'
 #' @export
+#' @examples
+#' \dontrun{
+#' dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
+#' csvfile <- file.path(dir, "NCItestinput.csv")
+#' mydata <- ReadData(csvfile,metabid='id',geneid='id')
+#' myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
+#' InteractionCoefficientGraph(inputResults=myres)
+#' }
 InteractionCoefficientGraph<-function(inputResults,
                                       InteractionCoeffcutoff=0.5,
                                       pvalcutoff=1){
