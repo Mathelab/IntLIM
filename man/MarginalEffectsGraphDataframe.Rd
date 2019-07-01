@@ -2,7 +2,7 @@
 % Please edit documentation in R/plottingfunctions.R
 \name{MarginalEffectsGraphDataframe}
 \alias{MarginalEffectsGraphDataframe}
-\title{Creates a graph of the marginal effect of phenotype}
+\title{Creates a dataframe of the marginal effect of phenotype}
 \usage{
 MarginalEffectsGraphDataframe(inputResults, inputData, geneOfInterest,
   metaboliteOfInterest)
@@ -20,5 +20,5 @@ MarginalEffectsGraphDataframe(inputResults, inputData, geneOfInterest,
 dataframe for further analysis
 }
 \description{
-Creates a graph of the marginal effect of phenotype
+Creates a dataframe of the marginal effect of phenotype
 }

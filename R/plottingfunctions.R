@@ -829,7 +829,10 @@ InteractionCoefficientGraph<-function(inputResults,
 }
 
 
-#' Creates a graph of the marginal effect of phenotype
+#' Creates a dataframe of the marginal effect of phenotype
+#'
+#' @import stats
+#'
 #' @param inputResults IntLimResults object with model results (output of RunIntLim())
 #' @param inputData MultiDataSet object (output of ReadData()) with gene expression,
 #' @param metaboliteOfInterest metabolite in gene-metabolite pair
@@ -880,6 +883,11 @@ MarginalEffectsGraphDataframe<-function(inputResults, inputData, geneOfInterest,
   return(forglm)
 }
 
+
+#' Creates a dataframe of the marginal effect of phenotype
+#' @param dataframe from MarginalEffectsGraphDataframe
+#' @param title for graph
+#' @return values used for graphing
 #' @export
 MarginalEffectsGraph<-function(dataframe, title){
 

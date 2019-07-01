@@ -20,3 +20,12 @@ a scatterplot
 \description{
 Graphs a scatterplot of gene-metabolite pairs vs. the interaction coefficient for the gene-metabolite pair
 }
+\examples{
+\dontrun{
+dir <- system.file("extdata", package="IntLIM", mustWork=TRUE)
+csvfile <- file.path(dir, "NCItestinput.csv")
+mydata <- ReadData(csvfile,metabid='id',geneid='id')
+myres <- RunIntLim(mydata,stype="PBO_vs_Leukemia")
+InteractionCoefficientGraph(inputResults=myres)
+}
+}

@@ -115,6 +115,9 @@ return(inputResults)
 }
 
 #' Retrieve significant gene-metabolite pairs (aka filter out nonsignificant pairs) based on value of gene:type interaction coefficient from linear model
+#'
+#' @import reshape2
+#'
 #' @param inputResults IntLimResults object with model results (output of RunIntLim())
 #' @param InteractionCoeffcutoff Smallest interaction coefficient that will be graphed (positive or negative)
 #' @param pvalcutoff cutoff of FDR-adjusted p-value for filtering (default 0.05)

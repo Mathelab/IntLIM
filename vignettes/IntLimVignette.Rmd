@@ -157,7 +157,7 @@ myres <- IntLIM::ProcessResults(inputResults = myres, inputData = inputDatafilt,
 The __CorrHeatmap()__ produces a clustered heatmap of the gene-metabolite Spearman correlations for each of these groups.  
 
 ```{r}
-IntLIM::CorrHeatmap(earchFilters(mart = ensembl, pattern = "ensembl.*id"))
+IntLIM::CorrHeatmap(myres)
 ```
 
 ##Visualize and Export Results

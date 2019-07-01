@@ -19,6 +19,8 @@ Only 2 categories are currently supported.}
 \item{covar}{vector of additional vectors to consider}
 
 \item{covarMatrix}{covariate matrix in incommon MultiDataSet object (incommon$covar_matrix)}
+
+\item{continuous}{indicate whether data is discrete (FALSE) or continuous (TRUE)}
 }
 \value{
 list of matrices (interaction.pvalues, interaction.adj.pvalues, interaction.coefficients)
