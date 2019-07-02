@@ -22,6 +22,7 @@ Imports:
     MultiDataSet,
     methods,
     reshape2,
+    margins,
     magrittr,
     GenomicRanges,
     htmltools,
@@ -37,8 +38,7 @@ Imports:
     DT,
     gplots,
     dendextend,
-    htmlwidgets,
-    margins
+    htmlwidgets
 Suggests:
     knitr
 Encoding: UTF-8
