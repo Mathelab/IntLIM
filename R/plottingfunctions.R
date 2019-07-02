@@ -832,6 +832,7 @@ InteractionCoefficientGraph<-function(inputResults,
 #' Creates a dataframe of the marginal effect of phenotype
 #'
 #' @import stats
+#' @import margins
 #'
 #' @param inputResults IntLimResults object with model results (output of RunIntLim())
 #' @param inputData MultiDataSet object (output of ReadData()) with gene expression,
