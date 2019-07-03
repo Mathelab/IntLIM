@@ -2,5 +2,4 @@
 .appveyor.yml
 inst/doc
 .Rproj.user
-#doc
 Meta
