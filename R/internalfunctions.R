@@ -449,3 +449,22 @@ getStatsAllLM <- function(outcome, gene, metab, type, covar, covarMatrix, contin
   list.mat[["mat.coefficients"]] <- as.matrix(mat.coefficients)
   list.mat
 }
+
+#' Function that gets numeric cutoffs from percentile
+#' @param interactionCoeffPercentile percentile cutoff for interaction coefficient (default bottom 10 percent (high negative coefficients) and top 10 percent (high positive coefficients))
+#' @param tofilter dataframe for percentile filtering
+#' @return vector with numeric cutoffs
+getQuantileForInteractionCoefficient<-function(tofilter, interactionCoeffPercentile){
+
+  if(interactionCoeffPercentile > 0.5) {
+    stop("interactionCoeffPercentile parameter cannot be larger than 50th pecentile")
+  }
+
+  #get top and bottom cutoffs (need highest positive and highest negative coeffs)
+  other_half = 1-interactionCoeffPercentile
+  first_half = as.numeric(quantile(tofilter, interactionCoeffPercentile))
+  second_half = as.numeric(quantile(tofilter, other_half))
+
+  return(c(first_half, second_half))
+
+}

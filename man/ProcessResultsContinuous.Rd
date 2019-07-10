@@ -4,18 +4,16 @@
 \alias{ProcessResultsContinuous}
 \title{Retrieve significant gene-metabolite pairs (aka filter out nonsignificant pairs) based on value of gene:type interaction coefficient from linear model}
 \usage{
-ProcessResultsContinuous(inputResults, InteractionCoeffcutoff = 0.5,
-  pvalcutoff = 0.05)
+ProcessResultsContinuous(inputResults, interactionCoeffPercentile = 0.1,
+  pvalCutoff = 0.05)
 }
 \arguments{
-\item{inputResults}{IntLimResults object with model results (output of RunIntLim())}
+\item{inputResults}{IntLimResults object with model results: output of RunIntLim}
 
-\item{InteractionCoeffcutoff}{Smallest interaction coefficient that will be graphed (positive or negative)}
+\item{interactionCoeffPercentile}{percentile cutoff for interaction coefficient
+default bottom 10 percent (high negative coefficients) and top 10 percent (high positive coefficients)}
 
-\item{pvalcutoff}{cutoff of FDR-adjusted p-value for filtering (default 0.05)}
-}
-\value{
-IntLimResults object with model results (now includes filt.results data)
+\item{pvalCutoff}{cutoff of FDR-adjusted p-value for filtering (default 0.05)}
 }
 \description{
 Retrieve significant gene-metabolite pairs (aka filter out nonsignificant pairs) based on value of gene:type interaction coefficient from linear model

@@ -800,7 +800,7 @@ pvalCorrVolcano <- function(inputResults, inputData,nrpoints=10000,diffcorr=0.5,
 #' Graphs a scatterplot of gene-metabolite pairs vs. the interaction coefficient for the gene-metabolite pair
 #' @param inputResults IntLimResults object with model results (output of RunIntLim())
 #' @param pvalcutoff cutoff of FDR-adjusted p-value for filtering (default 0.05)
-#' @param InteractionCoeffcutoff Smallest interaction coefficient that will be graphed (positive or negative)
+#' @param interactionCoeffPercentile percentile cutoff for interaction coefficient (default bottom 10 percent (high negative coefficients) and top 10 percent (high positive coefficients))
 #' @return a scatterplot
 #'
 #' @export
@@ -813,19 +813,38 @@ pvalCorrVolcano <- function(inputResults, inputData,nrpoints=10000,diffcorr=0.5,
 #' InteractionCoefficientGraph(inputResults=myres)
 #' }
 InteractionCoefficientGraph<-function(inputResults,
-                                      InteractionCoeffcutoff=0.5,
-                                      pvalcutoff=1){
+                                      interactionCoeffPercentile=0.10,
+                                      pvalcutoff=0.05){
+
+
     if(class(inputResults) != "IntLimResults") {
       stop("input data is not a IntLim class")
     }
 
-    inputResultsFiltered = ProcessResultsContinuous(inputResults, InteractionCoeffcutoff=InteractionCoeffcutoff,pvalcutoff=pvalcutoff)
+    #merge and properly name all data to return
+    gene_metabolite_format_coeff = reshape2::melt(inputResults@interaction.coefficients)
+    gene_metabolite_format_pval = reshape2::melt(inputResults@interaction.pvalues)
+    gene_metabolite_format_adjp = reshape2::melt(inputResults@interaction.adj.pvalues)
+    tofilter = cbind(gene_metabolite_format_coeff, gene_metabolite_format_pval$value, gene_metabolite_format_adjp$value)
+    colnames(tofilter) = c("gene", "metab", "interaction_coeff", "Pval","FDRadjPval")
 
-    if(nrow(inputResultsFiltered@filt.results) == 0){
-      stop("There are no pairs to plot -- try making your interaction coefficient and p-value cutoff less stringent.")
-    }else{
-      plot(1:length(inputResultsFiltered@filt.results$interaction),inputResultsFiltered@filt.results$interaction, xlab = "Gene Metabolite Pairs", ylab = "Interaction Coefficient", pch=16)
-    }
+
+    #get top and bottom cutoffs (need highest positive and highest negative coeffs)
+    first_half = getQuantileForInteractionCoefficient(tofilter$interaction_coeff, interactionCoeffPercentile)[1]
+    second_half = getQuantileForInteractionCoefficient(tofilter$interaction_coeff, interactionCoeffPercentile)[2]
+
+
+    toplot = data.frame(tofilter$interaction_coeff)
+    colnames(toplot) = c("interaction_coeff")
+    toplot$adjpval = tofilter$FDRadjPval
+    toplot_sort = toplot[order(toplot$interaction_coeff),]
+    colnames(toplot_sort) = c("interaction_coeff", "adjpval")
+    toplot_sort$color = "black"
+    toplot_sort$color[(toplot_sort$interaction_coeff > second_half | toplot_sort$interaction_coeff <first_half) & toplot_sort$adjpval < pvalcutoff]="red"
+
+
+    plot(1:length(toplot_sort$interaction_coeff),toplot_sort$interaction_coeff, col=toplot_sort$color, xlab = "Gene Metabolite Pairs", ylab = "Interaction Coefficient", pch=16)
+
 }
 
 

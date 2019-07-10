@@ -7,12 +7,11 @@
 #' @include internalfunctions.R
 #'
 #' @param inputResults IntLimResults object with model results (output of RunIntLim())
-#' @param inputData MultiDataSet object (output of ReadData()) with gene expression,
-#' metabolite abundances, and associated meta-data
+#' @param inputData MultiDataSet object (output of ReadData()) with gene expression,metabolite abundances, and associated meta-data
 #' @param pvalcutoff cutoff of FDR-adjusted p-value for filtering (default 0.05)
 #' @param diffcorr cutoff of differences in correlations for filtering (default 0.5)
-#' @param corrtype spearman or pearson or other parameters allowed by cor() function (default
-#' spearman)
+#' @param corrtype spearman or pearson or other parameters allowed by cor() function (default spearman)
+#' @param interactionCoeffPercentile percentile cutoff for interaction coefficient (default bottom 10 percent (high negative coefficients) and top 10 percent (high positive coefficients))
 #' @param treecuts user-selected number of clusters (of gene-metabolite pairs) to cut the tree into
 #' @return IntResults object with model results (now includes correlations)
 #'
@@ -30,8 +29,8 @@ ProcessResults <- function(inputResults,
 				pvalcutoff=0.05,
 				diffcorr=0.5,
 				corrtype="spearman",
-				treecuts = 0
-			){
+				interactionCoeffPercentile=NULL,
+				treecuts = 0){
 
 	if(inputResults@outcome == "metabolite") {
 		mydat <-inputResults@interaction.adj.pvalues}
@@ -42,63 +41,70 @@ ProcessResults <- function(inputResults,
 
 	incommon <- getCommon(inputData,inputResults@stype)
 	p <- incommon$p
-	gene <- incommon$gene
-	metab <- incommon$metab
-	if(length(unique(p)) !=2) {
- 		stop(paste("IntLim currently requires only two categories.  Make sure the column",inputResults@stype,"only has two unique values"))
-    }
 
-	gp1 <- which(p == unique(p)[1])
-	cor1.m <- stats::cor(t(gene[rownames(mydat),gp1]),t(metab[colnames(mydat),gp1]),method=corrtype)
-        gp2 <- which(p == unique(p)[2])
-        cor2.m <- stats::cor(t(gene[rownames(mydat),gp2]),t(metab[colnames(mydat),gp2]),method=corrtype)
 
-	if(pvalcutoff == 1) { #(no filtering)
-		temp <- reshape2::melt(cor1.m)
-		fincor1 <- as.numeric(temp[,"value"])
-		temp <- reshape2::melt(cor2.m)
-		fincor2 <- as.numeric(temp[,"value"])
-		genenames <- as.character(temp[,1])
-		metabnames <- as.character(temp[,2])
-	} else {
-		keepers <- which(mydat <= pvalcutoff, arr.ind=T)
-		fincor1 <- as.numeric(apply(keepers,1,function(x)
-			cor1.m[x[1],x[2]]))
-                fincor2 <- as.numeric(apply(keepers,1,function(x)
-                        cor2.m[x[1],x[2]]))
-		genenames <- as.character(rownames(cor1.m)[keepers[,1]])
-		metabnames <- as.character(colnames(cor1.m)[keepers[,2]])
+	if(length(unique(p)) !=2 & is.null(diffcorr) & is.null(corrtype)) {
+	  inputResults = ProcessResultsContinuous(inputResults,
+  	                           interactionCoeffPercentile=interactionCoeffPercentile,
+  	                           pvalCutoff=pvalcutoff)
+	} else if (length(unique(p)) !=2){
+  	  stop(paste("IntLim requires two categories only for correlation analysis.  Make sure the column",inputResults@stype,"only has two unique values or set diffcorr and corrtype to null to switch to interaction coefficient analysis"))
+	} else if (length(unique(p)) == 2 & !is.null(interactionCoeffPercentile)){
+	  stop(paste("Do not set the interactionCoeffPercentile parameter for 2 category analysis. Leave as null."))
+	}  else{
+    	gene <- incommon$gene
+    	metab <- incommon$metab
+    	gp1 <- which(p == unique(p)[1])
+    	cor1.m <- stats::cor(t(gene[rownames(mydat),gp1]),t(metab[colnames(mydat),gp1]),method=corrtype)
+            gp2 <- which(p == unique(p)[2])
+            cor2.m <- stats::cor(t(gene[rownames(mydat),gp2]),t(metab[colnames(mydat),gp2]),method=corrtype)
+
+    	if(pvalcutoff == 1) { #(no filtering)
+    		temp <- reshape2::melt(cor1.m)
+    		fincor1 <- as.numeric(temp[,"value"])
+    		temp <- reshape2::melt(cor2.m)
+    		fincor2 <- as.numeric(temp[,"value"])
+    		genenames <- as.character(temp[,1])
+    		metabnames <- as.character(temp[,2])
+    	} else {
+    		keepers <- which(mydat <= pvalcutoff, arr.ind=T)
+    		fincor1 <- as.numeric(apply(keepers,1,function(x)
+    			cor1.m[x[1],x[2]]))
+                    fincor2 <- as.numeric(apply(keepers,1,function(x)
+                            cor2.m[x[1],x[2]]))
+    		genenames <- as.character(rownames(cor1.m)[keepers[,1]])
+    		metabnames <- as.character(colnames(cor1.m)[keepers[,2]])
+    	}
+
+            mydiffcor = abs(fincor1-fincor2)
+
+    	keepers2 <- which(mydiffcor >= diffcorr)
+
+    	inputResults@filt.results <- data.frame(metab=metabnames[keepers2],
+    		gene=genenames[keepers2])
+    	inputResults@filt.results <- cbind(inputResults@filt.results,fincor1[keepers2],fincor2[keepers2])
+    	colnames(inputResults@filt.results)[3:4]=paste0(setdiff(as.character(unlist(unique(p))),""),"_cor")
+
+    	diff.corr <- inputResults@filt.results[,4] - inputResults@filt.results[,3]
+
+    	inputResults@filt.results <- cbind(inputResults@filt.results, diff.corr)
+    	if(inputResults@outcome == "metabolite") {
+                    adjp <- reshape2::melt(inputResults@interaction.adj.pvalues)
+    		p <-  reshape2::melt(inputResults@interaction.pvalues)
+    	} else if (inputResults@outcome == "gene") {
+                    adjp <- reshape2::melt(t(inputResults@interaction.adj.pvalues))
+    		p <- reshape2::melt(t(inputResults@interaction.pvalues))
+    	}
+
+    	cornames <- paste(as.character(inputResults@filt.results[,"metab"]),as.character(inputResults@filt.results[,"gene"]))
+    	rownames(p) <- paste(as.character(p[,2]),as.character(p[,1]))
+    	rownames(adjp) <- paste(as.character(adjp[,2]),as.character(adjp[,1]))
+    	outp <- p[cornames,]
+    	outpadj <- adjp[cornames,]
+
+    	inputResults@filt.results = cbind(inputResults@filt.results,outp$value, outpadj$value)
+    	colnames(inputResults@filt.results)[6:7]=c("Pval","FDRadjPval")
 	}
-
-        mydiffcor = abs(fincor1-fincor2)
-
-	keepers2 <- which(mydiffcor >= diffcorr)
-
-	inputResults@filt.results <- data.frame(metab=metabnames[keepers2],
-		gene=genenames[keepers2])
-	inputResults@filt.results <- cbind(inputResults@filt.results,fincor1[keepers2],fincor2[keepers2])
-	colnames(inputResults@filt.results)[3:4]=paste0(setdiff(as.character(unlist(unique(p))),""),"_cor")
-
-	diff.corr <- inputResults@filt.results[,4] - inputResults@filt.results[,3]
-
-	inputResults@filt.results <- cbind(inputResults@filt.results, diff.corr)
-	if(inputResults@outcome == "metabolite") {
-                adjp <- reshape2::melt(inputResults@interaction.adj.pvalues)
-		p <-  reshape2::melt(inputResults@interaction.pvalues)
-	} else if (inputResults@outcome == "gene") {
-                adjp <- reshape2::melt(t(inputResults@interaction.adj.pvalues))
-		p <- reshape2::melt(t(inputResults@interaction.pvalues))
-	}
-
-	cornames <- paste(as.character(inputResults@filt.results[,"metab"]),as.character(inputResults@filt.results[,"gene"]))
-	rownames(p) <- paste(as.character(p[,2]),as.character(p[,1]))
-	rownames(adjp) <- paste(as.character(adjp[,2]),as.character(adjp[,1]))
-	outp <- p[cornames,]
-	outpadj <- adjp[cornames,]
-
-	inputResults@filt.results = cbind(inputResults@filt.results,outp$value, outpadj$value)
-	colnames(inputResults@filt.results)[6:7]=c("Pval","FDRadjPval")
-
 
 	if (treecuts > 0){
 
@@ -116,34 +122,40 @@ return(inputResults)
 
 #' Retrieve significant gene-metabolite pairs (aka filter out nonsignificant pairs) based on value of gene:type interaction coefficient from linear model
 #'
-#' @import reshape2
-#'
-#' @param inputResults IntLimResults object with model results (output of RunIntLim())
-#' @param InteractionCoeffcutoff Smallest interaction coefficient that will be graphed (positive or negative)
-#' @param pvalcutoff cutoff of FDR-adjusted p-value for filtering (default 0.05)
-#' @return IntLimResults object with model results (now includes filt.results data)
-#' @export
+#' @param inputResults IntLimResults object with model results: output of RunIntLim
+#' @param interactionCoeffPercentile percentile cutoff for interaction coefficient
+#' default bottom 10 percent (high negative coefficients) and top 10 percent (high positive coefficients)
+#' @param pvalCutoff cutoff of FDR-adjusted p-value for filtering (default 0.05)
 ProcessResultsContinuous<- function(inputResults,
-                         InteractionCoeffcutoff=0.5,
-                         pvalcutoff=0.05){
+                         interactionCoeffPercentile=0.1,
+                         pvalCutoff=0.05){
 
   if(class(inputResults) != "IntLimResults") {
     stop("input data is not a IntLim class")
   }
 
-  gene_metabolite_format_coeff = melt(inputResults@interaction.coefficients)
-  colnames(gene_metabolite_format_coeff) = c("gene", "metabolite", "interaction")
+  #merge and properly name all data to return
+  gene_metabolite_format_coeff = reshape2::melt(inputResults@interaction.coefficients)
+  gene_metabolite_format_pval = reshape2::melt(inputResults@interaction.pvalues)
+  gene_metabolite_format_adjp = reshape2::melt(inputResults@interaction.adj.pvalues)
+  tofilter = cbind(gene_metabolite_format_coeff, gene_metabolite_format_pval$value, gene_metabolite_format_adjp$value)
+  colnames(tofilter) = c("gene", "metab", "interaction_coeff", "Pval","FDRadjPval")
+
+  #get top and bottom cutoffs (need highest positive and highest negative coeffs)
+  first_half = getQuantileForInteractionCoefficient(tofilter$interaction_coeff, interactionCoeffPercentile)[1]
+  second_half = getQuantileForInteractionCoefficient(tofilter$interaction_coeff, interactionCoeffPercentile)[2]
 
 
-  gene_metabolite_format_adjp = melt(inputResults@interaction.adj.pvalues)
-  gene_metabolite_format_coeff$adjpval = gene_metabolite_format_adjp$value
+  #sort
+  tofilter_sortedbycoeff <- tofilter[order(tofilter$interaction_coeff),]
 
+  #filter by coefficient
+  filtered_by_coeff = tofilter_sortedbycoeff[tofilter_sortedbycoeff$interaction_coeff>second_half | tofilter_sortedbycoeff$interaction_coeff < first_half,]
 
-  tofilter_sortedbycoeff <- gene_metabolite_format_coeff[order(gene_metabolite_format_coeff$interaction),]
+  #filter by pvalue
+  filtered_by_pval = filtered_by_coeff[filtered_by_coeff$FDRadjPval < pvalCutoff,]
 
-  filtered_by_coeff = tofilter_sortedbycoeff[tofilter_sortedbycoeff$interaction>InteractionCoeffcutoff | tofilter_sortedbycoeff$interaction < -InteractionCoeffcutoff,]
-
-  filtered_by_pval = filtered_by_coeff[filtered_by_coeff$adjpval < pvalcutoff,]
+  #place in objec to return
   inputResults@filt.results = filtered_by_pval
   return(inputResults)
 
