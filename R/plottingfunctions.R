@@ -800,6 +800,7 @@ pvalCorrVolcano <- function(inputResults, inputData,nrpoints=10000,diffcorr=0.5,
 #' Graphs a scatterplot of gene-metabolite pairs vs. the interaction coefficient for the gene-metabolite pair
 #' @param inputResults IntLimResults object with model results (output of RunIntLim())
 #' @param interactionCoeffPercentile percentile cutoff for interaction coefficient (default bottom 10 percent (high negative coefficients) and top 10 percent (high positive coefficients))
+#' @param percentageToPlot percentage of points to plot (the points will be randomly selected) -- plotting all points will likely overwhelm plotting function.
 #' @return a scatterplot
 #'
 #' @export
@@ -812,7 +813,8 @@ pvalCorrVolcano <- function(inputResults, inputData,nrpoints=10000,diffcorr=0.5,
 #' InteractionCoefficientGraph(inputResults=myres)
 #' }
 InteractionCoefficientGraph<-function(inputResults,
-                                      interactionCoeffPercentile=0.10){
+                                      interactionCoeffPercentile=0.10,
+                                      percentageToPlot = 0.01){
 
 
     if(class(inputResults) != "IntLimResults") {
@@ -839,7 +841,9 @@ InteractionCoefficientGraph<-function(inputResults,
     colnames(toplot_sort) = c("interaction_coeff", "adjpval")
     toplot_sort$color = "black"
     toplot_sort$color[(toplot_sort$interaction_coeff > second_half | toplot_sort$interaction_coeff <first_half)]="red"
-
+    randomize = function(x) sample(1:nrow(toplot_sort),x,replace=F)
+    random_rows_to_keep = sort(randomize(nrow(toplot_sort)*percentageToPlot))
+    toplot_sort = toplot_sort[random_rows_to_keep,]
 
     plot(1:length(toplot_sort$interaction_coeff),toplot_sort$interaction_coeff, col=toplot_sort$color, xlab = "Gene Metabolite Pairs", ylab = "Interaction Coefficient", pch=16)
 
