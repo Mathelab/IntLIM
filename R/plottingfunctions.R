@@ -875,7 +875,11 @@ MarginalEffectsGraphDataframe<-function(inputResults, inputData, geneOfInterest,
   covariates_class = as.character(inputResults@covar$class.var)
 
   #get dataframes
-  incommon <- getCommon(inputData,inputResults@stype,covar=covariates,class.covar=covariates_class)
+  if(length(covariates) == 0){
+    incommon <- getCommon(inputData,inputResults@stype,covar=covariates)
+  }else{
+    incommon <- getCommon(inputData,inputResults@stype,covar=covariates,class.covar=covariates_class)
+  }
   pheno <- incommon$p
   gene <- incommon$gene
   metab <- incommon$metab
