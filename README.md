@@ -42,6 +42,14 @@ source("https://bioconductor.org/biocLite.R")
 biocLite("MultiDataSet")
 ```
 
+If you have R version >= 3.6, install *MultiDataset* by typing:
+```
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("MultiDataSet")
+```
+
 To install IntLIM, simply type the following in the R terminal:
 
 ```
