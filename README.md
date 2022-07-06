@@ -1,3 +1,5 @@
+# WARNING: This repository is deprecated. Please see https://github.com/ncats/IntLIM for the latest updates to the IntLIM package.
+
 # IntLIM:  Integration through LInear Modeling
 [![Build Status](https://travis-ci.org/Mathelab/IntLIM.svg?branch=master)](https://travis-ci.org/Mathelab/IntLIM)
 [![Build status](https://ci.appveyor.com/api/projects/status/1y05oo8y4v7r28bf?svg=true)](https://ci.appveyor.com/project/Mathelab/IntLIM/branch/master)
